@@ -27,6 +27,11 @@
     border: 0.25px solid silver;
 }
 
+.signup-card input:focus{
+    outline-color: #0D99FF;
+    outline-width: thin;
+}
+
 .signup-card button {
     width: 140%;
     height: 40px;
