@@ -1,0 +1,51 @@
+/* SIGN UP */
+*{
+    font-family: 'Inter', sans-serif;
+}
+
+
+.signup-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.signup-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.signup-card input {
+    height: 40px;
+    width: 140%;
+    margin: 10px;
+    border-radius: 5pt;
+    border: 0.25px solid silver;
+}
+
+.signup-card button {
+    width: 140%;
+    height: 40px;
+    margin: 10px;
+    border: none;
+    border-radius: 5pt;
+    background-color: #0D99FF;
+    color: #FFFFFF;
+    font-weight: 500;
+}
+
+.signup-card button:hover {
+    background-color: rgba(11, 138, 231, 1);
+}
+
+.signup-card p  {
+    font-size: 10pt;
+}
+
+.signup-card span {
+    font-size: 10pt;
+}
