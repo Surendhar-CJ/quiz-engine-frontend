@@ -51,14 +51,17 @@ body {
 
 .login {
     color: rgba(13, 153, 255, 0.87);
-    
-    background-color: #f8f8f8;
+    border: 0.25px solid #0D99FF;
     font-size: 12pt;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 10px;
     border-radius: 10pt;
+}
+
+.login:hover {
+    background-color: rgba(159, 212, 250, 0.5);
 }
 
 
@@ -71,6 +74,10 @@ body {
     align-items: center;
     padding: 10px;
     border-radius: 10pt;
+}
+
+.signup:hover {
+    background-color: rgba(11, 138, 231, 1);
 }
 
 
