@@ -1,7 +1,3 @@
-import React, { useState } from 'react';
-import Login from "./Login.js";
-import SignUp from './SignUp.js';
-
 
 const title = "QUIZ ENGINE"
 
