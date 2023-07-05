@@ -43,13 +43,13 @@ body {
     margin-left: auto;
 }
 
-.login, .signup {
+.log-in, .sign-up {
     margin: 0 10px; 
     font-size: 12pt;
     font-weight: 600;
 }
 
-.login {
+.log-in {
     color: rgba(13, 153, 255, 0.87);
     border: 0.25px solid #0D99FF;
     font-size: 12pt;
@@ -60,12 +60,12 @@ body {
     border-radius: 10pt;
 }
 
-.login:hover {
+.log-in:hover {
     background-color: rgba(159, 212, 250, 0.5);
 }
 
 
-.signup {
+.sign-up {
     color: #FFFFFF;
     background-color: #0D99FF;
     font-size: 12pt;
@@ -76,7 +76,7 @@ body {
     border-radius: 10pt;
 }
 
-.signup:hover {
+.sign-up:hover {
     background-color: rgba(11, 138, 231, 1);
 }
 
