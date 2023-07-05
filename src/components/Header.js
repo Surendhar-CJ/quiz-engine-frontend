@@ -2,14 +2,17 @@
 const title = "QUIZ ENGINE"
 
 
-const Header = ({ onLoginClick, onSignUpClick }) => {
+const Header = ({ options }) => {
     
     return (
         <header className="header-container">
             <h1 className="title">{title}</h1>
              <div className="login-signup">
-                <h3 className="login" onClick={onLoginClick}>LOG IN</h3>
-                <h3 className="signup" onClick={onSignUpClick}>SIGN UP</h3>
+                {options.map(({ label, action }) => (
+                    <h3 key={label} className={label.toLowerCase().replace(/\s+/g, '-')} onClick={action}>
+                        {label.toUpperCase()}
+                    </h3>
+                ))}     
             </div>
         </header>
     )

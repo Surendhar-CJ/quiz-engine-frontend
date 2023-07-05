@@ -28,7 +28,7 @@ const LandingPage = () => {
 
   return (
     <div className="landingPage">
-      <Header onLoginClick={handleLoginClick} onSignUpClick={handleSignUpClick}/>
+      <Header options={[{ label: 'Log In', action: handleLoginClick }, { label: 'Sign Up', action: handleSignUpClick }]} />
       <Main showLogin={showLogin} toggleLogin={toggleLogin} showSignUp={showSignUp} toggleSignUp={toggleSignUp} />
       <Footer />
     </div>
