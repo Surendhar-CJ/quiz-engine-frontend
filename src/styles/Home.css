@@ -60,10 +60,10 @@
 .home-content {
     display: flex;
     flex-direction: column;
-    max-width: 125ch;
+    width: 125ch;
     margin: 0 auto;
     flex-grow: 1;
-    padding: 10px;
+    padding: 20px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 }
 

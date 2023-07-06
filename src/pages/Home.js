@@ -36,30 +36,21 @@ const Home = () => {
             numberOfQuestions: 10
         },
         {
-             id: 2,
-             name : "Algorithms",
-             numberOfQuestions: 2
-        },
-        {
-             id: 3,
-             name : "Data Structures and Algorithms",
-             numberOfQuestions: 2
-        },
-        {
-             id: 4,
-             name : "Data Structures and Algorithms",
-             numberOfQuestions: 2
-        },
-        {
-             id: 5,
-             name : "Software Development Advanced Techniques",
-             numberOfQuestions: 2
-        },  
-        {
-            id: 6,
-            name : "Project and Dissertation for MSc Computer Science",
-            numberOfQuestions: 2
-       }  
+            id: 2,
+            name: "Algorithms",
+           numberOfQuestions: 10
+       },
+       {
+           id: 3,
+           name: "Java",
+          numberOfQuestions: 10
+      },
+      {
+        id: 4,
+        name: "Java",
+       numberOfQuestions: 10
+   }
+        
   
     ]);
 
