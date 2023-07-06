@@ -1,0 +1,59 @@
+
+*{
+    font-family: 'Inter', sans-serif;
+}
+
+.landingPage {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/**MAIN **/
+.main-content {
+    flex-grow: 1;
+}
+
+.main-content{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.log-in, .sign-up {
+    margin: 0 10px; 
+    font-size: 12pt;
+    font-weight: 600;
+}
+
+.log-in {
+    color: rgba(13, 153, 255, 0.87);
+    border: 0.25px solid #0D99FF;
+    font-size: 12pt;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10pt;
+}
+
+.log-in:hover {
+    background-color: rgba(159, 212, 250, 0.5);
+}
+
+
+.sign-up {
+    color: #FFFFFF;
+    background-color: #0D99FF;
+    font-size: 12pt;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10pt;
+}
+
+.sign-up:hover {
+    background-color: rgba(11, 138, 231, 1);
+}
+
