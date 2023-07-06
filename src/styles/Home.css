@@ -1,0 +1,38 @@
+*{
+    font-family: 'Inter', sans-serif;
+}
+
+.home, .profile {
+    margin: 0 10px; 
+    font-size: 12pt;
+    font-weight: 600;
+}
+
+
+.home{
+    border: 0.25px solid #0D99FF;
+    font-size: 12pt;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10pt;
+}
+
+.home:hover {
+    background-color: rgba(159, 212, 250, 0.5);
+}
+
+.profile {
+    border: 0.25px solid #0D99FF;
+    font-size: 12pt;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10pt;
+}
+
+.profile:hover {
+    background-color: rgba(159, 212, 250, 0.5);
+}
