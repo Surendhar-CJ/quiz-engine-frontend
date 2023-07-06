@@ -21,7 +21,7 @@
 
 .login-card input {
     height: 40px;
-    width: 140%;
+    width: 100%;
     margin: 10px;
     border-radius: 5pt;
     border: 0.25px solid silver;
@@ -33,7 +33,7 @@
 }
 
 .login-card button {
-    width: 140%;
+    width: 100%;
     height: 40px;
     margin: 10px;
     border: none;
@@ -53,4 +53,13 @@
 
 .login-card span {
     font-size: 10pt;
+}
+
+
+/* This media query applies when the viewport is larger than 600px */
+@media (min-width: 660px) {
+    .login-card input,
+    .login-card button {
+        width: 140%; /* This will be the width when the viewport is larger than 600px */
+    }
 }
