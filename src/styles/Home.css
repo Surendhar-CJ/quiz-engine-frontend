@@ -60,7 +60,8 @@
 .home-content {
     display: flex;
     flex-direction: column;
-    width: 125ch;
+    max-width: 125ch;
+    width: 100%;
     margin: 0 auto;
     flex-grow: 1;
     padding: 20px;
