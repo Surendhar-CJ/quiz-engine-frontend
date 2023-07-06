@@ -1,9 +1,10 @@
 import '../styles/Topic.css'
 
-const Topic = () => {
+const Topic = (props) => {
     return (
-        <div>
-            <p>Algorithms</p>
+        <div className="topic">
+            <h2>{props.name}</h2>
+            <p>Questions available: {props.numberOfQuestions}</p>
         </div>
     )
 }

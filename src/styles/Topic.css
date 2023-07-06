@@ -1,3 +1,36 @@
 *{
     font-family: 'Inter', sans-serif;
 }
+
+.topics-list {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: center;
+    
+} 
+
+.topic {
+    background-color: rgba(62, 173, 255, 0.13);
+    width: 300px;
+    height: 175px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    margin: 20px;
+    padding: 5px 10px 0;
+    border-radius: 5pt;
+    display: flex;        /* Turn on flexbox */
+    flex-direction: column;   /* Stack items vertically */
+    justify-content: space-between;
+    
+
+}
+
+.topic:hover {
+        background-color: bisque;
+}
+
+
+.topic p {
+    font-size: 10pt;
+    font-weight: 400;
+}
