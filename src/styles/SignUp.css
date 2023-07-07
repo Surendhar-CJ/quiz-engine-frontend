@@ -62,3 +62,14 @@
         width: 140%; /* This will be the width when the viewport is larger than 600px */
     }
 }
+
+@media (max-height: 600px) {
+    .signup-card {
+        padding: 10px; /* decrease padding */
+    }
+    .signup-card input,
+    .signup-card button {
+        height: 30px; /* decrease height */
+        margin: 5px; /* decrease margin */
+    }
+}
