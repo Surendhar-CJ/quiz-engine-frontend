@@ -1,0 +1,32 @@
+*{
+    font-family: 'Inter', sans-serif;
+}
+
+
+.test-header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    height: 82px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.test-title {
+    margin: 0;
+    color: #0D99FF;
+    font-size: 24pt;
+}
+
+.exit-quiz {
+    padding: 10px;
+    background-color: rgba(197, 48, 48, 1);
+    color: #FFFFFF;
+    border-radius: 5pt;
+    font-weight: 600;
+}
+
+.exit-quiz:hover {
+    background-color: rgba(253, 0, 0, 1);
+}
+
