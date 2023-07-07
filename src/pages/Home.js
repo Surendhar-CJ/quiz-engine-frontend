@@ -5,11 +5,15 @@ import Header from '../components/Header.js';
 import Topic from '../components/Topic.js';
 import Footer from '../components/Footer.js';
 import ProfileCard from '../components/ProfileCard.js';
+import Quiz from '../components/QuizConfiguration.js';
 import "../styles/Home.css";
+import QuizConfiguration from '../components/QuizConfiguration.js';
+import Modal from '../components/Modal';
 
 const Home = () => {
 
     const [showProfile, setShowProfile] = useState(false);
+    const [showQuizConfig, setShowQuizConfig] = useState(false);
 
     const handleHomeClick = () => {
         //redirect to Home
@@ -26,6 +30,7 @@ const Home = () => {
     const toggleProfile = () => {
         setShowProfile(!showProfile);
     }
+
 
     /** TOPIC */
 
@@ -50,11 +55,24 @@ const Home = () => {
         name: "Java",
        numberOfQuestions: 10
    }
-        
-  
     ]);
 
-    const topicElements = topics.map(topic => <Topic key={topic.id} id={topic.id} name={topic.name} numberOfQuestions={topic.numberOfQuestions}/>)
+    const handleOnTopicClick = () => {
+        setShowQuizConfig(true);
+    }
+
+    const toggleQuizConfig = () => {
+        setShowQuizConfig(!showQuizConfig);
+    }
+
+    const topicElements = topics.map(topic => <Topic 
+                                                key={topic.id} 
+                                                id={topic.id} 
+                                                name={topic.name} 
+                                                numberOfQuestions={topic.numberOfQuestions}
+                                                onTopicClick={handleOnTopicClick}
+                                              />
+                                            )
 
 
 
@@ -68,6 +86,9 @@ const Home = () => {
                 <h2>Ready for a quiz?</h2>
                 <div className="topics-list">
                     {topicElements}
+                    <Modal show={showQuizConfig} onClose={toggleQuizConfig}>
+                        <QuizConfiguration />
+                    </Modal>
                 </div>
             </div>
             <Footer />

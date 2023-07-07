@@ -1,0 +1,69 @@
+*{
+    font-family: 'Inter', sans-serif;
+}
+
+
+.quiz-configure-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    border: 1px solid blue;
+}
+
+.quiz-configure-form {
+    display: flex;
+    flex-direction: column;
+    align-items: normal;
+    justify-content: space-evenly;
+    border: 1px solid red;
+}
+
+
+.set-questions-checkbox {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 70%;
+    margin: 10px;
+}
+
+.questions-limit{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.feedback-type {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin: 10px;
+    border: 1px solid black;
+}
+
+.feedback-type select {
+    width: 50%;
+}
+
+
+
+.quiz-configure-card  button {
+    width: 100%;
+    height: 40px;
+    margin: 10px;
+    border: none;
+    border-radius: 5pt;
+    background-color: #0D99FF;
+    color: #FFFFFF;
+    font-weight: 500;
+}
+
+.quiz-configure-card button:hover {
+    background-color: rgba(11, 138, 231, 1);
+} 
