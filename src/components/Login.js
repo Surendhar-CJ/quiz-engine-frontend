@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
 
 
-const Login = () => {
+const Login = ({ toggleLogin, toggleSignUp }) => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState(
         {username: "", password: ""}
     )
@@ -16,8 +18,47 @@ const Login = () => {
         })
     }
 
+    const postLoginRequest = async() => {
+        try {
+            const response = await fetch("http://localhost:9090/api/v1/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message);
+            } else {
+                console.log('Login request successful'); 
+                setServerErrors('');
+                navigate('/home');
+            }
+        } catch (error) {
+            console.error("Error :", error);
+            setServerErrors(error.message);
+        }
+    }
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        postLoginRequest();
+    }
+
+    const handleSignUpLinkClick = (event) => {
+        event.preventDefault();
+        toggleLogin();
+        toggleSignUp();  
+  };
+
+  const [serverErrors, setServerErrors] = useState('');
+
+
+
     return (
-        <div className = "login-card">
+        <div className = "login-card" onSubmit={handleSubmit}>
             <h2>Login</h2>
             <form className="login-form">
                 <input 
@@ -35,8 +76,9 @@ const Login = () => {
                     value={formData.password} 
                 />
                 <button type="submit">Submit</button>
+                {serverErrors && <div className="error-message">{serverErrors}</div>}
                 <p>Don't have an account?</p>
-                <span>Signup</span>
+                <span className="signup-link" onClick={handleSignUpLinkClick}>Signup</span>
             </form>       
         </div>
     )

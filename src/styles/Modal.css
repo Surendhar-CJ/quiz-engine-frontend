@@ -1,30 +1,42 @@
 .modal {
-   display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out, visibility 0.2s ease-in-out;
+}
+
+.modal.visible {
+  opacity: 1;
+  visibility: visible;
 }
   
 .modal-content {
-  background-color: #fefefe;
-  margin: 25% auto;  /* decrease top margin to provide more space */
-  padding: 20px;
-  border-radius: 10pt;
-  width: 50%;  /* decrease width to adapt smaller screens */
-  max-width: 400px;  /* maximum width of the modal content */
-  height: auto;  /* let the height adapt to its content */
-  max-height: 80vh;  /* maximum height */
-  overflow: auto;  /* add scrollbar when content is bigger than the modal */
-  display: flex;  /* align children elements */
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+    background-color: #fefefe;
+    margin-top: -100%;
+    padding: 20px;
+    border-radius: 10pt;
+    width: 50%;
+    max-width: 400px;
+    height: auto;
+    max-height: 80vh;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: margin-top 0.35s ease-in-out;
+}
+
+.modal.visible .modal-content {
+  margin-top: 0;
 }

@@ -1,0 +1,9 @@
+*{
+    font-family: 'Inter', sans-serif;
+}
+
+.quiz-question {
+    border: 1px solid black;
+    width: 100%;
+    height: 100%;
+}
