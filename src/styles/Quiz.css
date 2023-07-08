@@ -1,0 +1,27 @@
+*{
+    font-family: 'Inter', sans-serif;
+}
+
+.test-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.quiz-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quiz-area {
+    display: flex;
+    flex-direction: column;
+    max-width: 125ch;
+    width: 100%;
+    margin: 0 auto;
+    flex-grow: 1;
+    padding: 20px;
+    background-color: azure;
+}
+

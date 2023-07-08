@@ -48,11 +48,19 @@
 }
 
 .login-card p  {
-    font-size: 10pt;
+    font-size: 9pt;
 }
 
 .login-card span {
-    font-size: 10pt;
+    font-size: 9pt;
+}
+
+.signup-link {
+    color:#0D99FF;
+}
+
+.signup-link:hover {
+    text-decoration: underline;
 }
 
 

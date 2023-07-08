@@ -5,15 +5,15 @@ import Header from '../components/Header.js';
 import Topic from '../components/Topic.js';
 import Footer from '../components/Footer.js';
 import ProfileCard from '../components/ProfileCard.js';
-import Quiz from '../components/QuizConfiguration.js';
 import "../styles/Home.css";
 import QuizConfiguration from '../components/QuizConfiguration.js';
 import Modal from '../components/Modal';
 
 const Home = () => {
-
     const [showProfile, setShowProfile] = useState(false);
     const [showQuizConfig, setShowQuizConfig] = useState(false);
+    const [selectedTopicId, setSelectedTopicId] = useState(null);
+    
 
     const handleHomeClick = () => {
         //redirect to Home
@@ -34,30 +34,28 @@ const Home = () => {
 
     /** TOPIC */
 
-    const [topics, setTopics] = useState([
-        {
-             id: 1,
-             name: "Java",
-            numberOfQuestions: 10
-        },
-        {
-            id: 2,
-            name: "Algorithms",
-           numberOfQuestions: 10
-       },
-       {
-           id: 3,
-           name: "Java",
-          numberOfQuestions: 10
-      },
-      {
-        id: 4,
-        name: "Java",
-       numberOfQuestions: 10
-   }
-    ]);
+    const [topics, setTopics] = useState([]);
 
-    const handleOnTopicClick = () => {
+    const getTopics = async() =>  {
+        try {
+           const response =  await fetch("http://localhost:9090/api/v1/topics");
+           if(response.status === 200) {
+                const data = await response.json();
+                setTopics(data);
+           } 
+        } catch (error) {
+            console.error("Error :", error);
+        }
+        
+    };
+    
+
+    React.useEffect(() => {
+        getTopics();
+    }, [])
+
+    const handleOnTopicClick = (topicId) => {
+        setSelectedTopicId(topicId);
         setShowQuizConfig(true);
     }
 
@@ -86,8 +84,12 @@ const Home = () => {
                 <h2>Ready for a quiz?</h2>
                 <div className="topics-list">
                     {topicElements}
-                    <Modal show={showQuizConfig} onClose={toggleQuizConfig}>
-                        <QuizConfiguration />
+                    <Modal 
+                        show={showQuizConfig} 
+                        onClose={toggleQuizConfig}
+                        className={showQuizConfig ? 'visible' : ''}
+                    >
+                        {showQuizConfig && <QuizConfiguration topicId={selectedTopicId}  />}
                     </Modal>
                 </div>
             </div>

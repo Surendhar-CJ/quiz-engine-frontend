@@ -1,7 +1,20 @@
 import React, { useState } from 'react';
 import "../styles/QuizConfiguration.css";
+import { async } from 'q';
+import { useNavigate } from "react-router-dom";
 
-const QuizConfiguration = () => {
+
+const QuizConfiguration = (props) => {
+    const navigate = useNavigate();
+    const [quizData, setQuizData] = useState(null);
+    const [feedbackTypes, setFeedbackTypes] = useState([]);
+    const [configuration, setConfiguration] = useState(
+        {
+            userId: 1,
+            topicId: props.topicId,
+            feedbackId: null        
+        }
+    )
 
     const [formData, setFormData] = useState(
         {
@@ -11,13 +24,95 @@ const QuizConfiguration = () => {
         }
     );
 
+
     const handleChange = (event) => {
         const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
         setFormData({
             ...formData,
             [event.target.name]: value
         });
+
+        
     }
+
+    const getFeedbackTypes = async () => {
+        try {
+            const response = await fetch("http://localhost:9090/api/v1/quiz-configuration");
+            if(response.status === 200) {
+                const data = await response.json();
+                setFeedbackTypes(data);
+            }
+        } catch (error) {
+            console.error("Error :",error);
+        }
+    }
+
+    React.useEffect(() => {
+        getFeedbackTypes();
+    }, []);
+
+
+    const feedbackElements = feedbackTypes.map(feedbackType => {
+        return (
+            <option 
+                key={feedbackType.id} 
+                value={feedbackType.type}
+                name={feedbackType.type.replace(/_/g, ' ')}
+                >
+                {feedbackType.type.replace(/_/g, ' ')}
+            </option>
+        )
+    }) 
+
+    const handleConfigureClick = (event) => {
+        event.preventDefault();
+        const selectedFeedbackType = feedbackTypes.find(feedback => feedback.type === formData.feedbackType);
+
+            if (selectedFeedbackType) {
+        setConfiguration(prevConfigState => ({
+            ...prevConfigState,
+            feedbackId: selectedFeedbackType.id
+        }
+        
+        ));
+        } else {
+            console.log('No matching feedback type found.');
+        }
+
+    }
+
+    const postConfigureQuizRequest = async () => {
+        try {
+            const response = await fetch("http://localhost:9090/api/v1/quizzes", 
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(configuration)
+                
+            });
+
+            if(response.status === 201) {
+                    const data = await response.json();
+                    setQuizData(data);  
+                    navigate('/quiz');
+
+            }
+        }
+         catch(error) {
+            console.log("Error : ", error);
+        }
+    }
+
+    React.useEffect(() => {
+        if (configuration.feedbackId) {  // Make sure feedbackId is not null
+          postConfigureQuizRequest();
+        }
+      }, [configuration]);  // Run this effect whenever configuration changes
+      
+
+
 
 
     return (
@@ -35,6 +130,7 @@ const QuizConfiguration = () => {
                         name="isLimited"
                     />
                 </div>
+
                 <div className="questions-limit">
                     {formData.isLimited && (
                         <div>
@@ -61,12 +157,11 @@ const QuizConfiguration = () => {
                         name="feedbackType"
                     >
                         <option value="">--Feedback Type --</option>
-                        <option value="type1">Type 1</option>
-                        <option value="type2">Type 2</option>
+                        {feedbackElements}
                     </select>
                 </div>
                 
-                <button type="submit">Configure</button>
+                <button type="submit" onClick={handleConfigureClick}>Configure</button>
             </form>
         </div>
     )  

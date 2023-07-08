@@ -2,7 +2,7 @@ import '../styles/Topic.css'
 
 const Topic = (props) => {
     return (
-        <div className="topic" onClick={props.onTopicClick}>
+        <div className="topic" onClick={() => props.onTopicClick(props.id)}>
             <h2>{props.name}</h2>
             <p>Questions available: {props.numberOfQuestions}</p>
         </div>
