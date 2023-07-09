@@ -10,7 +10,6 @@ const QuizConfiguration = (props) => {
     const contextValue = useContext(QuizContext);
     const setQuizDetails = contextValue.setQuizDetails;
     
-    console.log(contextValue)
     const navigate = useNavigate();
     const [quizData, setQuizData] = useState(null);
 
@@ -117,7 +116,6 @@ const QuizConfiguration = (props) => {
     React.useEffect(() => {
         if (configuration.feedbackId) {  // Make sure feedbackId is not null
           postConfigureQuizRequest();
-          console.log(configuration);
         }
       }, [configuration]);  // Run this effect whenever configuration changes
       

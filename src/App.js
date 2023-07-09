@@ -5,13 +5,10 @@ import Home from './pages/Home.js';
 import QuizConfiguration from './components/QuizConfiguration.js';
 import Quiz from './pages/Quiz.js';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
-import PrivateRoute from "./routes/PrivateRoute.js";
 
 
 const App = () => {
 
-  const [text, setText] = useState("");
-  
   return ( 
     <div>
       <QuizContextProvider>
