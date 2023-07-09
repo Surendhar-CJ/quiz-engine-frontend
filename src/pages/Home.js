@@ -1,6 +1,8 @@
 
 import React, { useState } from 'react';
 import { FaUser } from 'react-icons/fa';
+import { useContext } from 'react';
+import { QuizContext } from '../context/QuizContext.js';
 import Header from '../components/Header.js';
 import Topic from '../components/Topic.js';
 import Footer from '../components/Footer.js';
@@ -13,6 +15,8 @@ const Home = () => {
     const [showProfile, setShowProfile] = useState(false);
     const [showQuizConfig, setShowQuizConfig] = useState(false);
     const [selectedTopicId, setSelectedTopicId] = useState(null);
+    const contextValue = useContext(QuizContext);
+    const setTopicContext = contextValue.setTopic;
     
 
     const handleHomeClick = () => {
@@ -56,6 +60,10 @@ const Home = () => {
 
     const handleOnTopicClick = (topicId) => {
         setSelectedTopicId(topicId);
+
+        const selectedTopic = topics.find(topic => topic.id === topicId);
+        setTopicContext(selectedTopic);
+        
         setShowQuizConfig(true);
     }
 

@@ -1,16 +1,24 @@
 import React, { useState } from 'react';
+import { useContext } from 'react';
+import { QuizContext } from '../context/QuizContext';
 import "../styles/QuizConfiguration.css";
 import { async } from 'q';
 import { useNavigate } from "react-router-dom";
 
 
 const QuizConfiguration = (props) => {
+    const contextValue = useContext(QuizContext);
+    const setQuizDetails = contextValue.setQuizDetails;
+    
+    console.log(contextValue)
     const navigate = useNavigate();
     const [quizData, setQuizData] = useState(null);
+
     const [feedbackTypes, setFeedbackTypes] = useState([]);
+    
     const [configuration, setConfiguration] = useState(
         {
-            userId: 1,
+            userId: 1, //contextValue.user.user.id,
             topicId: props.topicId,
             feedbackId: null        
         }
@@ -95,7 +103,8 @@ const QuizConfiguration = (props) => {
 
             if(response.status === 201) {
                     const data = await response.json();
-                    setQuizData(data);  
+                    setQuizData(data);
+                    setQuizDetails(data);  
                     navigate('/quiz');
 
             }
@@ -108,6 +117,7 @@ const QuizConfiguration = (props) => {
     React.useEffect(() => {
         if (configuration.feedbackId) {  // Make sure feedbackId is not null
           postConfigureQuizRequest();
+          console.log(configuration);
         }
       }, [configuration]);  // Run this effect whenever configuration changes
       
