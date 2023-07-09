@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useContext } from 'react';
+import { QuizContext } from '../context/QuizContext';
 import Modal from "../components/Modal";
 import TestHeader from "../components/TestHeader";
 import StartQuiz from '../components/StartQuiz';
@@ -11,49 +13,126 @@ import "../styles/Quiz.css";
 
 const Quiz = () => {   
 
-    const [quizStarted, setQuizStarted] = useState(false);
+    const contextValue = useContext(QuizContext);
 
-    const startQuiz = () => {
-        setQuizStarted(true);     
+    const [showQuizStarted, setShowQuizStarted] = useState(false);
+    const [quizQuestion, setQuizQuestion] = useState(null);
+
+        
+    const handleOnStartQuizClick = () => {
+        setShowQuizStarted(true);
+        getFirstQuestion();
     }
 
-    const [quizQuestion, setQuizQuestion] = useState(
-        {
-            id: 1,
-            text: "What is an in-place sorting algorithm?",
-            score: 2.0,
-            questionType: "Multiple Choice",
-            questionDifficultyLevel: "Medium",
-            choices: [
-                {
-                    id : 1,
-                    text : "An algorithm that sorts the data directly within its original storage without needing to copy it to a temporary location"
-                },
-                {
-                     id: 2,
-                     text: "An algorithm that requires additional space to sort data"
-                },
-                {
-                     id: 3,
-                     text: "An algorithm that cannot handle large datasets"
-                }
-            ]
-        }
-    );
+    const toggleQuizStarted = () => {
+        setShowQuizStarted(!showQuizStarted);
+    }
 
-    
+
+   const getFirstQuestion = async() => {
+        try {
+            const response = await fetch("http://localhost:9090/api/v1/quizzes/quiz-start", {
+                method : "POST",
+                headers : {
+                    "Content-Type" : "application/json"
+                },
+                body: JSON.stringify({
+                    quizId: contextValue.quizDetails.id,
+                    topicId: contextValue.topic.id
+                })
+                
+            }); 
+            console.log({
+                quizId: contextValue.quizDetails.id,
+                topicId: contextValue.topic.id
+            })
+            const data = await response.json();
+            if(response.ok) {
+                setQuizQuestion(data);
+                console.log(data);
+            }
+
+        } catch (error) {
+            console.error("Error :", error);
+        }
+    } ;
+
+
+    const getQuestion = async() => {
+        try {
+            const response = await fetch("http://localhost:9090/api/v1/quizzes/quiz-questions", {
+                method : "POST",
+                headers : {
+                    "Content-Type" : "application/json"
+                },
+                body: JSON.stringify({
+                    quizId: contextValue.quizDetails.id,
+                    topicId: contextValue.topic.id
+                })
+                
+            }); 
+            console.log({
+                quizId: contextValue.quizDetails.id,
+                topicId: contextValue.topic.id
+            })
+            const data = await response.json();
+            if(response.ok) {
+                setQuizQuestion(data);
+                console.log(data);
+            }
+
+        } catch (error) {
+            console.error("Error :", error);
+        }
+
+    };
+
+    const handleOnClickNext = async (selectedChoices) => {
+        try {
+            const response = await fetch("http://localhost:9090/api/v1/quizzes/quiz-questions", {
+                method : "POST",
+                headers : {
+                    "Content-Type" : "application/json"
+                },
+                body: JSON.stringify({
+                    quizId: contextValue.quizDetails.id,
+                    questionId: quizQuestion.id,
+                    answerChoices: selectedChoices
+                })
+                
+            }); 
+
+            const data = await response.json();
+            if(response.ok) {
+                setQuizQuestion(data.questionDTO);
+                console.log(data.questionDTO);
+            }
+
+        } catch (error) {
+            console.error("Error :", error);
+        }
+    }
+
+
 
     return (
         <div className = "test-page">
             <TestHeader />
             <div className="quiz-area">
+            {showQuizStarted && quizQuestion? 
                 <QuizQuestion 
-                    id={quizQuestion.id} 
-                    text={quizQuestion.text} 
-                    score={quizQuestion.score}
-                    type={quizQuestion.questionType}
-                    choices={quizQuestion.choices}                   
-                />
+                id={quizQuestion.id} 
+                text={quizQuestion.text} 
+                score={quizQuestion.score}
+                type={quizQuestion.questionType}
+                choices={quizQuestion.choices} 
+                onClickNext={handleOnClickNext}                  
+                /> 
+                : 
+                <Modal className={showQuizStarted ? '' : 'visible'} show={showQuizStarted}>
+                    <StartQuiz onStartQuizClick ={handleOnStartQuizClick}/>
+                </Modal> 
+            }
             </div>
             <TestFooter />
         </div>   
@@ -63,12 +142,3 @@ const Quiz = () => {
 
 export default Quiz;
 
-
-/*<div className="quiz-area">
-        {quizStarted ? 
-        <QuizQuestion /> : 
-        <div>
-            <Modal show={startQuiz}><StartQuiz onClick ={startQuiz}/></Modal> 
-        </div>
-        }
-        </div> */

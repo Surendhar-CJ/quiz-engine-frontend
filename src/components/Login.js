@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import { useContext } from 'react';
+import { QuizContext } from '../context/QuizContext';
 import "../styles/Login.css";
 
 
 const Login = ({ toggleLogin, toggleSignUp }) => {
+    const contextValue = useContext(QuizContext);
+    const setUser = contextValue.setUser;
+
     const navigate = useNavigate();
     const [formData, setFormData] = useState(
         {username: "", password: ""}
@@ -27,7 +32,12 @@ const Login = ({ toggleLogin, toggleSignUp }) => {
                 },
                 body: JSON.stringify(formData)
             });
+            
             const data = await response.json();
+
+            if(response.ok)  {
+                setUser(data);
+            }           
 
             if (!response.ok) {
                 throw new Error(data.message);
