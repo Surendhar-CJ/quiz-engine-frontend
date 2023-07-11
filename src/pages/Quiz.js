@@ -57,6 +57,7 @@ const Quiz = () => {
             }); 
             
             const data = await response.json();
+            console.log("Question :", data);
             if(response.ok) {
                 setQuizQuestion(data);
                 setQuestionCount(questionCount + 1);
@@ -68,6 +69,7 @@ const Quiz = () => {
     } ;
 
     const handleOnClickSubmitAnswer = async (selectedChoices) => {
+      // event.preventDefault();
         try {
             const response = await fetch("http://localhost:9090/api/v1/quizzes/submit-answer", {
                 method : "POST",
@@ -77,14 +79,20 @@ const Quiz = () => {
                 body: JSON.stringify({
                     quizId: contextValue.quizDetails.id,
                     questionId: quizQuestion.id,
+                    sequenceNumber: questionCount - 1,
                     answerChoices: selectedChoices
                 })
                 
             }); 
+            console.log(JSON.stringify({
+                quizId: contextValue.quizDetails.id,
+                questionId: quizQuestion.id,
+                answerChoices: selectedChoices}));
 
             const feedback = await response.json();
             
             if(response.ok) {
+                setQuizQuestion(prevState => ({...prevState, userAnswer: selectedChoices}));
                 setFeedback(feedback);
                 setShowFeedback(true);
             }
@@ -133,6 +141,7 @@ const handleOnClickNext = async (selectedChoices) => {
                 });
 
                 setQuizQuestion(data);
+                console.log("Question :", data);
                 setShowFeedback(false);
                 setQuestionCount(questionCount + 1);
             }
