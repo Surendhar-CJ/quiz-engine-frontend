@@ -1,0 +1,34 @@
+*{
+    font-family: 'Inter', sans-serif;
+}
+
+.quiz-result-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+
+.quiz-result-content{
+    flex-grow: 1;
+}
+
+
+.quiz-result-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    max-width: 125ch;
+    width: 100%;
+    margin: 0 auto;
+    flex-grow: 1;
+    padding: 20px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+/***/
+.quiz-result-content * {
+    border: 1px solid black;
+}
+

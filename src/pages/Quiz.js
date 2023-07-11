@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useContext } from 'react';
 import { QuizContext } from '../context/QuizContext';
+import { useNavigate } from "react-router-dom";
 import Modal from "../components/Modal";
 import TestHeader from "../components/TestHeader";
 import StartQuiz from '../components/StartQuiz';
@@ -16,6 +17,7 @@ import "../styles/Quiz.css";
 const Quiz = () => {   
 
     const contextValue = useContext(QuizContext);
+    const navigate = useNavigate();
 
     const [showQuizStarted, setShowQuizStarted] = useState(false);
     const [quizQuestion, setQuizQuestion] = useState(null);
@@ -25,6 +27,7 @@ const Quiz = () => {
     const [showFeedback, setShowFeedback] = useState(false);
     const [isAllQuestionsReceived, setIsAllQuestionsReceived] = useState(false);
     const [showSubmitQuiz, setShowSubmitQuiz] = useState(false);
+    const [hasQuizBeenSubmitted, setHasQuizBeenSubmitted] = useState(false);
     
 
         
@@ -57,7 +60,6 @@ const Quiz = () => {
             }); 
             
             const data = await response.json();
-            console.log("Question :", data);
             if(response.ok) {
                 setQuizQuestion(data);
                 setQuestionCount(questionCount + 1);
@@ -84,11 +86,7 @@ const Quiz = () => {
                 })
                 
             }); 
-            console.log(JSON.stringify({
-                quizId: contextValue.quizDetails.id,
-                questionId: quizQuestion.id,
-                answerChoices: selectedChoices}));
-
+            
             const feedback = await response.json();
             
             if(response.ok) {
@@ -100,22 +98,22 @@ const Quiz = () => {
     } catch(error) {
         console.log("Error :", error);
     }
-}
+    }
 
-const handleOnClickNext = async (selectedChoices) => {
-    try {
-        const response = await fetch("http://localhost:9090/api/v1/quizzes/quiz-questions", {
-            method : "POST",
-            headers : {
-                "Content-Type" : "application/json"
-            },
-            body: JSON.stringify({
-                quizId: contextValue.quizDetails.id,
-                questionId: quizQuestion.id,
-                sequenceNumber: questionCount - 1,
-                answerChoices: selectedChoices
-            })
-        }); 
+    const handleOnClickNext = async (selectedChoices) => {
+        try {
+            const response = await fetch("http://localhost:9090/api/v1/quizzes/quiz-questions", {
+                method : "POST",
+                headers : {
+                    "Content-Type" : "application/json"
+                },
+                body: JSON.stringify({
+                    quizId: contextValue.quizDetails.id,
+                    questionId: quizQuestion.id,
+                    sequenceNumber: questionCount - 1,
+                    answerChoices: selectedChoices
+                })
+            }); 
 
         const data = await response.json();
         // Ignore "No more questions available" error
@@ -141,7 +139,6 @@ const handleOnClickNext = async (selectedChoices) => {
                 });
 
                 setQuizQuestion(data);
-                console.log("Question :", data);
                 setShowFeedback(false);
                 setQuestionCount(questionCount + 1);
             }
@@ -194,13 +191,21 @@ const handleOnClickNext = async (selectedChoices) => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             } else {
                 const data = await response.json();
-                console.log(data);
+                contextValue.setQuizResult(data);
+                setHasQuizBeenSubmitted(true);
             }
         } catch(error) {
             console.error('An error occurred while submitting the quiz:', error);
         }
     }
     
+    React.useEffect(() => {
+        if(hasQuizBeenSubmitted == true) {
+            navigate('/result');
+        }
+    }, [hasQuizBeenSubmitted == true]);
+
+
     return (
         <div className = "test-page">
             <TestHeader />
@@ -237,7 +242,11 @@ const handleOnClickNext = async (selectedChoices) => {
                 explanation={feedback.explanation} 
             />}
             { showSubmitQuiz && <Modal className={showSubmitQuiz ? 'visible' : ''} show={showSubmitQuiz} onClose={toggleShowSubmitQuiz}>
-                <SubmitQuiz onSubmitQuizClick ={handleOnSubmitQuizClick}/>
+               { hasQuizBeenSubmitted ? 
+                    <div>Quiz has been submitted successfully</div>
+                        :
+                    <SubmitQuiz onSubmitQuizClick ={handleOnSubmitQuizClick}/> 
+                }
             </Modal> }
             
 

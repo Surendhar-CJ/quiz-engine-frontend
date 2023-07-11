@@ -1,0 +1,46 @@
+*{
+    font-family: 'Inter', sans-serif;
+}
+
+.quiz-detailed-results {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+
+.detailed-results {
+    flex-grow: 1;
+}
+
+
+.detailed-results {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    max-width: 125ch;
+    width: 100%;
+    margin: 0 auto;
+    flex-grow: 1;
+    padding: 20px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+.all-answers-table {
+    border: 1px solid red;
+    border-collapse: collapse;  /* this makes the cell borders collapse into a single border where possible */
+}
+
+.all-answers-table th, .all-answers-table td {
+    border: 1px solid black; /* this gives a border to each table cell */
+    padding: 10px; /* this adds some spacing inside each table cell */
+}
+
+.correct-answer {
+    background-color: lightgreen;
+}
+
+.incorrect-answer {
+    background-color: lightcoral;
+}
