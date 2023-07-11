@@ -57,20 +57,18 @@ const QuizQuestion = (props) => {
                 <p>{question.text}</p>
                 {choices}
             </div>
-            {props.displayFeedback && !props.allQuestionsReceived && <button onClick={handleSubmitAnswerClick}>Submit Answer</button>}
+            {props.displayFeedback && !props.allQuestionsReceived && <button id="submit-answer-button" className={hasAnswerBeenSubmitted ? 'disabled' : ''} disabled={hasAnswerBeenSubmitted}onClick={handleSubmitAnswerClick}>Submit Answer</button>}
             {!props.displayFeedback && props.questionCount > 1 && <button onClick={handleBackClick}>Back</button>}
             <p>{props.questionCount+" - "+props.quizQuestions.length+" - "+ !props.allQuestionsReceived+" - "+props.displayFeedback}</p>
-            {
-                        props.displayFeedback ? 
-                            <div><p>First</p>
-                            <button id="next-button" className={hasAnswerBeenSubmitted ? '' : 'disabled'} disabled={!hasAnswerBeenSubmitted} onClick={handleNextClick}>Next</button>
-                            </div>    
-                            :
-                        <div> 
-                          <p>Second</p>     
-                        <button id="next-button" onClick={handleNextClick}>Next</button>
-                        </div>
-                   
+            {props.displayFeedback ? 
+                <div><p>First</p>
+                <button id="next-button" className={hasAnswerBeenSubmitted ? '' : 'disabled'} disabled={!hasAnswerBeenSubmitted} onClick={handleNextClick}>Next</button>
+                </div>    
+                :
+            <div> 
+                <p>Second</p>     
+            <button id="next-button" onClick={handleNextClick}>Next</button>
+            </div>     
             }
         </div>
     )
