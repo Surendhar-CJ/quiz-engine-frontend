@@ -10,7 +10,7 @@ import '../styles/QuizDetailedResults.css';
 const QuizDetailedResults = () => {
     const contextValue = useContext(QuizContext);
     const quizResult = contextValue.quizResult;
-    const [showProfile, setShowProfile] = useState(false);
+   // const [showProfile, setShowProfile] = useState(false);
     const navigate = useNavigate();
      
     console.log(quizResult);
@@ -24,12 +24,19 @@ const QuizDetailedResults = () => {
     }
 
     const handleProfileClick = () => {
-        setShowProfile(true);
+       // setShowProfile(true);
+       navigate('/profile');
     }
 
-    const toggleProfile = () => {
+   /* const toggleProfile = () => {
         setShowProfile(!showProfile);
-    }
+        showProfile={showProfile} toggleProfile={toggleProfile}setShowProfile(!showProfile);
+
+        //In Header component
+        showProfile={showProfile} toggleProfile={toggleProfile}
+        //After Header component
+         {showProfile && <ProfileCard />}
+    } */
 
 
     const getAllAnswers = () => {
@@ -85,7 +92,7 @@ const QuizDetailedResults = () => {
     return (
              
         <div className="quiz-detailed-results">
-            <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]} showProfile={showProfile} toggleProfile={toggleProfile} />
+            <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
             <div className="detailed-results">
                 <h1>Detailed Quiz Results</h1>
                 <table className="all-answers-table">
