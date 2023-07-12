@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { FaUser } from 'react-icons/fa';
 import { useContext } from 'react';
 import { QuizContext } from '../context/QuizContext.js';
+import { useNavigate } from "react-router-dom";
 import Header from '../components/Header.js';
 import Topic from '../components/Topic.js';
 import Footer from '../components/Footer.js';
@@ -12,11 +13,14 @@ import QuizConfiguration from '../components/QuizConfiguration.js';
 import Modal from '../components/Modal';
 
 const Home = () => {
-    const [showProfile, setShowProfile] = useState(false);
+  //  const [showProfile, setShowProfile] = useState(false);
     const [showQuizConfig, setShowQuizConfig] = useState(false);
     const [selectedTopicId, setSelectedTopicId] = useState(null);
     const contextValue = useContext(QuizContext);
     const setTopicContext = contextValue.setTopic;
+
+    const navigate = useNavigate();
+
     
 
     const handleHomeClick = () => {
@@ -28,12 +32,18 @@ const Home = () => {
     }
 
     const handleProfileClick = () => {
-        setShowProfile(true);
+       // setShowProfile(true);
+        navigate('/profile');
     }
 
-    const toggleProfile = () => {
+    /*const toggleProfile = () => {
         setShowProfile(!showProfile);
-    }
+
+        //In Header component
+        showProfile={showProfile} toggleProfile={toggleProfile}
+        //After Header component
+         {showProfile && <ProfileCard />}
+    } */
 
 
     /** TOPIC */
@@ -46,6 +56,7 @@ const Home = () => {
            if(response.status === 200) {
                 const data = await response.json();
                 setTopics(data);
+                contextValue.setAvailableTopics(data);
            } 
         } catch (error) {
             console.error("Error :", error);
@@ -85,8 +96,8 @@ const Home = () => {
 
     return (
         <div className="home-page">
-            <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]} showProfile={showProfile} toggleProfile={toggleProfile} />
-            {showProfile && <ProfileCard />}
+            <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
+           
             <div className="home-content">
                 <h1>Welcome, User!</h1>
                 <h2>Ready for a quiz?</h2>

@@ -6,6 +6,7 @@ import Quiz from './pages/Quiz.js';
 import QuizResult from './pages/QuizResult.js';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import QuizDetailedResults from './pages/QuizDetailedResults.js';
+import UserProfile from './pages/UserProfile.js'
 
 
 const App = () => {
@@ -20,6 +21,7 @@ const App = () => {
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/result" element={<QuizResult />} />
             <Route path="/detailed-results" element={<QuizDetailedResults />} />
+            <Route path="/profile" element={<UserProfile />} />
           </Routes>
         </BrowserRouter>
       </QuizContextProvider>
