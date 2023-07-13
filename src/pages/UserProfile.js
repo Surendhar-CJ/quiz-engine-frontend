@@ -3,6 +3,7 @@ import { QuizContext } from '../context/QuizContext';
 import React, { useState } from 'react';
 import { FaUser } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
+import BarChart from '../components/visual/BarChart';
 import Header from '../components/Header.js';
 import Footer from '../components/Footer.js';
 import UserCard from '../components/UserProfileComponents/UserCard.js';
@@ -49,7 +50,7 @@ const UserProfile = () => {
       // navigate('/profile');
     }
 
-    const strength = () => {
+   /* const strength = () => {
         const topics = contextValue.availableTopics;
         const averagePercentageByTopic = userProfileDetails.averageScoreByTopic;
 
@@ -67,17 +68,139 @@ const UserProfile = () => {
             if (percentage >= 60) {
                 strengths.push(
                     <div key={topicId}>
-                        <p>Topic ID: {topicName}</p>
-                        <p>Score: {percentage}</p>
+                        <p>{topicName}</p>
+                        <p>{percentage}</p>
                     </div>
                 );
             }
         }
         
         return strengths;
+    } */
+
+    const strength = () => {
+        const topics = contextValue.availableTopics;
+        const averagePercentageByTopic = userProfileDetails.averageScoreByTopic;
+    
+        const data = {
+            labels: [], // this will contain your x-axis labels (topic names)
+            datasets: [
+                {
+                    label: 'Average Score',
+                    data: [], // this will contain your y-axis values (percentage)
+                    backgroundColor: [
+                        'rgba(75,192,192,0.4)',
+                        'rgba(134, 203, 92, 0.4)',
+                        'rgba(161, 92, 203, 0.4)',
+                        'rgba(35, 43, 244, 0.4)',
+                        'rgba(35, 244, 106, 0.4)',
+                    ],
+
+                    hoverBackgroundColor: [
+                        'rgba(75,192,192,1)',
+                        'rgba(134,203,92,1)',
+                        'rgba(161,92,203,1)',
+                        'rgba(35,43,244,1)',
+                        'rgba(35,244,106,1)',
+                    ],
+
+                    borderColor: [
+                        'rgba(75,192,192,0.4)',
+                        'rgba(134, 203, 92, 0.4)',
+                        'rgba(161, 92, 203, 0.4)',
+                        'rgba(35, 43, 244, 0.4)',
+                        'rgba(35, 244, 106, 0.4)',
+                    ],
+                    borderWidth: 1,
+                    barThickness: 30
+                },
+            ],
+        };
+    
+        for (let topicId in averagePercentageByTopic) {
+            let percentage = averagePercentageByTopic[topicId];
+            
+            let topicName;
+            for(let topic of topics) {
+                if(topic.id.toString() === topicId) {
+                    topicName = topic.name;
+                }
+            }
+    
+            if (percentage >= 60) {
+                data.labels.push(topicName);
+                data.datasets[0].data.push(percentage);
+            }
+        }
+
+        return (
+            <BarChart chartData={data}/>
+        );
+        
     }
 
     const weakness = () => {
+        const topics = contextValue.availableTopics;
+        const averagePercentageByTopic = userProfileDetails.averageScoreByTopic;
+    
+        const data = {
+            labels: [], // this will contain your x-axis labels (topic names)
+            datasets: [
+                {
+                    label: 'Average Score',
+                    data: [], // this will contain your y-axis values (percentage)
+                    backgroundColor: [
+                        'rgba(255,0,0,0.4)',
+                        'rgba(203,199,92,0.4)',
+                        'rgba(255,107,0,0.4)',
+                        'rgba(240,244,35,0.4)',
+                        'rgba(185,140,52,0.4)',
+                    ], 
+                    
+                    hoverBackgroundColor:  [
+                        'rgba(255,0,0,1)',
+                        'rgba(203,199,92,1)',
+                        'rgba(255,107,0,1)',
+                        'rgba(240,244,35,1)',
+                        'rgba(185,140,52,1)',
+                    ], 
+                    borderColor: [
+                        'rgba(255,0,0,0.4)',
+                        'rgba(203,199,92,0.4)',
+                        'rgba(255,107,0,0.4)',
+                        'rgba(240,244,35,0.4)',
+                        'rgba(185,140,52,0.4)',
+                    ], 
+                    borderWidth: 1,
+                    barThickness: 30,
+                    
+                },
+            ],
+        };
+    
+        for (let topicId in averagePercentageByTopic) {
+            let percentage = averagePercentageByTopic[topicId];
+            
+            let topicName;
+            for(let topic of topics) {
+                if(topic.id.toString() === topicId) {
+                    topicName = topic.name;
+                }
+            }
+    
+            if (percentage <= 59) {
+                data.labels.push(topicName);
+                data.datasets[0].data.push(percentage);
+            }
+        }
+
+        return (
+            <BarChart chartData={data} options={{ maintainAspectRatio: false }}/>
+        );
+        
+    }
+
+  /*  const weakness = () => {
         const topics = contextValue.availableTopics;
         const averagePercentageByTopic = userProfileDetails.averageScoreByTopic;
 
@@ -95,15 +218,15 @@ const UserProfile = () => {
             if (percentage <= 59) {
                 weakness.push(
                     <div key={topicId}>
-                        <p>Topic ID: {topicName}</p>
-                        <p>Score: {percentage}</p>
+                        <p>{topicName}</p>
+                        <p>{percentage}</p>
                     </div>
                 );
             }
         }
         
         return weakness;
-    }
+    } */
     
     const quizHistory = () => {
         const quizzes = userProfileDetails.quizList;
@@ -172,22 +295,35 @@ const UserProfile = () => {
         <div className="user-profile-page">
              <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
               {userProfileDetails && <div className="user-profile-details">
-                <div>    
+                <div className="first-section">    
                     <UserCard firstName={userProfileDetails.firstName} lastName={userProfileDetails.lastName} email={userProfileDetails.email} />
                     <div className="quizzes-count" onClick={() => navigate('#quiz-history')}>
-                        <p>Number Of Quizzes: {userProfileDetails.quizList.length}</p>
-                        <p>Last Quiz Date: {lastQuizDate()}</p>
+                        <p className="quiz-count">{userProfileDetails.quizList.length}</p>
+                        <div className="quiz-count-info">
+                            <p>Quizzes taken so far</p>
+                            <p>Last Quiz Date: {lastQuizDate()}</p>
+                        </div>
                     </div>
                 </div> 
                 <div className="strength-weakness">
-                    <p>You're good at</p>
-                    {strength()}
-                    <p>Focus more on</p>
-                    {weakness()}
+                    <div className="strength">
+                        <p>You're good at</p>
+                        <div className="user-strengths">
+                            {strength()}
+                        </div>
+                    </div>
+                    <div className="weakness">
+                        <p>Focus more on</p>
+                        <div className="user-weaknesses">
+                            {weakness()}
+                        </div>
+                    </div>
                 </div>
                 <div className="quiz-history" id="quiz-history">
-                    <p>Quiz History</p>
-                    {quizHistory()}
+                    <p className="quiz-history-title">Quiz History</p>
+                    <div className="quiz-history-cards">
+                        {quizHistory()}
+                    </div>
                 </div>
               </div> 
             }

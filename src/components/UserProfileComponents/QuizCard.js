@@ -1,11 +1,12 @@
 
-
 const QuizCard = (props) => {
     return (
         <div className="quiz-card" onClick={() => props.onClickQuizCard(props.id)}>
-            <p>{props.topic}</p>
-            <p>{props.finalScore} / {props.totalMarks}</p>
-            <p>{props.date}</p>
+            <div className="quiz-topic-mark">
+                <p className="quiz-topic">{props.topic}</p>
+                <p className="quiz-mark">{props.finalScore} / {props.totalMarks}</p>
+            </div>           
+            <p className="quiz-date">{props.date}</p>
         </div>
     )
 }
