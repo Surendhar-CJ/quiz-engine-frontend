@@ -35,12 +35,18 @@ import QuizDetailedResults from './QuizDetailedResults';
     }
 
     const handleProfileClick = () => {
-        setShowProfile(true);
-    }
+      // setShowProfile(true);
+       navigate('/profile');
+   }
 
-    const toggleProfile = () => {
-        setShowProfile(!showProfile);
-    }
+   /*const toggleProfile = () => {
+       setShowProfile(!showProfile);
+
+       //In Header component
+       showProfile={showProfile} toggleProfile={toggleProfile}
+       //After Header component
+        {showProfile && <ProfileCard />}
+   } */
 
 
     const getIncorrectCards = () => {
@@ -98,7 +104,7 @@ import QuizDetailedResults from './QuizDetailedResults';
 
     return (
         <div className="quiz-result-page">
-             <Header options={[{ label: 'Home', action: handleHomeClick}, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]} showProfile={showProfile} toggleProfile={toggleProfile} />
+              <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
             <div className="quiz-result-content">
                 <h1>Quiz results</h1>
                 <div className="quiz-topic">
