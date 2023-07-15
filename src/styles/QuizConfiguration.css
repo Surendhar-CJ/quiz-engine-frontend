@@ -9,52 +9,68 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    border: 1px solid blue;
-}
+ }
+
+
+ .quiz-configure-card h3 {
+    font-size: 15pt;
+    color: #0D99FF;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+ }
 
 .quiz-configure-form {
     display: flex;
     flex-direction: column;
     align-items: normal;
     justify-content: space-evenly;
-    border: 1px solid red;
 }
 
 
 .set-questions-checkbox {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
     width: 70%;
     margin: 10px;
+}
+
+.set-questions-checkbox input {
+    margin-left: 45px;
 }
 
 .questions-limit{
     display: flex;
     flex-direction: row;
-    align-items: center;
-    justify-content: center;
+    margin: 10px;
+}
+
+.questions-limit input {
+    margin-left: 35px; /* Change the value as needed */
+    width: 20%
 }
 
 .feedback-type {
     display: flex;
     flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
+    width: 90%;
     margin: 10px;
-    border: 1px solid black;
+    padding-right: 5px;
 }
 
 .feedback-type select {
-    width: 50%;
+    width: 30%;
+    margin-left: 55px;
 }
 
 
-
-.quiz-configure-card  button {
+.configure-button {
     width: 100%;
+    padding-right: 20px;
+    margin-top: 10px;
+}
+
+.configure-button button {
+    width: 100%;  
+    box-sizing: border-box;
     height: 40px;
     margin: 10px;
     border: none;
@@ -63,6 +79,7 @@
     color: #FFFFFF;
     font-weight: 500;
 }
+
 
 .quiz-configure-card button:hover {
     background-color: rgba(11, 138, 231, 1);

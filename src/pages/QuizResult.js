@@ -10,6 +10,8 @@ import IncorrectFeedbackCard from '../components/IncorrectFeedbackCard';
 import Modal from '../components/Modal';
 import '../styles/QuizResult.css';
 import QuizDetailedResults from './QuizDetailedResults';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 
  const QuizResult = () => {
@@ -102,31 +104,69 @@ import QuizDetailedResults from './QuizDetailedResults';
         setShowDetailedResults(!setShowDetailedResults);
     }
 
+    const getProgressColor = (percentage) => {
+      if (percentage < 40) {
+        return "#FF0000"; // red
+      } else if (percentage < 60) {
+        return "#FF6B00"; // orange 
+      } else if (percentage < 70) {
+        return "#FFA500"; // golden yellow
+      } else if (percentage < 91) {
+        return "#86CB5C"; // light green
+      } else {
+        return "#006400"; // dark green
+      }
+    }
+
+    const lightenColor = (color, percent) => {
+      var num = parseInt(color.replace("#",""),16),
+      amt = Math.round(2.55 * percent),
+      R = (num >> 16) + amt,
+      G = (num >> 8 & 0x00FF) + amt,
+      B = (num & 0x0000FF) + amt;
+      return "#" + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255)).toString(16).slice(1);
+    }
+
     return (
         <div className="quiz-result-page">
               <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
             <div className="quiz-result-content">
+               
                 <h1>Quiz results</h1>
-                <div className="quiz-topic">
-                    {quizTopic}
+
+                <div className="quiz-marks-section">
+                  <div className="percentage-card" style={{ width: 150, height: 150 }}>
+                     <CircularProgressbar 
+                        value={quizResult.finalPercentage} 
+                        text={`${quizResult.finalPercentage}%`} 
+                        styles= {buildStyles ({
+                          pathColor: getProgressColor(quizResult.finalPercentage),
+                          textColor: getProgressColor(quizResult.finalPercentage),
+                        })
+                      }                    
+                    />
+                  </div>
+                  <div className="topic-marks-card" style={{ backgroundColor: lightenColor(getProgressColor(quizResult.finalPercentage), 60) }}>
+                    <div className="quiz-topic-result">
+                        <p>Topic: <span>{quizTopic}</span></p>
+                    </div>
+                    <div className="marks-card">
+                        <p>Marks: <span>{quizResult.finalScore} / {quizResult.totalNumberOfMarks}</span></p>
+                    </div>
+                  </div>
                 </div>
-                <div className="percentage-card">
-                    Percantage: {quizResult.finalPercentage} %
-                </div>
-                <div className="marks-card">
-                    <p>Marks: {quizResult.finalScore} / {quizResult.totalNumberOfMarks}</p>
-                    <p>Number of questions correct: {}</p>
-                    <p>Number of questions incorrect: {}</p>
-                </div>
+
                 <div className="quiz-feedback">
-                    Feedback
-                    <p>Some initial feedback message based on the percentage scored</p>
-                    <p>These are the places where you went wrong</p>
+                    <h2 className="quiz-feedback-title">Feedback</h2>
+                    <p>Some message based on the percentage scored</p>
                 </div>
+                <p className="answer-explain-heading">These are the places where you went wrong</p>
                 <div className="incorrect-answer-explanations">
                     {getIncorrectCards()}
                 </div>
+
                 <p className="detailed-results-link" onClick={handleOnDetailedResultsClick}>Click here to get the detailed results</p>
+            
             </div>
             
           

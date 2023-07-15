@@ -41,6 +41,10 @@ const Quiz = () => {
     }
 
     const toggleShowSubmitQuiz = () => {
+        const feedback = contextValue.quizDetails.feedbackType.type;
+        if(feedback.toLowerCase() === "immediate_response" || feedback.toLowerCase() === "immediate_correct_answer_response" || feedback.toLowerCase() === "immediate_elaborated") {
+            return;
+        }
         setShowSubmitQuiz(!showSubmitQuiz);
     }
 
@@ -212,8 +216,8 @@ const Quiz = () => {
             <div className="quiz-area">
                 
             {showQuizStarted && quizQuestion ? 
-                <div>
-                    <div className="question-number">{questionCount}/{contextValue.topic.numberOfQuestions}</div>
+                <div className="quiz-question-area">
+                    <div className="question-number">{questionCount} / {contextValue.topic.numberOfQuestions}</div>
                     <QuizQuestion 
                     userAnswer={quizQuestion.userAnswer || []}
                     id={quizQuestion.id} 
@@ -245,7 +249,7 @@ const Quiz = () => {
                { hasQuizBeenSubmitted ? 
                     <div>Quiz has been submitted successfully</div>
                         :
-                    <SubmitQuiz onSubmitQuizClick ={handleOnSubmitQuizClick}/> 
+                    <SubmitQuiz quizDetails={contextValue.quizDetails} onSubmitQuizClick ={handleOnSubmitQuizClick}/> 
                 }
             </Modal> }
             

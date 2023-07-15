@@ -1,8 +1,10 @@
-
+import "../styles/FeedbackCard.css";
 
 const FeedbackCard = (props) => {
+    const resultClass = props.result.toLowerCase() === "true" || props.result.toLowerCase() === "correct" ? "correct" : "incorrect";
+    
     return(
-        <div className="feedback-card">
+        <div className={`feedback-card ${resultClass}`}>
             <p>Result:</p>
             <p>{props.result}</p>
             {props.correctAnswer !== null && 
@@ -19,6 +21,7 @@ const FeedbackCard = (props) => {
             }
         </div>
     )
+
 }
 
 export default FeedbackCard;

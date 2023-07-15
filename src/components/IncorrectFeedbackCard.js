@@ -1,4 +1,4 @@
-
+import '../styles/IncorrectFeedbackCard.css'
 
 
 const IncorrectFeedbackCard = (props) => {

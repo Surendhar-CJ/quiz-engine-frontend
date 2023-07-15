@@ -21,7 +21,7 @@ const QuizQuestion = (props) => {
     const choices = question.choices.map(choice =>  {
         if(question.type === "Multiple Choice") {
             return (
-                <div key={choice.id}>  
+                <div className="radio-choice" key={choice.id}>  
                     <input
                         type="radio"
                         id={choice.id}   
@@ -30,7 +30,7 @@ const QuizQuestion = (props) => {
                         checked={selectedChoices.some(selectedChoice => selectedChoice.id === choice.id)}
                         onChange={() => handleChoiceChange(choice)}
                     />
-                    <label htmlFor={choice.id}>{choice.text}</label> 
+                    <label htmlFor={choice.id} className="radio-button-choice"><span className="radio-choice-text">{choice.text}</span></label> 
                 </div>
             )
         }
@@ -54,16 +54,18 @@ const QuizQuestion = (props) => {
     return (
         <div className="quiz-question"> 
             <div className="question">
-                <p>{question.text}</p>
+                <p className="quiz-question-text">{question.text}</p>
                 {choices}
             </div>
-            {props.displayFeedback && !props.allQuestionsReceived && <button id="submit-answer-button" className={hasAnswerBeenSubmitted ? 'disabled' : ''} disabled={hasAnswerBeenSubmitted}onClick={handleSubmitAnswerClick}>Submit Answer</button>}
-            {!props.displayFeedback && props.questionCount > 1 && <button onClick={handleBackClick}>Back</button>}
-            {props.displayFeedback ? 
-                <button id="next-button" className={hasAnswerBeenSubmitted ? '' : 'disabled'} disabled={!hasAnswerBeenSubmitted} onClick={handleNextClick}>Next</button>
-                :
-                <button id="next-button" onClick={handleNextClick}>Next</button>
-            }
+            <div className="quiz-question-buttons">
+                {props.displayFeedback && !props.allQuestionsReceived && <button id="submit-answer-button" className={hasAnswerBeenSubmitted ? 'disabled' : ''} disabled={hasAnswerBeenSubmitted}onClick={handleSubmitAnswerClick}>Submit Answer</button>}
+                {!props.displayFeedback && props.questionCount > 1 && <button id="back-button" onClick={handleBackClick}>Back</button>}
+                {props.displayFeedback ? 
+                    <button id="next-button" className={hasAnswerBeenSubmitted ? '' : 'disabled'} disabled={!hasAnswerBeenSubmitted} onClick={handleNextClick}>Next</button>
+                    :
+                    <button id="next-button" onClick={handleNextClick}>Next</button>
+                }
+            </div>
         </div>
     )
 }
