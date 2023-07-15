@@ -29,6 +29,7 @@ const QuizQuestion = (props) => {
                         name="choice"
                         checked={selectedChoices.some(selectedChoice => selectedChoice.id === choice.id)}
                         onChange={() => handleChoiceChange(choice)}
+                        disabled={hasAnswerBeenSubmitted}
                     />
                     <label htmlFor={choice.id} className="radio-button-choice"><span className="radio-choice-text">{choice.text}</span></label> 
                 </div>
