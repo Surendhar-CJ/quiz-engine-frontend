@@ -3,12 +3,127 @@
 }
 
 .quiz-question {
-    border: 1px solid black;
     width: 100%;
-    height: 100%;
+    min-height: 200px;
+    max-width: 800px;
 }
 
-button.disabled {
-    background-color: grey;
+#submit-answer-button.disabled {
+    background-color: rgba(15, 130, 47, 0.65);
     cursor: not-allowed;
 }
+
+#next-button.disabled {
+    background-color: rgba(0, 0, 0, 0.24);
+    cursor: not-allowed;
+}
+
+.quiz-area {
+    border: 1px solid red;
+}
+
+.quiz-question-area {
+    background-color: rgba(13, 153, 255, 0.04); 
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    border-radius: 5pt;
+}
+
+.question-number {
+    display: flex;
+    justify-content: center;
+    font-size: 14pt;
+    font-weight: 600;
+    margin: 20px;
+}
+
+.quiz-question {
+    font-size: 14pt;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.quiz-question-text {
+    font-weight: 600;
+}
+
+.radio-choice {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.radio-choice input[type='radio'] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    padding: 2px;
+    background-clip: content-box;
+    border: 2px solid #bbbbbb;
+    background-color: #e7e6e7;
+    border-radius: 50%;
+}
+
+.radio-choice input[type='radio']:checked {
+    background-color: #4a90e2;
+}
+
+.radio-button-choice {
+    margin: 5px;
+    padding: 20px 5px;
+}
+
+.radio-choice-text {
+    margin: 20px 5px;
+    padding: 10px;
+}
+
+.quiz-question-buttons {
+    display: flex;
+    justify-content: end;
+    margin: 40px 10px 20px 10px;    
+}
+
+#submit-answer-button, #back-button, #next-button { 
+    border: none;
+    padding: 10px;
+    font-size: 10pt;
+    font-weight: 600;
+    color: white;
+    border-radius: 5pt;
+}
+
+#submit-answer-button{
+    margin-right: 20px;
+    background-color: #0F822F;
+}
+
+#submit-answer-button:not(.disabled):hover {
+    background-color: #105524;  
+}
+
+#back-button { 
+    margin-right: 20px;
+    background-color: rgba(0, 0, 0, 0.75);
+    width: 60px;
+}
+
+#back-button:hover {
+    background-color:  black;
+}
+
+#next-button {
+    background-color: rgba(0, 0, 0, 0.75);
+    width: 60px;
+}
+
+#next-button:not(.disabled):hover {
+    background-color:  black;
+}
+
+
+
+
+
+

@@ -1,0 +1,30 @@
+
+.feedback-card {
+    max-width: 800px;
+    width: 100%;
+    padding: 20px;
+    margin-top: 20px;
+    background-color: rgba(13, 153, 255, 0.04); 
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    border-radius: 5pt;
+}
+
+.feedback-card p {
+    font-size: 14pt;
+    margin: 10px 0;
+}
+
+.feedback-card p:first-child {
+    font-weight: 600;
+}
+
+.feedback-card.correct {
+    background-color: rgba(16, 85, 36, 0.23);
+}
+
+.feedback-card.incorrect {
+    background-color: rgba(255, 0, 0, 0.21);
+}
+
+
+

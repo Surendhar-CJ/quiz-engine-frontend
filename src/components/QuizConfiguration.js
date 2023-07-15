@@ -125,8 +125,8 @@ const QuizConfiguration = (props) => {
 
     return (
         <div className="quiz-configure-card">
-            <h2>Configure Quiz</h2>
-            <h2>Quiz Topic</h2>
+            <h2>Quiz Settings</h2>
+            <h3>{contextValue.topic.name}</h3>
             <form className="quiz-configure-form">
                 <div className="set-questions-checkbox">
                     <label htmlFor="isLimited">Set questions limit</label>
@@ -142,12 +142,12 @@ const QuizConfiguration = (props) => {
                 <div className="questions-limit">
                     {formData.isLimited && (
                         <div>
-                            <label htmlFor="questionsLimit">Questions: Max 10</label>
+                            <label htmlFor="questionsLimit">Questions: (Max  {contextValue.topic.numberOfQuestions})</label>
                             <input 
                                 type="number"
                                 id="questionsLimit"
                                 min="1"
-                                max="10"
+                                max={contextValue.topic.numberOfQuestions}
                                 value={formData.questionsLimit}
                                 onChange={handleChange}
                                 name="questionsLimit"
@@ -164,12 +164,13 @@ const QuizConfiguration = (props) => {
                         onChange={handleChange}
                         name="feedbackType"
                     >
-                        <option value="">--Feedback Type --</option>
+                        <option value=""> --Select--</option>
                         {feedbackElements}
                     </select>
                 </div>
-                
-                <button type="submit" onClick={handleConfigureClick}>Configure</button>
+                <div className="configure-button">
+                    <button type="submit" onClick={handleConfigureClick}>Configure</button>
+                </div>        
             </form>
         </div>
     )  
