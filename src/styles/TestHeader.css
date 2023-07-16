@@ -39,3 +39,23 @@
     background-color: rgba(253, 0, 0, 1);
 }
 
+.exit-button-confirmation, .exit-no-button-confirmation{
+    font-size: 12pt;
+    font-weight: 600;
+    color: white;
+    background-color: #0D99FF;
+    padding: 10px;
+    border: none;
+    border-radius: 5pt;
+    margin-right: 20px;
+    margin-top: 5px;
+}
+
+.exit-button-confirmation:hover, .exit-no-button-confirmation:hover {
+    background-color: rgba(13, 153, 255, 0.90);
+}
+
+.exit-buttons {
+    display: flex;
+    justify-content: center;
+}

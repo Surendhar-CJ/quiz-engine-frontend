@@ -10,18 +10,14 @@
 
 
 .user-profile-details {
-    flex-grow: 1;
-}
-
-
-.user-profile-details {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     max-width: 125ch;
     width: 100%;
-    margin: 0 auto;
+    margin-left: auto;
+    margin-right: auto;
     flex-grow: 1;
     padding: 20px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);

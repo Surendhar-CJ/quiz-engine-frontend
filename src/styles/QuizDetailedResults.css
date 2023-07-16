@@ -23,13 +23,14 @@
     width: 100%;
     margin: 0 auto;
     flex-grow: 1;
-    padding: 20px;
+    padding: 30px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 }
 
 .all-answers-table {
-    border: 1px solid red;
+    margin: 20px;
     border-collapse: collapse;  /* this makes the cell borders collapse into a single border where possible */
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 }
 
 .all-answers-table th, .all-answers-table td {
@@ -43,4 +44,17 @@
 
 .incorrect-answer {
     background-color: lightcoral;
+}
+
+.results-link {
+    margin-top: 40px;
+    margin-bottom: 30px;
+    font-size: 14pt;
+    color: #0D99FF;
+    font-weight: 500;
+}
+
+.results-link:hover {
+    text-decoration: underline;
+    
 }
