@@ -28,7 +28,7 @@ const Quiz = () => {
     const [isAllQuestionsReceived, setIsAllQuestionsReceived] = useState(false);
     const [showSubmitQuiz, setShowSubmitQuiz] = useState(false);
     const [hasQuizBeenSubmitted, setHasQuizBeenSubmitted] = useState(false);
-    
+    const [showExitConfirmation, setShowExitConfirmation] = useState(false);
 
         
     const handleOnStartQuizClick = () => {
@@ -210,11 +210,38 @@ const Quiz = () => {
     }, [hasQuizBeenSubmitted == true]);
 
 
+
+    const handleOnExitQuizClick = () => {
+        setShowExitConfirmation(true);
+    }
+
+    const toggleExitConfirmation = () => {
+        setShowExitConfirmation(!showExitConfirmation);
+    }
+
+    const confirmExit = () => {
+        navigate('/home');
+    }
+
+    
     return (
         <div className = "test-page">
-            <TestHeader />
+            <TestHeader onExitQuizClick={handleOnExitQuizClick} />
             <div className="quiz-area">
-                
+            { showExitConfirmation &&
+            <Modal
+                className={showExitConfirmation ? 'visible' : ''}
+                show={showExitConfirmation}
+                onClose={toggleExitConfirmation}>
+                <div>
+                    <p>Are you sure you want to exit the quiz?</p>
+                    <div className="exit-buttons">
+                        <button className="exit-button-confirmation" onClick={confirmExit}>Exit</button>
+                        <button className="exit-no-button-confirmation" onClick={toggleExitConfirmation}>No</button>
+                    </div>
+                </div>
+            </Modal> 
+            }
             {showQuizStarted && quizQuestion ? 
                 <div className="quiz-question-area">
                     <div className="question-number">{questionCount} / {contextValue.topic.numberOfQuestions}</div>
