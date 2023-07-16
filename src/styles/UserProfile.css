@@ -119,14 +119,21 @@
     font-weight: 500;
 }
 
-
-/*BAR CHART*/
-.strength-weakness {
+/*PERFORMANCE ANALYSIS*/
+.performance-analysis {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     border: 1px solid black;
-    height: 400px;
+    width: 100%;
 }
+
+.performance-analysis-title {
+    font-weight: 700;
+    font-size: 25pt;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
 
 .strength-weakness .strength,
 .strength-weakness .weakness {
@@ -150,7 +157,7 @@
     align-items: center;
     overflow: auto;
     border: 1px solid black;
-    height: 800px;
+   /* height: 800px; */
 }
 
 .quiz-history-title {
@@ -198,4 +205,15 @@
     
 }
 
+.no-quiz-history {
+    font-size: 12pt;
+}
+
+.create-quiz-link {
+    color:#0D99FF;
+}
+
+.create-quiz-link:hover {
+    text-decoration: underline;
+}
 

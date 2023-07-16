@@ -19,7 +19,9 @@ const QuizConfiguration = (props) => {
         {
             userId: 1, //contextValue.user.user.id,
             topicId: props.topicId,
-            feedbackId: null        
+            feedbackId: null,
+            questionsLimit: null,
+            difficultyLevel: null,        
         }
     )
 
@@ -27,20 +29,36 @@ const QuizConfiguration = (props) => {
         {
             isLimited: false,
             questionsLimit: 1,
-            feedbackType: ''
+            feedbackType: '',
+            setDifficultyLevel: false,
+            difficultyLevel: ''
         }
     );
 
 
     const handleChange = (event) => {
         const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-        setFormData({
-            ...formData,
-            [event.target.name]: value
-        });
 
-        
-    }
+        if (event.target.name === 'isLimited' && !value) {
+            setFormData(prevFormData => ({
+                ...prevFormData,
+                [event.target.name]: value,
+                questionsLimit: ''
+            }));
+        } else if (event.target.name === 'setDifficultyLevel' && !value) {
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              [event.target.name]: value,
+              difficultyLevel: ''
+            }));
+          } else {
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              [event.target.name]: value
+            }));
+          }
+    };
+
 
     const getFeedbackTypes = async () => {
         try {
@@ -75,16 +93,16 @@ const QuizConfiguration = (props) => {
         event.preventDefault();
         const selectedFeedbackType = feedbackTypes.find(feedback => feedback.type === formData.feedbackType);
 
-            if (selectedFeedbackType) {
-        setConfiguration(prevConfigState => ({
+        if (selectedFeedbackType) {
+            setConfiguration(prevConfigState => ({
             ...prevConfigState,
-            feedbackId: selectedFeedbackType.id
-        }
-        
-        ));
-        } else {
-            console.log('No matching feedback type found.');
-        }
+            feedbackId: selectedFeedbackType.id,
+            questionsLimit: formData.isLimited && formData.questionsLimit !== '' ? formData.questionsLimit : null,  // Set to null if isLimited is not checked or questionsLimit is an empty string
+            difficultyLevel: formData.setDifficultyLevel && formData.difficultyLevel !== '' ? formData.difficultyLevel : null // Set to null if setDifficultyLevel is not checked or difficultyLevel is an empty string
+        }));
+      } else {
+        console.log('No matching feedback type found.');
+      }
 
     }
 
@@ -103,7 +121,8 @@ const QuizConfiguration = (props) => {
             if(response.status === 201) {
                     const data = await response.json();
                     setQuizData(data);
-                    setQuizDetails(data);  
+                    setQuizDetails(data); 
+                    console.log(data); 
                     navigate('/quiz');
 
             }
@@ -120,14 +139,62 @@ const QuizConfiguration = (props) => {
       }, [configuration]);  // Run this effect whenever configuration changes
       
 
-
-
+    const calculateMaxQuestions = () => {
+        if (!formData.setDifficultyLevel || !formData.difficultyLevel) {
+            if (!contextValue.topic) {
+                throw new Error('Topic is not selected or not defined.');
+            }
+            return contextValue.topic.numberOfQuestions;
+        }
+    
+        switch (formData.difficultyLevel) {
+            case "easy":
+                return contextValue.topic.easyQuestionsAvailable;
+            case "medium":
+                return contextValue.topic.mediumQuestionsAvailable;
+            case "hard":
+                return contextValue.topic.hardQuestionsAvailable;
+            default:
+                return contextValue.topic.numberOfQuestions;
+        }
+    };
+    
 
     return (
         <div className="quiz-configure-card">
             <h2>Quiz Settings</h2>
             <h3>{contextValue.topic.name}</h3>
             <form className="quiz-configure-form">
+
+                <div className="set-difficulty-checkbox">
+                    <label htmlFor="setDifficultyLevel">Set difficulty level</label>
+                    <input
+                    type="checkbox"
+                    id="setDifficultyLevel"
+                    checked={formData.setDifficultyLevel}
+                    onChange={handleChange}
+                    name="setDifficultyLevel"
+                    />
+                </div>
+
+                {formData.setDifficultyLevel && (
+                    <div className="difficulty-level">
+                    <label htmlFor="difficultyLevel">Difficulty Level</label>
+                    <select
+                        id="difficultyLevel"
+                        value={formData.difficultyLevel}
+                        onChange={handleChange}
+                        name="difficultyLevel"
+                    >
+                        <option value="">--Select--</option>
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                    </div>
+                )}
+
+
                 <div className="set-questions-checkbox">
                     <label htmlFor="isLimited">Set questions limit</label>
                     <input 
@@ -139,35 +206,40 @@ const QuizConfiguration = (props) => {
                     />
                 </div>
 
-                <div className="questions-limit">
-                    {formData.isLimited && (
-                        <div>
-                            <label htmlFor="questionsLimit">Questions: (Max  {contextValue.topic.numberOfQuestions})</label>
-                            <input 
-                                type="number"
-                                id="questionsLimit"
-                                min="1"
-                                max={contextValue.topic.numberOfQuestions}
-                                value={formData.questionsLimit}
-                                onChange={handleChange}
-                                name="questionsLimit"
-                            />
-                        </div>
-                    )}
-                </div>
+                
+                {formData.isLimited && (
+                    <div className="questions-limit">
+                        <label htmlFor="questionsLimit">
+                        Questions: (Max {calculateMaxQuestions()})
+                        </label>
+                        <input 
+                        type="number"
+                        id="questionsLimit"
+                        min="1"
+                        max={calculateMaxQuestions()}
+                        value={formData.questionsLimit}
+                        onChange={handleChange}
+                        name="questionsLimit"
+                         />
+                    </div>
+                )}
+              
 
                 <div className="feedback-type">
-                    <label htmlFor="feedbackType">Feedback Type</label>
+                    <label htmlFor="feedbackType">Feedback type</label>
                     <select
                         id="feedbackType"
                         value={formData.feedbackType}
                         onChange={handleChange}
                         name="feedbackType"
                     >
-                        <option value=""> --Select--</option>
+                        <option value="">--Select--</option>
                         {feedbackElements}
                     </select>
                 </div>
+
+                
+
                 <div className="configure-button">
                     <button type="submit" onClick={handleConfigureClick}>Configure</button>
                 </div>        

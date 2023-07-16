@@ -121,7 +121,7 @@ const Quiz = () => {
 
         const data = await response.json();
         // Ignore "No more questions available" error
-        if (data.message === "No more questions available") {
+        if (data.message === "No more questions available" || data.message === "Questions limit reached") {
             setIsAllQuestionsReceived(true);
             setShowSubmitQuiz(true);
             return;
@@ -244,7 +244,7 @@ const Quiz = () => {
             }
             {showQuizStarted && quizQuestion ? 
                 <div className="quiz-question-area">
-                    <div className="question-number">{questionCount} / {contextValue.topic.numberOfQuestions}</div>
+                    <div className="question-number">{questionCount} / {contextValue.quizDetails.questionsLimit !== null ? contextValue.quizDetails.questionsLimit : contextValue.topic.numberOfQuestions}</div>
                     <QuizQuestion 
                     userAnswer={quizQuestion.userAnswer || []}
                     id={quizQuestion.id} 

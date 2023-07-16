@@ -45,7 +45,8 @@
 
 .questions-limit input {
     margin-left: 35px; /* Change the value as needed */
-    width: 20%
+    width: 20%;
+    border-radius: 5pt;
 }
 
 .feedback-type {
@@ -58,9 +59,33 @@
 
 .feedback-type select {
     width: 30%;
-    margin-left: 55px;
+    margin-left: 65px;
+    border-radius: 5pt;
 }
 
+.set-difficulty-checkbox {
+    display: flex;
+    flex-direction: row;
+    width: 70%;
+    margin: 10px;
+}
+
+.set-difficulty-checkbox input {
+    margin-left: 48px;
+}
+
+.difficulty-level {
+    display: flex;
+    flex-direction: row;
+    width: 90%;
+    margin: 10px;
+}
+
+.difficulty-level select {
+    width: 30%;
+    margin-left: 65px;
+    border-radius: 5pt;
+}
 
 .configure-button {
     width: 100%;
