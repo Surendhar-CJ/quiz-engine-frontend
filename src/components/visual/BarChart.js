@@ -1,6 +1,8 @@
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
-import {Chart as ChartJS} from 'chart.js/auto';
+import { Chart, registerables } from "chart.js"
+
+Chart.register(...registerables);
 
 const BarChart = (props) => {
     if (!props.chartData) {
@@ -8,10 +10,12 @@ const BarChart = (props) => {
     }
     
     return (
-        <div clasName="bar-chart" style={{width: '400px', height: '400px'}} >
-            <Bar data={props.chartData}/>
+        <div className="bar-chart" style={{height: "300px",  width: "500px", padding: "10px"}} >
+            <Bar data={props.chartData} option={props.options}/>
         </div>
     )
 }
+
+//style={{width: '400px', height: '400px'}}
 
 export default BarChart;

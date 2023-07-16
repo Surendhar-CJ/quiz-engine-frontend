@@ -50,34 +50,6 @@ const UserProfile = () => {
       // navigate('/profile');
     }
 
-   /* const strength = () => {
-        const topics = contextValue.availableTopics;
-        const averagePercentageByTopic = userProfileDetails.averageScoreByTopic;
-
-        const strengths = [];
-        for (let topicId in averagePercentageByTopic) {
-            let percentage = averagePercentageByTopic[topicId];
-            
-            let topicName;
-            for(let topic of topics) {
-                if(topic.id.toString() === topicId) {
-                    topicName = topic.name;
-                }
-            }
-
-            if (percentage >= 60) {
-                strengths.push(
-                    <div key={topicId}>
-                        <p>{topicName}</p>
-                        <p>{percentage}</p>
-                    </div>
-                );
-            }
-        }
-        
-        return strengths;
-    } */
-
     const strength = () => {
         const topics = contextValue.availableTopics;
         const averagePercentageByTopic = userProfileDetails.averageScoreByTopic;
@@ -134,9 +106,24 @@ const UserProfile = () => {
         }
 
         return (
-            <BarChart chartData={data}/>
+            <BarChart chartData={data} options={options} />
         );
         
+    }
+
+
+    const options = {
+        responsive: true, 
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                labels : {
+                    display: true,
+                    color: "red"
+                }
+               
+            }
+        }
     }
 
     const weakness = () => {
@@ -195,38 +182,10 @@ const UserProfile = () => {
         }
 
         return (
-            <BarChart chartData={data} options={{ maintainAspectRatio: false }}/>
+            <BarChart chartData={data} options={options}/>
         );
         
     }
-
-  /*  const weakness = () => {
-        const topics = contextValue.availableTopics;
-        const averagePercentageByTopic = userProfileDetails.averageScoreByTopic;
-
-        const weakness = [];
-        for (let topicId in averagePercentageByTopic) {
-            let percentage = averagePercentageByTopic[topicId];
-            
-            let topicName;
-            for(let topic of topics) {
-                if(topic.id.toString() === topicId) {
-                    topicName = topic.name;
-                }
-            }
-
-            if (percentage <= 59) {
-                weakness.push(
-                    <div key={topicId}>
-                        <p>{topicName}</p>
-                        <p>{percentage}</p>
-                    </div>
-                );
-            }
-        }
-        
-        return weakness;
-    } */
     
     const quizHistory = () => {
         const quizzes = userProfileDetails.quizList;
@@ -291,6 +250,11 @@ const UserProfile = () => {
     }
 
 
+    const handleCreateQuizOnUserProfileClick = () => {
+        navigate('/home');
+    }
+
+
     return (
         <div className="user-profile-page">
              <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
@@ -301,28 +265,31 @@ const UserProfile = () => {
                         <p className="quiz-count">{userProfileDetails.quizList.length}</p>
                         <div className="quiz-count-info">
                             <p>Quizzes taken so far</p>
-                            <p>Last Quiz Date: {lastQuizDate()}</p>
+                            {userProfileDetails.quizList.length > 0 && <p>Last Quiz Date: {lastQuizDate()}</p>}
                         </div>
                     </div>
                 </div> 
-                <div className="strength-weakness">
-                    <div className="strength">
-                        <p>You're good at</p>
-                        <div className="user-strengths">
-                            {strength()}
+                <div className="performance-analysis">
+                    <p className="performance-analysis-title">Performance Analysis</p>
+                    <div className="strength-weakness">
+                        <div className="strength">
+                            <p>You're good at</p>
+                            <div className="user-strengths">
+                                {strength()}
+                            </div>
                         </div>
-                    </div>
-                    <div className="weakness">
-                        <p>Focus more on</p>
-                        <div className="user-weaknesses">
-                            {weakness()}
+                        <div className="weakness">
+                            <p>Focus more on</p>
+                            <div className="user-weaknesses">
+                                {weakness()}
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div className="quiz-history" id="quiz-history">
                     <p className="quiz-history-title">Quiz History</p>
                     <div className="quiz-history-cards">
-                        {quizHistory()}
+                        {userProfileDetails.quizList.length > 0 ? quizHistory() : <p className="no-quiz-history">You haven't challenged yourself with a quiz yet. <span className="create-quiz-link" onClick = {handleCreateQuizOnUserProfileClick}>Let's change that!</span></p>}
                     </div>
                 </div>
               </div> 
