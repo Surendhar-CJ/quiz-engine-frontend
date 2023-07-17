@@ -3,6 +3,7 @@ import { QuizContext } from '../context/QuizContext';
 import React, { useState } from 'react';
 import { FaUser } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 import Header from '../components/Header.js';
 import Footer from '../components/Footer.js';
 import ProfileCard from '../components/ProfileCard.js';
@@ -25,7 +26,15 @@ import 'react-circular-progressbar/dist/styles.css';
     const quizResult = contextValue.quizResult;
     
     
-    
+    const location = useLocation();
+    const fromQuiz = location.state?.fromQuiz;
+
+      
+    React.useEffect(() => {
+        if (fromQuiz) {
+            getQuizResult();
+        }
+    }, [fromQuiz]);
     
      
     const handleHomeClick = () => {
@@ -50,37 +59,54 @@ import 'react-circular-progressbar/dist/styles.css';
         {showProfile && <ProfileCard />}
    } */
 
-
-    const getIncorrectCards = () => {
-        const questions = quizResult.questions;
-        const correctAnswers = quizResult.correctAnswerChoices;
-        const userChoices = quizResult.userAnswerChoices;
-        const explanation = quizResult.answerExplanation;
-      
-        let incorrectCards = [];
-      
-        for(let i = 0; i < questions.length; i++) {
-            let id = questions[i].id.toString();
+   const getQuizResult = async () => {
+      const quizId = contextValue.quizDetails.id;
+      try {
+          const response = await fetch(`http://localhost:9090/api/v1/quizzes/quiz-result/${quizId}`);
           
-          let userChoicesSet = new Set(userChoices[id].map(choice => choice.id));
-          let correctAnswersSet = new Set(correctAnswers[id].map(choice => choice.id));
-      
-          if(!areSetsEqual(userChoicesSet, correctAnswersSet)) {
-            incorrectCards.push(
-              <IncorrectFeedbackCard 
-                key={id}
-                questionNumber={i+1}
-                question={questions[i].text}
-                userAnswer={userChoices[id].map(choice => choice.text).join(", ")}
-                correctAnswer={correctAnswers[id].map(choice => choice.text).join(", ")}
-                explanation={explanation[id]}
-              />
-            );
+          if(!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+          } else {
+              const data = await response.json();
+              contextValue.setQuizResult(data);
           }
-        }
-      
-        return incorrectCards;
+      } catch(error) {
+          console.error('An error occurred while submitting the quiz:', error);
       }
+  }
+
+
+
+  const getIncorrectCards = () => {
+      const questions = quizResult.questions;
+      const correctAnswers = quizResult.correctAnswerChoices;
+      const userChoices = quizResult.userAnswerChoices;
+      const explanation = quizResult.answerExplanation;
+    
+      let incorrectCards = [];
+    
+      for(let i = 0; i < questions.length; i++) {
+          let id = questions[i].id.toString();
+        
+        let userChoicesSet = new Set(userChoices[id].map(choice => choice.id));
+        let correctAnswersSet = new Set(correctAnswers[id].map(choice => choice.id));
+    
+        if(!areSetsEqual(userChoicesSet, correctAnswersSet)) {
+          incorrectCards.push(
+            <IncorrectFeedbackCard 
+              key={id}
+              questionNumber={i+1}
+              question={questions[i].text}
+              userAnswer={userChoices[id].map(choice => choice.text).join(", ")}
+              correctAnswer={correctAnswers[id].map(choice => choice.text).join(", ")}
+              explanation={explanation[id]}
+            />
+          );
+        }
+      }
+    
+      return incorrectCards;
+  }
       
       function areSetsEqual(set1, set2) {
         if(set1.size !== set2.size) {
