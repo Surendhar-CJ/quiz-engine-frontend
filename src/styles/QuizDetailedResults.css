@@ -38,6 +38,10 @@
     padding: 10px; /* this adds some spacing inside each table cell */
 }
 
+.all-answers-table td {
+    font-size: 14pt
+}
+
 .correct-answer {
     background-color: lightgreen;
 }

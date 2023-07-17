@@ -5,6 +5,7 @@ import { FaUser } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
 import Header from '../components/Header.js';
 import Footer from '../components/Footer.js';
+import QuizSummary from '../components/QuizSummary';
 import '../styles/QuizDetailedResults.css';
 
 const QuizDetailedResults = () => {
@@ -56,6 +57,8 @@ const QuizDetailedResults = () => {
         const correctAnswers = quizResult.correctAnswerChoices;
         const userChoices = quizResult.userAnswerChoices;
         const explanation = quizResult.answerExplanation;
+
+        console.log(questions);
     
         let allAnswerRows = [];
     
@@ -95,6 +98,7 @@ const QuizDetailedResults = () => {
             <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
             <div className="detailed-results">
                 <h1>Detailed Quiz Results</h1>
+                <QuizSummary quizResult = {quizResult} />
                 <table className="all-answers-table">
                     <thead>
                         <tr>
