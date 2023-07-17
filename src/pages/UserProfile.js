@@ -232,7 +232,7 @@ const UserProfile = () => {
 
     const handleOnClickQuizCard = async(quizId) => {
         try {
-            const response = await fetch(`http://localhost:9090/api/v1/quizzes/quiz-finish/${quizId}`);
+            const response = await fetch(`http://localhost:9090/api/v1/quizzes/quiz-result/${quizId}`);
             
             if(!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -240,6 +240,7 @@ const UserProfile = () => {
                 const data = await response.json();
                 contextValue.setQuizResult(data);
                 contextValue.setTopic(data.topic);
+                console.log(data);
                 navigate('/result');
             }
         } catch(error) {

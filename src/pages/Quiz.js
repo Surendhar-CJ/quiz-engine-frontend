@@ -189,13 +189,11 @@ const Quiz = () => {
     const handleOnSubmitQuizClick = async () => {
         const quizId = contextValue.quizDetails.id;
         try {
-            const response = await fetch(`http://localhost:9090/api/v1/quizzes/quiz-finish/${quizId}`);
+            const response = await fetch(`http://localhost:9090/api/v1/quizzes/submit-quiz/${quizId}`);
             
             if(!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             } else {
-                const data = await response.json();
-                contextValue.setQuizResult(data);
                 setHasQuizBeenSubmitted(true);
             }
         } catch(error) {
@@ -205,7 +203,7 @@ const Quiz = () => {
     
     React.useEffect(() => {
         if(hasQuizBeenSubmitted == true) {
-            navigate('/result');
+            navigate('/result', { state: { fromQuiz: true } });
         }
     }, [hasQuizBeenSubmitted == true]);
 

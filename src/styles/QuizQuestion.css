@@ -46,7 +46,7 @@
     font-weight: 600;
 }
 
-.radio-choice {
+.radio-choice, .checkbox-choice {
     margin-top: 10px;
     margin-bottom: 10px;
 }
@@ -63,21 +63,44 @@
     border: 2px solid #bbbbbb;
     background-color: #e7e6e7;
     border-radius: 50%;
+    vertical-align: middle;
 }
 
-.radio-choice input[type='radio']:checked {
+.checkbox-choice input[type='checkbox'] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    padding: 2px;
+    background-clip: content-box;
+    border: 2px solid #bbbbbb;
+    background-color: #e7e6e7;
+    border-radius: 0;
+    vertical-align: middle;
+}
+
+
+.radio-choice input[type='radio']:checked, .checkbox-choice input[type='checkbox']:checked  {
     background-color: #4a90e2;
 }
 
-.radio-button-choice {
+.radio-button-choice, .checkbox-button-choice {
     margin: 5px;
     padding: 20px 5px;
 }
 
-.radio-choice-text {
+.radio-choice-text, .checkbox-choice-text {
     margin: 20px 5px;
     padding: 10px;
+    vertical-align: middle;
 }
+
+
+
+
+
 
 .quiz-question-buttons {
     display: flex;

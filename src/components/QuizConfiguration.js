@@ -118,6 +118,8 @@ const QuizConfiguration = (props) => {
                 
             });
 
+            console.log(JSON.stringify(configuration));
+
             if(response.status === 201) {
                     const data = await response.json();
                     setQuizData(data);
