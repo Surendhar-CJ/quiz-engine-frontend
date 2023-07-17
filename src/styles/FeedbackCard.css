@@ -26,5 +26,9 @@
     background-color: rgba(255, 0, 0, 0.21);
 }
 
+.feedback-card.partial {
+    background-color: rgba(250, 255, 0, 0.29);
+}
+
 
 

@@ -1,16 +1,31 @@
 import "../styles/FeedbackCard.css";
 
 const FeedbackCard = (props) => {
-    const resultClass = props.result.toLowerCase() === "true" || props.result.toLowerCase() === "correct" ? "correct" : "incorrect";
+    let resultClass = '';
+    switch(props.result.toLowerCase()) {
+        case "correct":
+            resultClass = "correct";
+            break;
+        case "partially correct":
+            resultClass = "partial";
+            break;
+        case "incorrect":
+            resultClass = "incorrect";
+            break;
+        default:
+            resultClass = "";
+    }
     
-    return(
+    return (
         <div className={`feedback-card ${resultClass}`}>
             <p>Result:</p>
             <p>{props.result}</p>
-            {props.correctAnswer !== null && 
+            {props.correctAnswer && props.correctAnswer.length > 0 && 
             <div>
-                <p>Correct Answer:</p>
-                <p>{props.correctAnswer.text}</p>
+                <p>Correct Answer(s):</p>
+                {props.correctAnswer.map(answer => (
+                    <p key={answer.id}>{answer.text}</p>
+                ))}
             </div>
             }
             {props.explanation !== "" && 
@@ -21,7 +36,6 @@ const FeedbackCard = (props) => {
             }
         </div>
     )
-
 }
 
 export default FeedbackCard;

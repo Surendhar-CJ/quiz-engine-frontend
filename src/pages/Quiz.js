@@ -90,7 +90,7 @@ const Quiz = () => {
                 })
                 
             }); 
-            
+
             const feedback = await response.json();
             
             if(response.ok) {
