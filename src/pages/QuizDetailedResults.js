@@ -39,27 +39,39 @@ const QuizDetailedResults = () => {
     } */
 
 
+    const calculateScore = (userChoicesSet, correctAnswersSet) => {
+        let intersection = new Set([...userChoicesSet].filter(x => correctAnswersSet.has(x)));
+    
+        if (intersection.size === correctAnswersSet.size && intersection.size === userChoicesSet.size) {
+          return 'correct-answer';
+        } else if (intersection.size > 0) {
+          return 'partially-correct-answer';
+        } else {
+          return 'incorrect-answer';
+        }
+    }
+    
     const getAllAnswers = () => {
         const questions = quizResult.questions;
         const correctAnswers = quizResult.correctAnswerChoices;
         const userChoices = quizResult.userAnswerChoices;
         const explanation = quizResult.answerExplanation;
-
+    
         let allAnswerRows = [];
-
+    
         for(let i = 0; i < questions.length; i++) {
             let id = questions[i].id.toString();
-
+    
             let userChoicesSet = new Set(userChoices[id].map(choice => choice.id));
             let correctAnswersSet = new Set(correctAnswers[id].map(choice => choice.id));
-
+    
             let userChoicesText = userChoices[id].map(choice => choice.text).join(", ");
             let correctAnswersText = correctAnswers[id].map(choice => choice.text).join(", ");
-
-            let answerIsCorrect = areSetsEqual(userChoicesSet, correctAnswersSet);
-
+    
+            let score = calculateScore(userChoicesSet, correctAnswersSet);
+    
             allAnswerRows.push(
-                <tr key={id} className={answerIsCorrect ? 'correct-answer' : 'incorrect-answer'}>
+                <tr key={id} className={score}>
                     <td>{i+1}</td>
                     <td>{questions[i].text}</td>
                     <td>{userChoicesText}</td>
@@ -68,20 +80,8 @@ const QuizDetailedResults = () => {
                 </tr>
             );
         }
-
+    
         return allAnswerRows;
-    }
-
-    function areSetsEqual(set1, set2) {
-        if(set1.size !== set2.size) {
-          return false;
-        }
-        for(let item of set1) {
-          if(!set2.has(item)) {
-            return false;
-          }
-        }
-        return true;
     }
 
     const handleOnResultClick = () => {

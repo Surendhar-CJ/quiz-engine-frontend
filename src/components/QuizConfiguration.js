@@ -158,6 +158,25 @@ const QuizConfiguration = (props) => {
                 return contextValue.topic.numberOfQuestions;
         }
     };
+
+
+    const getAvailableDifficultyLevels = () => {
+        const availableLevels = [];
+    
+        if (contextValue.topic.easyQuestionsAvailable > 0) {
+            availableLevels.push('easy');
+        }
+        
+        if (contextValue.topic.mediumQuestionsAvailable > 0) {
+            availableLevels.push('medium');
+        }
+    
+        if (contextValue.topic.hardQuestionsAvailable > 0) {
+            availableLevels.push('hard');
+        }
+    
+        return availableLevels;
+    };
     
 
     return (
@@ -187,9 +206,9 @@ const QuizConfiguration = (props) => {
                         name="difficultyLevel"
                     >
                         <option value="">--Select--</option>
-                        <option value="easy">Easy</option>
-                        <option value="medium">Medium</option>
-                        <option value="hard">Hard</option>
+                        {getAvailableDifficultyLevels().map(level => (
+                        <option value={level} key={level}>{level.charAt(0).toUpperCase() + level.slice(1)}</option>
+                        ))}
                     </select>
                     </div>
                 )}
