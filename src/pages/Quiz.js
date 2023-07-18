@@ -221,7 +221,33 @@ const Quiz = () => {
         navigate('/home');
     }
 
-    
+    const numberOfQuestions = () => {
+
+       let numberOfQuestions;
+
+       if(contextValue.quizDetails.questionsLimit !== null) {
+            numberOfQuestions = contextValue.quizDetails.questionsLimit
+       }
+        else if( contextValue.quizDetails.difficultyLevel !== null &&  contextValue.quizDetails.questionsLimit === null) {
+            switch(contextValue.quizDetails.difficultyLevel.toLowerCase()) {
+                case "easy":
+                    numberOfQuestions = contextValue.topic.easyQuestionsAvailable;
+                    break;
+                case "medium":
+                    numberOfQuestions = contextValue.topic.mediumQuestionsAvailable;
+                    break;
+                case "hard":
+                    numberOfQuestions = contextValue.topic.hardQuestionsAvailable;
+                    break;
+            }
+       }
+       else {
+            numberOfQuestions = contextValue.topic.numberOfQuestions;
+      }
+
+        return numberOfQuestions;
+    }
+
     return (
         <div className = "test-page">
             <TestHeader onExitQuizClick={handleOnExitQuizClick} />
@@ -242,7 +268,7 @@ const Quiz = () => {
             }
             {showQuizStarted && quizQuestion ? 
                 <div className="quiz-question-area">
-                    <div className="question-number">{questionCount} / {contextValue.quizDetails.questionsLimit !== null ? contextValue.quizDetails.questionsLimit : contextValue.topic.numberOfQuestions}</div>
+                    <div className="question-number">{questionCount} / {numberOfQuestions()}</div>
                     <QuizQuestion 
                     userAnswer={quizQuestion.userAnswer || []}
                     id={quizQuestion.id} 

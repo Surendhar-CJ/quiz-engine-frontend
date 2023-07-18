@@ -5,7 +5,9 @@
 .topics-list {
     display: flex;
     flex-wrap: wrap;
-    width: 100%;    
+    justify-content: flex-start;
+    width: 88%;   
+    margin-left: 40px; 
 } 
 
 .topic {

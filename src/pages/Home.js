@@ -93,7 +93,10 @@ const Home = () => {
 
 
 
-
+    const handleAddQuestionClick = () => {
+        navigate('/add-question');
+    }
+                                            
     return (
         <div className="home-page">
             <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
@@ -101,6 +104,7 @@ const Home = () => {
             <div className="home-content">
                 <h1>Welcome, User!</h1>
                 <h2>Ready for a quiz?</h2>
+                <p className="pick-topic-intro">Pick a topic and challenge yourself!</p>
                 <div className="topics-list">
                     {topicElements}
                     <Modal 
@@ -111,6 +115,8 @@ const Home = () => {
                         {showQuizConfig && <QuizConfiguration topicId={selectedTopicId}  />}
                     </Modal>
                 </div>
+                <p className="add-question-intro">Got anything interesting to add? <span className="add-question-link" onClick={handleAddQuestionClick}>Click here</span> </p>
+                
             </div>
             <Footer />
         </div>

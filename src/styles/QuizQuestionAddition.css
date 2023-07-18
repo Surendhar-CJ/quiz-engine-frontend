@@ -1,0 +1,210 @@
+.question-addition-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+
+.question-addition-main { 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.question-addition-main {
+    display: flex;
+    flex-direction: column;
+    max-width: 125ch;
+    width: 100%;
+    margin: 0 auto;
+    flex-grow: 1;
+    padding: 20px;
+    border: 1px solid red;
+}
+
+.add-question-title {
+    border: 1px solid black;
+}
+
+.question-addition-form {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(224, 230, 235);
+}
+
+.question-addition-form label {
+    font-size: 14pt;
+    font-weight: 600;
+    margin-bottom: 10px;
+    
+}
+
+
+.question-addition-topic,
+.question-addition-type,
+.question-addition-text,
+.question-addition-options,
+.question-addition-correct-answer-explanation,
+.question-addition-difficulty,
+.question-addition-score {
+    display: flex;
+    flex-direction: column;
+    margin: 20px 20px 40px 20px;
+}
+
+.question-addition-topic select,
+.question-addition-type select,
+.question-addition-difficulty select {
+    width: 25%;
+    padding: 5px;
+    border-radius: 5pt;
+    font-size: 12pt;
+}
+
+.question-addition-text textarea,
+.question-addition-correct-answer-explanation textarea {
+    width: 80%;
+    padding: 10px;
+    border-radius: 5pt;
+    font-size: 12pt;
+}
+
+.question-addition-options .option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+}
+
+.question-addition-options .option input,
+.question-addition-options .option select {
+    flex: 1;
+    margin-right: 10px;
+   
+}
+
+
+.question-addition-options {
+    font-size: 12pt;
+    font-weight: 300;
+    margin-bottom: 10px;
+}
+
+
+.question-addition-options .true-false {
+    display: flex;
+    align-items: center;
+    font-size: 14pt;
+    margin-bottom: 10px;
+    padding: 10px;
+    
+}
+
+.question-addition-options .true-false label {
+    font-size: 14pt;
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+.question-addition-options .true-false label:first-child {
+    font-size: 14pt;
+    font-weight: 500;
+    margin-right: 15px;
+}
+
+.question-addition-options .true-false select {
+    width: 20%;
+    padding: 5px;
+    border-radius: 5pt;
+    font-size: 12pt;
+}
+
+.question-addition-options .mcq-maq input {
+    font-size: 12pt;
+    font-weight: 500;
+    margin-right: 10px;
+    border-radius: 5pt;
+    padding: 5px;
+    width: 50%;
+    margin-bottom: 20px;
+}
+
+.question-addition-options .mcq-maq select {
+    width: 20%;
+    padding: 5px;
+    border-radius: 5pt;
+    font-size: 12pt;
+}
+
+
+.add-choice-button {
+    width: 15%;
+    padding: 9px;
+    border-radius: 5pt;
+    color: white;
+    background-color: rgb(34, 33, 33);
+    border: none;
+}
+
+.add-choice-button:hover {
+    cursor: pointer;
+    background-color: #000000;
+}
+
+.question-addition-score input {
+    width: 25%;
+    padding: 5px;
+    border-radius: 5pt;
+    font-size: 12pt;
+}
+
+.question-addition-submit-button {
+    display: flex;
+    justify-content: center;
+}
+
+.question-addition-submit-button button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    background-color: #0D99FF;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    border-radius: 5pt;
+    margin: 20px;
+}
+
+.question-addition-submit-button button:hover {
+    background-color: rgba(11, 138, 231, 1);
+}
+
+#quiz-question-submitted-modal {
+    border: 1px solid black;
+}
+
+.quiz-question-submitted {
+    text-align: center;
+    padding: 20px;
+}
+
+.quiz-question-submitted p {
+    font-size: 14pt;
+    font-weight: 600;
+}
+
+.quiz-question-submitted button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    background-color: #0D99FF;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    border-radius: 5pt;
+    margin: 10px;
+}
+
+.quiz-question-submitted button:hover {
+    background-color: rgba(11, 138, 231, 1);
+}
