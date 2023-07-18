@@ -17,7 +17,8 @@ import 'react-circular-progressbar/dist/styles.css';
 
  const QuizResult = () => {
 
-
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [showProfile, setShowProfile] = useState(false);
     const navigate = useNavigate();
     const [showDetailedResults, setShowDetailedResults] = useState(false);
@@ -31,10 +32,12 @@ import 'react-circular-progressbar/dist/styles.css';
 
       
     React.useEffect(() => {
-        if (fromQuiz) {
-            getQuizResult();
-        }
-    }, [fromQuiz]);
+      console.log("fromQuiz value: ", fromQuiz);  // Logging the fromQuiz value
+      if (fromQuiz) {
+          console.log("getQuizResult function called."); // To verify that the function is called
+          getQuizResult();
+      }
+  }, [fromQuiz]);
     
      
     const handleHomeClick = () => {
@@ -71,8 +74,11 @@ import 'react-circular-progressbar/dist/styles.css';
               contextValue.setQuizResult(data);
           }
       } catch(error) {
-          console.error('An error occurred while submitting the quiz:', error);
-      }
+        console.error('An error occurred while submitting the quiz:', error);
+        setError(error.message);
+    } finally {
+        setIsLoading(false);
+    }
   }
 
 
@@ -156,6 +162,11 @@ import 'react-circular-progressbar/dist/styles.css';
     return (
         <div className="quiz-result-page">
               <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
+              {isLoading ? (
+                <div>Loading...</div>
+              ) : error ? (
+                <div>Error: {error}</div>
+              ) : (
             <div className="quiz-result-content">
                
                 <h1>Quiz results</h1>
@@ -194,7 +205,7 @@ import 'react-circular-progressbar/dist/styles.css';
                 <p className="detailed-results-link" onClick={handleOnDetailedResultsClick}>Click here to get the detailed results</p>
             
             </div>
-            
+          )}
           
 
             <Footer />
@@ -205,11 +216,3 @@ import 'react-circular-progressbar/dist/styles.css';
 
  export default QuizResult;
 
- /*
-
-  {showDetailedResults && <Modal className={showDetailedResults ? 'visible' : ''} show={showDetailedResults} onClose={toggleShowDetailedResults}>
-                <QuizDetailedResults />
-            </Modal> }
-
-
- */
