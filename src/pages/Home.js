@@ -58,7 +58,13 @@ const Home = () => {
 
     const getTopics = async() =>  {
         try {
-           const response =  await fetch("http://localhost:9090/api/v1/topics");
+           const token = localStorage.getItem('token');
+           const response =  await fetch("http://localhost:9090/api/v1/topics", {
+                headers: {
+                    'Authorization': `Bearer ${token}`, // include token in headers
+                },
+            });
+            
            if(response.status === 200) {
                 const data = await response.json();
                 setTopics(data);

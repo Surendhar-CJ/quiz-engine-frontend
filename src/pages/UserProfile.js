@@ -21,7 +21,12 @@ const UserProfile = () => {
     const getUserProfileDetails = async (user) => {
         const userId = user.id;
         try {
-            const response = await fetch(`http://localhost:9090/api/v1/users/${userId}`);
+            const token = localStorage.getItem('token');
+            const response = await fetch(`http://localhost:9090/api/v1/users/${userId}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
             if(response.status === 302) {
                 const data = await response.json();
                 setUserProfileDetails(data);
@@ -251,7 +256,12 @@ const UserProfile = () => {
 
     const handleOnClickQuizCard = async(quizId) => {
         try {
-            const response = await fetch(`http://localhost:9090/api/v1/quizzes/quiz-result/${quizId}`);
+            const token = localStorage.getItem('token');
+            const response = await fetch(`http://localhost:9090/api/v1/quizzes/quiz-result/${quizId}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
             
             if(!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

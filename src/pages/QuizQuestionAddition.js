@@ -197,17 +197,17 @@ const QuizQuestionAddition = () => {
 
     const postSubmitClick = async () => {
         try {
+            const token = localStorage.getItem('token');
             const response = await fetch("http://localhost:9090/api/v1/questions", 
             {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify(formData)
                 
             });
-
-            console.log(formData);
 
 
             if(response.status === 201) {
@@ -391,7 +391,7 @@ const QuizQuestionAddition = () => {
             <Modal id="quiz-question-submitted-modal" className={showQuestionSubmitted ? 'visible' : ''} show={showQuestionSubmitted}>
                     <div className="quiz-question-submitted">
                         <p>Quiz question submitted successfully</p>
-                        <button type="submit" onClick={handleQuizQuestionSubmittedClick}>Add Question</button>
+                        <button type="submit" onClick={handleQuizQuestionSubmittedClick}>Add New Question</button>
                         <button type="submit" onClick={handleQuizQuestionSubmittedExitClick}>Exit</button>
                     </div>
             </Modal>  

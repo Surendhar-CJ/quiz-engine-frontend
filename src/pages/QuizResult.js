@@ -71,7 +71,12 @@ import 'react-circular-progressbar/dist/styles.css';
    const getQuizResult = async () => {
       const quizId = contextValue.quizDetails.id;
       try {
-          const response = await fetch(`http://localhost:9090/api/v1/quizzes/quiz-result/${quizId}`);
+          const token = localStorage.getItem('token');
+          const response = await fetch(`http://localhost:9090/api/v1/quizzes/quiz-result/${quizId}`, {
+            headers : {
+              "Authorization":`Bearer ${token}`
+            }
+          });
           
           if(!response.ok) {
               throw new Error(`HTTP error! status: ${response.status}`);
@@ -168,7 +173,8 @@ import 'react-circular-progressbar/dist/styles.css';
     
 
     return (
-        <div className="quiz-result-page">
+        contextValue.quizDetails && 
+              <div className="quiz-result-page">
               <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
               
             <div className="quiz-result-content">

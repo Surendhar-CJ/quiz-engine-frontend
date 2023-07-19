@@ -20,7 +20,14 @@ const QuizContextProvider = ({children}) => {
     }
 
     return (
-        <QuizContext.Provider value = {{user, setUser, topic, setTopic, availableTopics, setAvailableTopics, quizDetails, setQuizDetails, quizResult, setQuizResult}}>
+        <QuizContext.Provider value = {{
+                user, setUser, 
+                topic, setTopic, 
+                availableTopics, setAvailableTopics, 
+                quizDetails, setQuizDetails, 
+                quizResult, setQuizResult,
+                resetContext
+            }}>
             {children}
         </QuizContext.Provider>
     )
