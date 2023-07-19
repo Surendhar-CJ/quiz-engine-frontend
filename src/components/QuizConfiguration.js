@@ -61,7 +61,12 @@ const QuizConfiguration = (props) => {
 
     const getFeedbackTypes = async () => {
         try {
-            const response = await fetch("http://localhost:9090/api/v1/quiz-configuration");
+            const token = localStorage.getItem('token');
+            const response = await fetch("http://localhost:9090/api/v1/quiz-configuration", {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             if(response.status === 200) {
                 const data = await response.json();
                 setFeedbackTypes(data);
@@ -107,17 +112,17 @@ const QuizConfiguration = (props) => {
 
     const postConfigureQuizRequest = async () => {
         try {
+            
+            const token = localStorage.getItem('token');
             const response = await fetch("http://localhost:9090/api/v1/quizzes", 
             {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
                 },
-                body: JSON.stringify(configuration)
-                
+                body: JSON.stringify(configuration)    
             });
-
-            console.log(JSON.stringify(configuration));
 
             if(response.status === 201) {
                     const data = await response.json();
@@ -125,7 +130,6 @@ const QuizConfiguration = (props) => {
                     contextValue.setQuizDetails(data); 
                     localStorage.setItem('quizDetails', JSON.stringify(data));
                     navigate('/quiz');
-
             }
         }
          catch(error) {
@@ -259,7 +263,6 @@ const QuizConfiguration = (props) => {
                 </div>
 
                 
-
                 <div className="configure-button">
                     <button type="submit" onClick={handleConfigureClick}>Configure</button>
                 </div>        

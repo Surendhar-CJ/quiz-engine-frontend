@@ -70,10 +70,12 @@ const Quiz = () => {
 
    const getFirstQuestion = async() => {
         try {
+            const token = localStorage.getItem('token');
             const response = await fetch("http://localhost:9090/api/v1/quizzes/quiz-start", {
                 method : "POST",
                 headers : {
-                    "Content-Type" : "application/json"
+                    "Content-Type" : "application/json",
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     quizId: contextValue.quizDetails.id,
@@ -96,10 +98,12 @@ const Quiz = () => {
     const handleOnClickSubmitAnswer = async (selectedChoices) => {
       // event.preventDefault();
         try {
-            const response = await fetch("http://localhost:9090/api/v1/quizzes/submit-answer", {
+                const token = localStorage.getItem('token');
+                const response = await fetch("http://localhost:9090/api/v1/quizzes/submit-answer", {
                 method : "POST",
                 headers : {
-                    "Content-Type" : "application/json"
+                    "Content-Type" : "application/json",
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     quizId: contextValue.quizDetails.id,
@@ -125,10 +129,12 @@ const Quiz = () => {
 
     const handleOnClickNext = async (selectedChoices) => {
         try {
+            const token = localStorage.getItem('token');
             const response = await fetch("http://localhost:9090/api/v1/quizzes/quiz-questions", {
                 method : "POST",
                 headers : {
-                    "Content-Type" : "application/json"
+                    "Content-Type" : "application/json",
+                    'Authorization': `Bearer ${token}` 
                 },
                 body: JSON.stringify({
                     quizId: contextValue.quizDetails.id,
@@ -208,7 +214,12 @@ const Quiz = () => {
     const handleOnSubmitQuizClick = async () => {
         const quizId = contextValue.quizDetails.id;
         try {
-            const response = await fetch(`http://localhost:9090/api/v1/quizzes/submit-quiz/${quizId}`);
+            const token = localStorage.getItem('token');
+            const response = await fetch(`http://localhost:9090/api/v1/quizzes/submit-quiz/${quizId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`, 
+                },
+            });
             
             if(!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
