@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 
 const QuizConfiguration = (props) => {
     const contextValue = useContext(QuizContext);
-    const setQuizDetails = contextValue.setQuizDetails;
     
     const navigate = useNavigate();
     const [quizData, setQuizData] = useState(null);
@@ -123,8 +122,8 @@ const QuizConfiguration = (props) => {
             if(response.status === 201) {
                     const data = await response.json();
                     setQuizData(data);
-                    setQuizDetails(data); 
-                    console.log(data); 
+                    contextValue.setQuizDetails(data); 
+                    localStorage.setItem('quizDetails', JSON.stringify(data));
                     navigate('/quiz');
 
             }

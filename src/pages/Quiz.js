@@ -29,6 +29,21 @@ const Quiz = () => {
     const [showSubmitQuiz, setShowSubmitQuiz] = useState(false);
     const [hasQuizBeenSubmitted, setHasQuizBeenSubmitted] = useState(false);
     const [showExitConfirmation, setShowExitConfirmation] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+
+    React.useEffect(() => {
+        const storedQuizDetails = JSON.parse(localStorage.getItem('quizDetails'));
+        const storedTopic = JSON.parse(localStorage.getItem('topic'));
+
+        if(contextValue.quizDetails === null && storedQuizDetails) {
+            contextValue.setQuizDetails(storedQuizDetails);
+        }
+
+        if(contextValue.topic === null && storedTopic) {
+            contextValue.setTopic(storedTopic);
+        }
+        setIsLoading(false);
+    }, [])
 
         
     const handleOnStartQuizClick = () => {
@@ -47,6 +62,10 @@ const Quiz = () => {
         }
         setShowSubmitQuiz(!showSubmitQuiz);
     }
+
+    
+
+    
 
 
    const getFirstQuestion = async() => {
@@ -248,7 +267,13 @@ const Quiz = () => {
         return numberOfQuestions;
     }
 
+    {if (isLoading) {
+        return <div>Loading...</div>;
+    }}
+
     return (
+
+        
         <div className = "test-page">
             <TestHeader onExitQuizClick={handleOnExitQuizClick} />
             <div className="quiz-area">
