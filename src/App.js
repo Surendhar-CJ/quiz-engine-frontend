@@ -7,7 +7,7 @@ import QuizResult from './pages/QuizResult.js';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import QuizDetailedResults from './pages/QuizDetailedResults.js';
 import UserProfile from './pages/UserProfile.js';
-import QuizQuestionAddition from './components/QuizQuestionAddition.js';
+import QuizQuestionAddition from './pages/QuizQuestionAddition.js';
 
 
 const App = () => {
