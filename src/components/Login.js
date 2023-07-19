@@ -44,12 +44,10 @@ const Login = ({ toggleLogin, toggleSignUp }) => {
             if (!response.ok) {
                 throw new Error(data.message);
             } else {
-                console.log('Login request successful'); 
                 setServerErrors('');
                 navigate('/home');
             }
         } catch (error) {
-            console.error("Error :", error);
             setServerErrors(error.message);
         }
     }
