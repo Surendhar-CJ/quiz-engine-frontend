@@ -10,18 +10,24 @@ import '../styles/QuizDetailedResults.css';
 
 const QuizDetailedResults = () => {
     const contextValue = useContext(QuizContext);
-    const quizResult = contextValue.quizResult;
+    const quizResult = JSON.parse(localStorage.getItem('quizResult'));
    // const [showProfile, setShowProfile] = useState(false);
     const navigate = useNavigate();
      
-    console.log(quizResult);
      
     const handleHomeClick = () => {
         navigate('/home');
     }
 
     const handleLogoutClick = () => {
-        //Asks a user a confirmation and logouts
+        if (window.confirm("Are you sure you want to logout?")) {
+            // Clear context
+            contextValue.resetContext();
+            //Clear local storage
+            localStorage.clear();
+            // Navigate to the login page
+            navigate('/');
+        }
     }
 
     const handleProfileClick = () => {
@@ -58,7 +64,6 @@ const QuizDetailedResults = () => {
         const userChoices = quizResult.userAnswerChoices;
         const explanation = quizResult.answerExplanation;
 
-        console.log(questions);
     
         let allAnswerRows = [];
     

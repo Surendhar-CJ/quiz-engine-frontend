@@ -11,8 +11,16 @@ const QuizContextProvider = ({children}) => {
     const [quizDetails, setQuizDetails] = useState(null);
     const [quizResult, setQuizResult] = useState(null);
 
+    const resetContext = () => {
+        setUser(null);
+        setTopic(null);
+        setAvailableTopics(null);
+        setQuizDetails(null);
+        setQuizResult(null);
+    }
+
     return (
-        <QuizContext.Provider value = {{user, setUser, topic, setTopic, quizDetails, availableTopics, setAvailableTopics, setQuizDetails, quizResult, setQuizResult}}>
+        <QuizContext.Provider value = {{user, setUser, topic, setTopic, availableTopics, setAvailableTopics, quizDetails, setQuizDetails, quizResult, setQuizResult}}>
             {children}
         </QuizContext.Provider>
     )

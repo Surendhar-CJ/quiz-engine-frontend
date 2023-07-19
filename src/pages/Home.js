@@ -17,7 +17,6 @@ const Home = () => {
     const [showQuizConfig, setShowQuizConfig] = useState(false);
     const [selectedTopicId, setSelectedTopicId] = useState(null);
     const contextValue = useContext(QuizContext);
-    const setTopicContext = contextValue.setTopic;
 
     const navigate = useNavigate();
 
@@ -28,7 +27,14 @@ const Home = () => {
     }
 
     const handleLogoutClick = () => {
-        //Asks a user a confirmation and logouts
+        if (window.confirm("Are you sure you want to logout?")) {
+            // Clear context
+            contextValue.resetContext();
+            //Clear local storage
+            localStorage.clear();
+            // Navigate to the login page
+            navigate('/');
+        }
     }
 
     const handleProfileClick = () => {
@@ -57,6 +63,7 @@ const Home = () => {
                 const data = await response.json();
                 setTopics(data);
                 contextValue.setAvailableTopics(data);
+                localStorage.setItem('topics', JSON.stringify(data));
            } 
         } catch (error) {
             console.error("Error :", error);
@@ -66,14 +73,25 @@ const Home = () => {
     
 
     React.useEffect(() => {
+        const storedUser = JSON.parse(window.localStorage.getItem('user'));
+        
+        if(storedUser !== null) {
+            contextValue.setUser(storedUser);
+        }
+        
         getTopics();
-    }, [])
+        
+    }, []);
+
+   
+
 
     const handleOnTopicClick = (topicId) => {
         setSelectedTopicId(topicId);
 
         const selectedTopic = topics.find(topic => topic.id === topicId);
-        setTopicContext(selectedTopic);
+        contextValue.setTopic(selectedTopic);
+        localStorage.setItem('topic', JSON.stringify(selectedTopic));
         
         setShowQuizConfig(true);
     }
@@ -96,13 +114,15 @@ const Home = () => {
     const handleAddQuestionClick = () => {
         navigate('/add-question');
     }
+
                                             
     return (
+       contextValue.user &&   
         <div className="home-page">
             <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
            
             <div className="home-content">
-                <h1>Welcome, User!</h1>
+                <h1>Welcome, {contextValue.user.firstName}!</h1>
                 <h2>Ready for a quiz?</h2>
                 <p className="pick-topic-intro">Pick a topic and challenge yourself!</p>
                 <div className="topics-list">
@@ -119,7 +139,8 @@ const Home = () => {
                 
             </div>
             <Footer />
-        </div>
+        </div> 
+         
     )
 }
 

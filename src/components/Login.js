@@ -36,7 +36,9 @@ const Login = ({ toggleLogin, toggleSignUp }) => {
             const data = await response.json();
 
             if(response.ok)  {
-                setUser(data);
+                setUser(data.user);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                localStorage.setItem('token', data.token);
             }           
 
             if (!response.ok) {
@@ -51,6 +53,16 @@ const Login = ({ toggleLogin, toggleSignUp }) => {
             setServerErrors(error.message);
         }
     }
+
+    React.useEffect(() => {
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user'));
+    
+        if (user && token) {
+            setUser(user);
+            navigate('/home');
+        }
+    }, []);
 
     const handleSubmit = (event) => {
         event.preventDefault();

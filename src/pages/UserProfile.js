@@ -15,15 +15,16 @@ const UserProfile = () => {
     const navigate = useNavigate();
     const [userProfileDetails, setUserProfileDetails] = useState(null);
 
-    const getUserProfileDetails = async () => {
-        const userId = 1; //contextValue.user.getId();
+   
+   
+   
+    const getUserProfileDetails = async (user) => {
+        const userId = user.id;
         try {
             const response = await fetch(`http://localhost:9090/api/v1/users/${userId}`);
             if(response.status === 302) {
                 const data = await response.json();
-                console.log(data);
                 setUserProfileDetails(data);
-                
             }
 
         } catch (error) {
@@ -32,7 +33,18 @@ const UserProfile = () => {
     };
 
     React.useEffect(() => {
-        getUserProfileDetails();
+        const storedUser = JSON.parse(window.localStorage.getItem('user'));
+        const storedTopics = JSON.parse(window.localStorage.getItem('topics'));
+
+        if (storedUser) {
+            contextValue.setUser(storedUser);
+            getUserProfileDetails(storedUser);
+        }
+        
+       if(contextValue.availableTopics == null && storedTopics !== null) {
+            contextValue.setAvailableTopics(storedTopics);
+        } 
+        
     }, [])
 
 
@@ -43,7 +55,14 @@ const UserProfile = () => {
     }
 
     const handleLogoutClick = () => {
-        //Asks a user a confirmation and logouts
+        if (window.confirm("Are you sure you want to logout?")) {
+            // Clear context
+            contextValue.resetContext();
+            //Clear local storage
+            localStorage.clear();
+            // Navigate to the login page
+            navigate('/');
+        }
     }
 
     const handleProfileClick = () => {
@@ -238,9 +257,8 @@ const UserProfile = () => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             } else {
                 const data = await response.json();
-                contextValue.setQuizResult(data);
-                contextValue.setTopic(data.topic);
-                console.log(data);
+                window.localStorage.setItem('quizResult', JSON.stringify(data));
+                window.localStorage.setItem('topic', JSON.stringify(data.topic));
                 navigate('/result');
             }
         } catch(error) {

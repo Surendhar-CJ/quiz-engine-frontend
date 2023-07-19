@@ -17,27 +17,26 @@ import 'react-circular-progressbar/dist/styles.css';
 
  const QuizResult = () => {
 
-    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showProfile, setShowProfile] = useState(false);
     const navigate = useNavigate();
     const [showDetailedResults, setShowDetailedResults] = useState(false);
     const contextValue = useContext(QuizContext);
-    const quizTopic = useContext(QuizContext).topic.name;
-    const quizResult = contextValue.quizResult;
-    
     
     const location = useLocation();
     const fromQuiz = location.state?.fromQuiz;
 
+    const quizTopic = JSON.parse(localStorage.getItem('topic')).name;
+    const quizResult = JSON.parse(localStorage.getItem('quizResult'));
       
     React.useEffect(() => {
-      console.log("fromQuiz value: ", fromQuiz);  // Logging the fromQuiz value
       if (fromQuiz) {
-          console.log("getQuizResult function called."); // To verify that the function is called
+          contextValue.quizDetails = JSON.parse(localStorage.getItem('quizDetails'));
           getQuizResult();
       }
-  }, [fromQuiz]);
+    }, [fromQuiz]);
+
+    
     
      
     const handleHomeClick = () => {
@@ -45,7 +44,14 @@ import 'react-circular-progressbar/dist/styles.css';
     }
 
     const handleLogoutClick = () => {
-        //Asks a user a confirmation and logouts
+      if (window.confirm("Are you sure you want to logout?")) {
+        // Clear context
+        contextValue.resetContext();
+        //Clear local storage
+        localStorage.clear();
+        // Navigate to the login page
+        navigate('/');
+      }
     }
 
     const handleProfileClick = () => {
@@ -72,13 +78,13 @@ import 'react-circular-progressbar/dist/styles.css';
           } else {
               const data = await response.json();
               contextValue.setQuizResult(data);
+              const dataL = localStorage.setItem('quizResult', JSON.stringify(data));
+              console.log("dataL", dataL);
           }
       } catch(error) {
         console.error('An error occurred while submitting the quiz:', error);
         setError(error.message);
-    } finally {
-        setIsLoading(false);
-    }
+    } 
   }
 
 
@@ -159,14 +165,12 @@ import 'react-circular-progressbar/dist/styles.css';
       return "#" + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255)).toString(16).slice(1);
     }
 
+    
+
     return (
         <div className="quiz-result-page">
               <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
-              {isLoading ? (
-                <div>Loading...</div>
-              ) : error ? (
-                <div>Error: {error}</div>
-              ) : (
+              
             <div className="quiz-result-content">
                
                 <h1>Quiz results</h1>
@@ -183,6 +187,7 @@ import 'react-circular-progressbar/dist/styles.css';
                       }                    
                     />
                   </div>
+
                   <div className="topic-marks-card" style={{ backgroundColor: lightenColor(getProgressColor(quizResult.finalPercentage), 60) }}>
                     <div className="quiz-topic-result">
                         <p>Topic: <span>{quizTopic}</span></p>
@@ -205,7 +210,7 @@ import 'react-circular-progressbar/dist/styles.css';
                 <p className="detailed-results-link" onClick={handleOnDetailedResultsClick}>Click here to get the detailed results</p>
             
             </div>
-          )}
+          
           
 
             <Footer />
