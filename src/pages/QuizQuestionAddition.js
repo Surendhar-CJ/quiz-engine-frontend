@@ -20,17 +20,24 @@ const QuizQuestionAddition = () => {
     }
  
     const handleLogoutClick = () => {
-        //Asks a user a confirmation and logouts
+        if (window.confirm("Are you sure you want to logout?")) {
+            // Clear context
+            contextValue.resetContext();
+            //Clear local storage
+            localStorage.clear();
+            // Navigate to the login page
+            navigate('/');
+        }
     }
 
     const handleProfileClick = () => {
         navigate('/profile');
     }
     
-    
+    const availableTopics = JSON.parse(localStorage.getItem("topics"))
 
     
-    const topicElements = contextValue.availableTopics.map(topic => {
+    const topicElements = availableTopics.map(topic => {
         return (
             <option 
                 key={topic.id}
