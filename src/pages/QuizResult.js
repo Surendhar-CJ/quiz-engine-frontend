@@ -28,17 +28,16 @@ import 'react-circular-progressbar/dist/styles.css';
 
     const quizTopic = JSON.parse(localStorage.getItem('topic')).name;
     const quizResult = JSON.parse(localStorage.getItem('quizResult'));
+    const quizDetails = JSON.parse(localStorage.getItem('quizDetails'));
       
     React.useEffect(() => {
       if (fromQuiz) {
-          contextValue.quizDetails = JSON.parse(localStorage.getItem('quizDetails'));
           getQuizResult();
       }
     }, [fromQuiz]);
 
     
-    
-     
+       
     const handleHomeClick = () => {
         navigate('/home');
     }
@@ -69,7 +68,7 @@ import 'react-circular-progressbar/dist/styles.css';
    } */
 
    const getQuizResult = async () => {
-      const quizId = contextValue.quizDetails.id;
+      const quizId = contextValue.quizDetails? contextValue.quizDetails.id : quizDetails.id;
       try {
           const token = localStorage.getItem('token');
           const response = await fetch(`http://localhost:9090/api/v1/quizzes/quiz-result/${quizId}`, {
@@ -84,7 +83,6 @@ import 'react-circular-progressbar/dist/styles.css';
               const data = await response.json();
               contextValue.setQuizResult(data);
               const dataL = localStorage.setItem('quizResult', JSON.stringify(data));
-              console.log("dataL", dataL);
           }
       } catch(error) {
         console.error('An error occurred while submitting the quiz:', error);
@@ -171,11 +169,11 @@ import 'react-circular-progressbar/dist/styles.css';
     }
 
     
-
+   
     return (
-        contextValue.quizDetails && 
-              <div className="quiz-result-page">
-              <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
+       
+            <div className="quiz-result-page">
+            <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
               
             <div className="quiz-result-content">
                
@@ -206,9 +204,10 @@ import 'react-circular-progressbar/dist/styles.css';
 
                 <div className="quiz-feedback">
                     <h2 className="quiz-feedback-title">Feedback</h2>
-                    <p>Some message based on the percentage scored</p>
+                    <p>{quizResult.overallFeedback}</p>
+                    <p className="subtopic-feedback">{quizResult.feedbackBySubtopic}</p>
                 </div>
-                <p className="answer-explain-heading">These are the places where you went wrong</p>
+                {quizResult.finalPercentage <= 99 ? <p className="answer-explain-heading">Growth happens when we understand our mistakes. Here are the question(s) that didn't go as planned.</p> : null}
                 <div className="incorrect-answer-explanations">
                     {getIncorrectCards()}
                 </div>

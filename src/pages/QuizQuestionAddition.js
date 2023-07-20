@@ -30,9 +30,11 @@ const QuizQuestionAddition = () => {
         }
     }
 
+
     const handleProfileClick = () => {
         navigate('/profile');
     }
+    
     
     const availableTopics = JSON.parse(localStorage.getItem("topics"))
 
@@ -83,6 +85,7 @@ const QuizQuestionAddition = () => {
     const [formData, setFormData] = useState(
         {
             topicId: '',
+            subtopic:'',
             questionType: '',
             difficultyLevel: '',
             questionText:'',
@@ -92,6 +95,7 @@ const QuizQuestionAddition = () => {
         }
     );
 
+    
     const handleChange = (event) => {
         setFormData((prevFormData) => ({
             ...prevFormData,
@@ -99,10 +103,14 @@ const QuizQuestionAddition = () => {
         }))
     };
 
+   
     const [choices, setChoices] = useState([
         { text: '', isCorrect: false }
     ]);
+   
+   
     const [correctAnswerIndex, setCorrectAnswerIndex] = useState(-1);  // For single correct answer types
+    
     
     const handleChoiceTextChange = (event, index) => {
         const newChoices = choices.map((choice, i) => {
@@ -116,6 +124,7 @@ const QuizQuestionAddition = () => {
         setChoices(newChoices);
     };
 
+    
     const handleCorrectAnswerChange = (event, index) => {
         const isCorrect = event.target.value === "true";
         if(formData.questionType === "Multiple Answer") {
@@ -196,6 +205,15 @@ const QuizQuestionAddition = () => {
 
 
     const postSubmitClick = async () => {
+        if(formData.subtopic === '') {
+            setFormData(prevFormData => {
+                return {
+                    ...prevFormData,
+                    subtopic: null
+                };
+            });
+        }
+ 
         try {
             const token = localStorage.getItem('token');
             const response = await fetch("http://localhost:9090/api/v1/questions", 
@@ -236,6 +254,7 @@ const QuizQuestionAddition = () => {
     const resetForm = () => {
         setFormData({
             topicId: '',
+            subtopic: '',
             questionType: '',
             difficultyLevel: '',
             questionText:'',
@@ -282,6 +301,17 @@ const QuizQuestionAddition = () => {
                                 <option value="">--Select--</option>
                                 {topicElements}
                             </select>       
+                    </div>
+
+                    <div className="question-addition-subtopic">
+                           <label htmlFor="subtopic">Mention the subtopic for the question if you wish. </label> 
+                           <input 
+                                type="text" 
+                                value={formData.subtopic} 
+                                onChange={handleChange} 
+                                placeholder="Subtopic" 
+                                name="subtopic"
+                            />       
                     </div>
 
                     <div className="question-addition-type">    
@@ -368,7 +398,10 @@ const QuizQuestionAddition = () => {
                     </div>
                     
                     <div className="question-addition-score">
-                        <label htmlFor="score">Would you like to give a score to the question? <br></br>If not given, score will be assigned based on its difficulty level. </label>   
+                        <label htmlFor="score">Would you like to give a score to the question? 
+                                              <br></br>If not given, score will be assigned based on its difficulty level. 
+                                              <br></br>Default scores : Easy - 1,  Medium - 2,  Hard - 3.
+                                              </label>   
                         <input
                             type="number"
                             min="1"
