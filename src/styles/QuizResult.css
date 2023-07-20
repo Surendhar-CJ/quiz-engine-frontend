@@ -89,6 +89,8 @@
 
 .answer-explain-heading {
     width: 100%;
+    font-weight: 450;
+    font-size: 13pt;
 }
 
 .incorrect-answer-explanations {

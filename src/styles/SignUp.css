@@ -64,11 +64,30 @@
 }
 
 .error-message {
-    border: 1px solid black;
     color: red;
     font-weight: 500;
     font-size: 8pt;
 }
+
+.success-message {
+    text-align: center;
+    padding: 10px;
+    margin: 5px 0;
+}
+
+#successful-signup {
+    color: #0D99FF;
+    font-size: 12pt;
+    font-weight: 600;
+
+}
+
+#login-notification {
+    color: #000000;
+    font-weight: 600;
+    font-size: 12pt;
+}
+
 
 /* This media query applies when the viewport is larger than 600px */
 @media (min-width: 660px) {

@@ -5,6 +5,8 @@ import "../styles/SignUp.css";
 
 const SignUp = ({ toggleLogin, toggleSignUp }) => {
 
+    const [successMessage, setSuccessMessage] = useState(false);
+
     const [formData, setFormData] = useState( 
         {
             firstName : "",
@@ -40,8 +42,11 @@ const SignUp = ({ toggleLogin, toggleSignUp }) => {
                 throw new Error(data.message);
             } else {
                 setServerErrors('');
-                toggleSignUp(); 
-                toggleLogin(); 
+                showSuccessMessage(true); // Show success message
+                setTimeout(() => {
+                  toggleSignUp(); 
+                  toggleLogin(); 
+                }, 1500); 
             }
         } catch (error) {
             console.error("Error :", error);
@@ -54,6 +59,13 @@ const SignUp = ({ toggleLogin, toggleSignUp }) => {
         postSignUpRequest();
     }
 
+    const showSuccessMessage = (message) => {
+        setSuccessMessage(message);
+        setTimeout(() => {
+          setSuccessMessage(false);
+        }, 1500);
+      }
+
     const handleLoginLinkClick = (event) => {
         event.preventDefault();
         toggleSignUp();  
@@ -61,10 +73,17 @@ const SignUp = ({ toggleLogin, toggleSignUp }) => {
       };
 
 
-    return (
+      return (
         <div className = "signup-card">
-            <h2>Sign Up</h2>
-            <form className="signup-form" onSubmit={handleSubmit}>
+          {successMessage ? (
+            <div className="success-message">
+                <p id="successful-signup"> Sign up successful!</p>
+                <p id="login-notification">Please log in to continue</p>
+            </div>
+          ) : (
+            <>
+              <h2>Sign Up</h2>
+              <form className="signup-form" onSubmit={handleSubmit}>
                 <input  
                     type="text" 
                     name="firstName" 
@@ -97,9 +116,11 @@ const SignUp = ({ toggleLogin, toggleSignUp }) => {
                 {serverErrors && <div className="error-message">{serverErrors}</div>}
                 <p>Already have an account?</p>
                 <span className="login-link" onClick={handleLoginLinkClick}>Login</span>
-            </form>       
+              </form>       
+            </>
+          )}
         </div>
-    )
-}
+      )
+    }      
 
 export default SignUp;
