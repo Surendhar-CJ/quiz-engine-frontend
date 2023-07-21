@@ -17,6 +17,7 @@ const Home = () => {
     const [showQuizConfig, setShowQuizConfig] = useState(false);
     const [selectedTopicId, setSelectedTopicId] = useState(null);
     const contextValue = useContext(QuizContext);
+    const [sessionExpired, setSessionExpired] = useState(false);
 
     const navigate = useNavigate();
 
@@ -64,6 +65,12 @@ const Home = () => {
                     'Authorization': `Bearer ${token}`, // include token in headers
                 },
             });
+
+
+            if(response.status === 403) {
+                setSessionExpired(true);
+            }
+            
             
            if(response.status === 200) {
                 const data = await response.json();
@@ -121,9 +128,30 @@ const Home = () => {
         navigate('/add-question');
     }
 
+    React.useEffect(() => {
+        if (sessionExpired) {
+          setTimeout(() => {
+            // Clear context
+            contextValue.resetContext();
+            // Clear local storage
+            localStorage.clear();
+            // Navigate to the login page
+            navigate('/');
+          }, 5000);
+        }
+    }, [sessionExpired]);
+
                                             
     return (
-       contextValue.user &&   
+        <>
+        {
+            sessionExpired &&
+            <Modal id="session-expired-modal" onClose={() => {}} className={sessionExpired ? 'visible' : ''}>
+                <h2 className="session-expired-title">Session Expired</h2>
+                <p className="session-expired-message-content">Your session has expired. You will be redirected to the home page, please log in again to continue.</p>
+            </Modal>
+        }
+        {contextValue.user &&   
         <div className="home-page">
             <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
            
@@ -145,7 +173,8 @@ const Home = () => {
                 
             </div>
             <Footer />
-        </div> 
+        </div> }
+        </>
          
     )
 }

@@ -30,6 +30,7 @@ const Quiz = () => {
     const [hasQuizBeenSubmitted, setHasQuizBeenSubmitted] = useState(false);
     const [showExitConfirmation, setShowExitConfirmation] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [sessionExpired, setSessionExpired] = useState(false);
 
     React.useEffect(() => {
         const storedQuizDetails = JSON.parse(localStorage.getItem('quizDetails'));
@@ -83,6 +84,10 @@ const Quiz = () => {
                 })
                 
             }); 
+
+            if(response.status === 403) {
+                setSessionExpired(true);
+            }
             
             const data = await response.json();
             if(response.ok) {
@@ -114,17 +119,21 @@ const Quiz = () => {
                 
             }); 
 
-            const feedback = await response.json();
-            
-            if(response.ok) {
-                setQuizQuestion(prevState => ({...prevState, userAnswer: selectedChoices}));
-                setFeedback(feedback);
-                setShowFeedback(true);
+            if(response.status === 403) {
+                setSessionExpired(true);
+            } else {
+                const feedback = await response.json();
+                
+                if(response.ok) {
+                    setQuizQuestion(prevState => ({...prevState, userAnswer: selectedChoices}));
+                    setFeedback(feedback);
+                    setShowFeedback(true);
+                }
             }
 
-    } catch(error) {
-        console.log("Error :", error);
-    }
+        } catch(error) {
+            console.log("Error :", error);
+        }
     }
 
     const handleOnClickNext = async (selectedChoices) => {
@@ -143,6 +152,11 @@ const Quiz = () => {
                     answerChoices: selectedChoices
                 })
             }); 
+
+        if(response.status === 403) {
+            setSessionExpired(true);
+        }
+        else {
 
         const data = await response.json();
         // Ignore "No more questions available" error
@@ -172,6 +186,7 @@ const Quiz = () => {
                 setQuestionCount(questionCount + 1);
             }
         }
+    }
 
     } catch (error) {
         console.error("Error :", error);
@@ -220,12 +235,17 @@ const Quiz = () => {
                     'Authorization': `Bearer ${token}`, 
                 },
             });
+
+            if(response.status === 403) {
+                setSessionExpired(true);
+            } else {
             
             if(!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             } else {
                 setHasQuizBeenSubmitted(true);
             }
+        }
         } catch(error) {
             console.error('An error occurred while submitting the quiz:', error);
         }
@@ -278,14 +298,35 @@ const Quiz = () => {
         return numberOfQuestions;
     }
 
+    React.useEffect(() => {
+        if (sessionExpired) {
+          setTimeout(() => {
+            // Clear context
+            contextValue.resetContext();
+            // Clear local storage
+            localStorage.clear();
+            // Navigate to the login page
+            navigate('/');
+          }, 5000);
+        }
+    }, [sessionExpired]);
+
+    
     {if (isLoading) {
         return <div>Loading...</div>;
     }}
 
     return (
-
+        <>
+        {
+            sessionExpired &&
+            <Modal id="session-expired-modal" onClose={() => {}} className={sessionExpired ? 'visible' : ''}>
+                <h2 className="session-expired-title">Session Expired</h2>
+                <p className="session-expired-message-content">Your session has expired. You will be redirected to the home page, please log in again to continue.</p>
+            </Modal>
+        }
         
-        <div className = "test-page">
+        {<div className = "test-page">
             <TestHeader onExitQuizClick={handleOnExitQuizClick} />
             <div className="quiz-area">
             { showExitConfirmation &&
@@ -343,7 +384,8 @@ const Quiz = () => {
 
             </div>
             <TestFooter />
-        </div>   
+        </div>   }
+        </>
     )
 
 }

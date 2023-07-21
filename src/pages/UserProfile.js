@@ -8,12 +8,14 @@ import Header from '../components/Header.js';
 import Footer from '../components/Footer.js';
 import UserCard from '../components/UserProfileComponents/UserCard.js';
 import QuizCard from '../components/UserProfileComponents/QuizCard';
+import Modal from "../components/Modal";
 import '../styles/UserProfile.css';
 
 const UserProfile = () => {
     const contextValue = useContext(QuizContext);
     const navigate = useNavigate();
     const [userProfileDetails, setUserProfileDetails] = useState(null);
+    const [sessionExpired, setSessionExpired] = useState(false);
 
    
    
@@ -27,6 +29,11 @@ const UserProfile = () => {
                     "Authorization": `Bearer ${token}`
                 }
             });
+
+            if(response.status === 403) {
+                setSessionExpired(true);
+            }
+
             if(response.status === 302) {
                 const data = await response.json();
                 setUserProfileDetails(data);
@@ -262,8 +269,11 @@ const UserProfile = () => {
                     "Authorization": `Bearer ${token}`
                 }
             });
-            
-            if(!response.ok) {
+
+            if(response.status === 403) {
+                setSessionExpired(true);
+            }
+            else if(!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             } else {
                 const data = await response.json();
@@ -283,9 +293,32 @@ const UserProfile = () => {
         navigate('/home');
     }
 
+    React.useEffect(() => {
+        if (sessionExpired) {
+          setTimeout(() => {
+            // Clear context
+            contextValue.resetContext();
+            // Clear local storage
+            localStorage.clear();
+            // Navigate to the login page
+            navigate('/');
+          }, 5000);
+        }
+    }, [sessionExpired]);
+
 
     return (
-        <div className="user-profile-page">
+
+        <>
+        {
+            sessionExpired &&
+            <Modal id="session-expired-modal" onClose={() => {}} className={sessionExpired ? 'visible' : ''}>
+                <h2 className="session-expired-title">Session Expired</h2>
+                <p className="session-expired-message-content">Your session has expired. You will be redirected to the home page, please log in again to continue.</p>
+            </Modal>
+        }
+
+        {<div className="user-profile-page">
              <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
               {userProfileDetails && <div className="user-profile-details">
                 <div className="first-section">    
@@ -324,7 +357,8 @@ const UserProfile = () => {
               </div> 
             }
              <Footer />
-        </div>
+        </div>}
+        </>
     )
 }
 

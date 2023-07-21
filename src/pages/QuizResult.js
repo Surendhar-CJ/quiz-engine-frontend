@@ -22,6 +22,7 @@ import 'react-circular-progressbar/dist/styles.css';
     const navigate = useNavigate();
     const [showDetailedResults, setShowDetailedResults] = useState(false);
     const contextValue = useContext(QuizContext);
+    const [sessionExpired, setSessionExpired] = useState(false);
     
     const location = useLocation();
     const fromQuiz = location.state?.fromQuiz;
@@ -76,14 +77,18 @@ import 'react-circular-progressbar/dist/styles.css';
               "Authorization":`Bearer ${token}`
             }
           });
-          
-          if(!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
+
+          if(response.status === 403) {
+            setSessionExpired(true);
           } else {
-              const data = await response.json();
-              contextValue.setQuizResult(data);
-              const dataL = localStorage.setItem('quizResult', JSON.stringify(data));
-          }
+            if(!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            } else {
+                const data = await response.json();
+                contextValue.setQuizResult(data);
+                const dataL = localStorage.setItem('quizResult', JSON.stringify(data));
+            }
+        }
       } catch(error) {
         console.error('An error occurred while submitting the quiz:', error);
         setError(error.message);
@@ -170,11 +175,32 @@ import 'react-circular-progressbar/dist/styles.css';
       return "#" + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255)).toString(16).slice(1);
     }
 
+
+    React.useEffect(() => {
+        if (sessionExpired) {
+          setTimeout(() => {
+            // Clear context
+            contextValue.resetContext();
+            // Clear local storage
+            localStorage.clear();
+            // Navigate to the login page
+            navigate('/');
+          }, 5000);
+        }
+    }, [sessionExpired]);
     
-   
     return (
+
+      <>
+      {
+          sessionExpired &&
+          <Modal id="session-expired-modal" onClose={() => {}} className={sessionExpired ? 'visible' : ''}>
+              <h2 className="session-expired-title">Session Expired</h2>
+              <p className="session-expired-message-content">Your session has expired. You will be redirected to the home page, please log in again to continue.</p>
+          </Modal>
+      }
        
-            <div className="quiz-result-page">
+          {  <div className="quiz-result-page">
             <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
               
             <div className="quiz-result-content">
@@ -221,7 +247,8 @@ import 'react-circular-progressbar/dist/styles.css';
           
 
             <Footer />
-        </div>
+        </div> }
+        </>
     )
     
  }
