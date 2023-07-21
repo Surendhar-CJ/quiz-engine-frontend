@@ -30,7 +30,6 @@
 
 .user-profile-details {
     padding: 40px 40px;
-    
 }
 
 
@@ -49,6 +48,7 @@
 }
 
 .first-section {
+    border-radius: 5pt;
     border: 1px solid black;
 }
 
@@ -77,6 +77,7 @@
     font-size: 20pt;
     font-weight:600;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    
 }
 
 /**Quizzes Count**/
@@ -125,8 +126,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: 1px solid black;
     width: 100%;
+    border-radius: 5pt;
+    border: 1px solid black;
+    margin-bottom: 40px;
 }
 
 .performance-analysis-title {
@@ -143,11 +146,26 @@
     align-items: center;
     font-size: 18pt;
     font-weight: 600;
-    border: 1px solid green;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
     flex: 1;
     padding: 10px;
     min-width: 0; /* This allows the element to shrink below its content size */
+}
+
+/**Line chart**/
+
+.performance-analysis-by-topic {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    border-radius: 5pt;
+    border: 1px solid black;
+    font-weight: 700;
+    font-size: 25pt;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    margin-bottom: 30px;
+    padding-bottom: 20px;
 }
 
 /**Quiz History**/
@@ -157,8 +175,9 @@
     flex-direction: column;
     align-items: center;
     overflow: auto;
+    border-radius: 5pt;
     border: 1px solid black;
-   /* height: 800px; */
+    padding-bottom: 30px;
 }
 
 .quiz-history-title {
@@ -168,11 +187,11 @@
 }
 
 .quiz-card {
-    width: 400px;
-    height: 150px;
+    width: 300px;
+    height: 120px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    margin: 10px;
     margin-top: 30px;
-    margin-bottom: 30px;
     padding: 10px 20px;
     transition: transform 0.2s ease-in-out;
     border-radius: 5pt;
@@ -184,6 +203,14 @@
 
 }
 
+.quiz-history-cards{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    width: 88%;   
+    margin-left: 60px; 
+}
+
 .quiz-topic-mark {
     display: flex;
     justify-content: space-between;
@@ -191,19 +218,24 @@
 
 .quiz-topic {
     font-weight: 600;
-    font-size: 20pt;
+    font-size: 14pt;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
     
 }
 
 .quiz-mark {
     font-weight: 400;
-    font-size: 16pt;
+    font-size: 10pt;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
     display: flex;
     align-items: center;
     padding: 5px;
     
+}
+
+.quiz-date {
+    font-weight: 400;
+    font-size: 10pt;
 }
 
 .no-quiz-history {

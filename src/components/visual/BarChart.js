@@ -16,6 +16,4 @@ const BarChart = (props) => {
     )
 }
 
-//style={{width: '400px', height: '400px'}}
-
 export default BarChart;
