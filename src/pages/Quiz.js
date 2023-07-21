@@ -160,7 +160,7 @@ const Quiz = () => {
 
         const data = await response.json();
         // Ignore "No more questions available" error
-        if (data.message === "No more questions available" || data.message === "Questions limit reached") {
+        if (data.message === "No more questions available" || data.message === "Questions limit reached" || data.message === "No more questions available for the specified difficulty level") {
             setIsAllQuestionsReceived(true);
             setShowSubmitQuiz(true);
             return;

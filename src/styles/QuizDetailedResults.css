@@ -18,7 +18,6 @@
 .detailed-results {
     display: flex;
     align-items: center;
-    justify-content: center;
     flex-direction: column;
     max-width: 125ch;
     width: 100%;

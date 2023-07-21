@@ -293,6 +293,7 @@ const UserProfile = () => {
         navigate('/home');
     }
 
+    
     React.useEffect(() => {
         if (sessionExpired) {
           setTimeout(() => {
@@ -333,6 +334,7 @@ const UserProfile = () => {
                 </div> 
                 <div className="performance-analysis">
                     <p className="performance-analysis-title">Performance Analysis</p>
+                   {userProfileDetails.quizList.length > 0 ? 
                     <div className="strength-weakness">
                         <div className="strength">
                             <p>You're good at</p>
@@ -347,6 +349,8 @@ const UserProfile = () => {
                             </div>
                         </div>
                     </div>
+                    :
+                    <p className="no-quiz-history">Take a quiz to know your areas of strength and improvements. <span className="create-quiz-link" onClick = {handleCreateQuizOnUserProfileClick}>Let's quiz!</span></p>}
                 </div>
                 <div className="quiz-history" id="quiz-history">
                     <p className="quiz-history-title">Quiz History</p>

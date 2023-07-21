@@ -18,7 +18,7 @@ const QuizConfiguration = (props) => {
     
     const [configuration, setConfiguration] = useState(
         {
-            userId: 1, //contextValue.user.user.id,
+            userId: contextValue.user.id,
             topicId: props.topicId,
             feedbackId: null,
             questionsLimit: null,

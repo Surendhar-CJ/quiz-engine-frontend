@@ -12,6 +12,7 @@ import Modal from '../components/Modal';
 import '../styles/QuizResult.css';
 import QuizDetailedResults from './QuizDetailedResults';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import ProgressBar from '@ramonak/react-progress-bar';
 import 'react-circular-progressbar/dist/styles.css';
 
 
@@ -31,6 +32,10 @@ import 'react-circular-progressbar/dist/styles.css';
     const quizResult = JSON.parse(localStorage.getItem('quizResult'));
     const quizDetails = JSON.parse(localStorage.getItem('quizDetails'));
       
+    React.useEffect(() => {
+      window.scrollTo(0, 0);
+    }, [location.pathname]);
+   
     React.useEffect(() => {
       if (fromQuiz) {
           getQuizResult();
@@ -85,6 +90,7 @@ import 'react-circular-progressbar/dist/styles.css';
                 throw new Error(`HTTP error! status: ${response.status}`);
             } else {
                 const data = await response.json();
+                console.log(data);
                 contextValue.setQuizResult(data);
                 const dataL = localStorage.setItem('quizResult', JSON.stringify(data));
             }
@@ -175,6 +181,53 @@ import 'react-circular-progressbar/dist/styles.css';
       return "#" + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255)).toString(16).slice(1);
     }
 
+    
+
+    const getSubtopicScores = () => {
+      const { marksScoredPerTopic, totalMarksPerTopic, percentagePerTopic } = quizResult;
+      const subtopicKeys = Object.keys(marksScoredPerTopic);
+      if (subtopicKeys.length > 1 || (subtopicKeys.length === 1 && subtopicKeys[0] !== "General")) {
+        return (
+          <div className="table-wrapper">
+            <table className="subtopic-table">
+              <tbody>
+                {subtopicKeys.map((subtopic) => (
+                  <tr className="subtopic-progress-section">
+                    <td>
+                      <p>{subtopic}</p>
+                    </td>
+                    <td>
+                      <ProgressBar 
+                        completed={percentagePerTopic[subtopic]} 
+                        className="wrapper"
+                        barContainerClassName="container"
+                        width= "100%"
+                        height= "8px"
+                        bgColor= {getProgressColor(percentagePerTopic[subtopic])}
+                        baseBgColor= "#979797"
+                        labelAlignment="center"
+                        labelSize="10px"
+                        isLabelVisible={false}
+                        transitionDuration="3s"
+                        transitionTimingFunction="ease-in-out"
+                      />
+                    </td>
+                    <td>
+                      <p><span>{marksScoredPerTopic[subtopic]} / {totalMarksPerTopic[subtopic]}</span></p>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+      }
+      return null;
+  };
+  
+  
+    
+
 
     React.useEffect(() => {
         if (sessionExpired) {
@@ -228,6 +281,10 @@ import 'react-circular-progressbar/dist/styles.css';
                         <p>Marks: <span>{quizResult.finalScore} / {quizResult.totalNumberOfMarks}</span></p>
                     </div>
                   </div>
+                </div>
+
+                <div className="marks-by-subtopic">
+                    {getSubtopicScores()}
                 </div>
 
                 <div className="quiz-feedback">

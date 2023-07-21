@@ -1,14 +1,19 @@
 .quiz-summary-table {
     display: flex;
-    border: 1px solid black;
     justify-content: center;
     padding: 20px;
     width: 75%;
     margin: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    border-radius: 5pt;
+    margin: 40px;
+
 }
 
 .quiz-summary {
     font-size: 13pt;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+    
 }
 
 .quiz-summary caption {
@@ -25,4 +30,6 @@
     font-weight: 400;
     padding-left: 30px;
     padding-top: 5px;
+    color: #0D99FF;
+    font-weight: 600;
 }
