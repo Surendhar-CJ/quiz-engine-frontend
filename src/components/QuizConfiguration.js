@@ -4,10 +4,12 @@ import { QuizContext } from '../context/QuizContext';
 import "../styles/QuizConfiguration.css";
 import { async } from 'q';
 import { useNavigate } from "react-router-dom";
+import Modal from "../components/Modal";
 
 
 const QuizConfiguration = (props) => {
     const contextValue = useContext(QuizContext);
+    const [sessionExpired, setSessionExpired] = useState(false);
     
     const navigate = useNavigate();
     const [quizData, setQuizData] = useState(null);
@@ -16,7 +18,7 @@ const QuizConfiguration = (props) => {
     
     const [configuration, setConfiguration] = useState(
         {
-            userId: 1, //contextValue.user.user.id,
+            userId: contextValue.user.id,
             topicId: props.topicId,
             feedbackId: null,
             questionsLimit: null,
@@ -67,6 +69,11 @@ const QuizConfiguration = (props) => {
                     'Authorization': `Bearer ${token}`
                 }
             });
+
+            if(response.status === 403) {
+                setSessionExpired(true);
+            }
+            
             if(response.status === 200) {
                 const data = await response.json();
                 setFeedbackTypes(data);
@@ -123,6 +130,10 @@ const QuizConfiguration = (props) => {
                 },
                 body: JSON.stringify(configuration)    
             });
+
+            if(response.status === 403) {
+                setSessionExpired(true);
+            }
 
             if(response.status === 201) {
                     const data = await response.json();
@@ -182,10 +193,33 @@ const QuizConfiguration = (props) => {
     
         return availableLevels;
     };
+
+    React.useEffect(() => {
+        if (sessionExpired) {
+          setTimeout(() => {
+            // Clear context
+            contextValue.resetContext();
+            // Clear local storage
+            localStorage.clear();
+            // Navigate to the login page
+            navigate('/');
+          }, 5000);
+        }
+    }, [sessionExpired]);
     
 
     return (
-        <div className="quiz-configure-card">
+
+        <>
+        {
+            sessionExpired &&
+            <Modal id="session-expired-modal" onClose={() => {}} className={sessionExpired ? 'visible' : ''}>
+                <h2 className="session-expired-title">Session Expired</h2>
+                <p className="session-expired-message-content">Your session has expired. You will be redirected to the home page, please log in again to continue.</p>
+            </Modal>
+        }
+
+        {<div className="quiz-configure-card">
             <h2>Quiz Settings</h2>
             <h3>{contextValue.topic.name}</h3>
             <form className="quiz-configure-form">
@@ -267,7 +301,8 @@ const QuizConfiguration = (props) => {
                     <button type="submit" onClick={handleConfigureClick}>Configure</button>
                 </div>        
             </form>
-        </div>
+        </div>}
+        </>
     )  
 } 
 

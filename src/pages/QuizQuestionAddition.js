@@ -14,6 +14,7 @@ const QuizQuestionAddition = () => {
     const navigate = useNavigate();
     const [formSubmitted, setFormSubmitted] = useState(null);
     const [showQuestionSubmitted, setShowQuestionSubmitted] = useState(false);
+    const [sessionExpired, setSessionExpired] = useState(false);
  
     const handleHomeClick = () => {
         navigate('/home');
@@ -227,12 +228,12 @@ const QuizQuestionAddition = () => {
                 
             });
 
+            if(response.status === 403) {
+                setSessionExpired(true);
+            }
 
             if(response.status === 201) {
-                    const data = await response.json();
-                    setShowQuestionSubmitted(true);
-                    console.log(data)
-                    
+                    setShowQuestionSubmitted(true);                    
             }
         }
          catch(error) {
@@ -281,10 +282,31 @@ const QuizQuestionAddition = () => {
         navigate('/home');
     };
 
-
+    React.useEffect(() => {
+        if (sessionExpired) {
+          setTimeout(() => {
+            // Clear context
+            contextValue.resetContext();
+            // Clear local storage
+            localStorage.clear();
+            // Navigate to the login page
+            navigate('/');
+          }, 5000);
+        }
+    }, [sessionExpired]);
 
     return (
-        <div className="question-addition-page">
+
+        <>
+        {
+            sessionExpired &&
+            <Modal id="session-expired-modal" onClose={() => {}} className={sessionExpired ? 'visible' : ''}>
+                <h2 className="session-expired-title">Session Expired</h2>
+                <p className="session-expired-message-content">Your session has expired. You will be redirected to the home page, please log in again to continue.</p>
+            </Modal>
+        }
+
+        {<div className="question-addition-page">
             <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
             <div className="question-addition-main">
                 <h2 className="add-question-title">Add Question</h2>
@@ -430,7 +452,8 @@ const QuizQuestionAddition = () => {
             </Modal>  
 
             <Footer />
-        </div>
+        </div>}
+        </>
     )
 
 

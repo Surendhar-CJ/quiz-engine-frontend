@@ -12,6 +12,7 @@ import Modal from '../components/Modal';
 import '../styles/QuizResult.css';
 import QuizDetailedResults from './QuizDetailedResults';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import ProgressBar from '@ramonak/react-progress-bar';
 import 'react-circular-progressbar/dist/styles.css';
 
 
@@ -22,6 +23,7 @@ import 'react-circular-progressbar/dist/styles.css';
     const navigate = useNavigate();
     const [showDetailedResults, setShowDetailedResults] = useState(false);
     const contextValue = useContext(QuizContext);
+    const [sessionExpired, setSessionExpired] = useState(false);
     
     const location = useLocation();
     const fromQuiz = location.state?.fromQuiz;
@@ -30,6 +32,10 @@ import 'react-circular-progressbar/dist/styles.css';
     const quizResult = JSON.parse(localStorage.getItem('quizResult'));
     const quizDetails = JSON.parse(localStorage.getItem('quizDetails'));
       
+    React.useEffect(() => {
+      window.scrollTo(0, 0);
+    }, [location.pathname]);
+   
     React.useEffect(() => {
       if (fromQuiz) {
           getQuizResult();
@@ -76,14 +82,19 @@ import 'react-circular-progressbar/dist/styles.css';
               "Authorization":`Bearer ${token}`
             }
           });
-          
-          if(!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
+
+          if(response.status === 403) {
+            setSessionExpired(true);
           } else {
-              const data = await response.json();
-              contextValue.setQuizResult(data);
-              const dataL = localStorage.setItem('quizResult', JSON.stringify(data));
-          }
+            if(!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            } else {
+                const data = await response.json();
+                console.log(data);
+                contextValue.setQuizResult(data);
+                const dataL = localStorage.setItem('quizResult', JSON.stringify(data));
+            }
+        }
       } catch(error) {
         console.error('An error occurred while submitting the quiz:', error);
         setError(error.message);
@@ -154,8 +165,10 @@ import 'react-circular-progressbar/dist/styles.css';
         return "#FFA500"; // golden yellow
       } else if (percentage < 91) {
         return "#86CB5C"; // light green
-      } else {
+      } else if (percentage <= 99) {
         return "#006400"; // dark green
+      } else {
+        return "#0D99FF"; //blue
       }
     }
 
@@ -169,10 +182,78 @@ import 'react-circular-progressbar/dist/styles.css';
     }
 
     
-   
+
+    const getSubtopicScores = () => {
+      const { marksScoredPerTopic, totalMarksPerTopic, percentagePerTopic } = quizResult;
+      const subtopicKeys = Object.keys(marksScoredPerTopic);
+      if (subtopicKeys.length > 1 || (subtopicKeys.length === 1 && subtopicKeys[0] !== "General")) {
+        return (
+          <div className="table-wrapper">
+            <table className="subtopic-table">
+              <tbody>
+                {subtopicKeys.map((subtopic) => (
+                  <tr className="subtopic-progress-section">
+                    <td>
+                      <p>{subtopic}</p>
+                    </td>
+                    <td>
+                      <ProgressBar 
+                        completed={percentagePerTopic[subtopic]} 
+                        className="wrapper"
+                        barContainerClassName="container"
+                        width= "100%"
+                        height= "8px"
+                        bgColor= {getProgressColor(percentagePerTopic[subtopic])}
+                        baseBgColor= "#979797"
+                        labelAlignment="center"
+                        labelSize="10px"
+                        isLabelVisible={false}
+                        transitionDuration="3s"
+                        transitionTimingFunction="ease-in-out"
+                      />
+                    </td>
+                    <td>
+                      <p><span>{marksScoredPerTopic[subtopic]} / {totalMarksPerTopic[subtopic]}</span></p>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+      }
+      return null;
+  };
+  
+  
+    
+
+
+    React.useEffect(() => {
+        if (sessionExpired) {
+          setTimeout(() => {
+            // Clear context
+            contextValue.resetContext();
+            // Clear local storage
+            localStorage.clear();
+            // Navigate to the login page
+            navigate('/');
+          }, 5000);
+        }
+    }, [sessionExpired]);
+    
     return (
+
+      <>
+      {
+          sessionExpired &&
+          <Modal id="session-expired-modal" onClose={() => {}} className={sessionExpired ? 'visible' : ''}>
+              <h2 className="session-expired-title">Session Expired</h2>
+              <p className="session-expired-message-content">Your session has expired. You will be redirected to the home page, please log in again to continue.</p>
+          </Modal>
+      }
        
-            <div className="quiz-result-page">
+          {  <div className="quiz-result-page">
             <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
               
             <div className="quiz-result-content">
@@ -202,6 +283,10 @@ import 'react-circular-progressbar/dist/styles.css';
                   </div>
                 </div>
 
+                <div className="marks-by-subtopic">
+                    {getSubtopicScores()}
+                </div>
+
                 <div className="quiz-feedback">
                     <h2 className="quiz-feedback-title">Feedback</h2>
                     <p>{quizResult.overallFeedback}</p>
@@ -219,7 +304,8 @@ import 'react-circular-progressbar/dist/styles.css';
           
 
             <Footer />
-        </div>
+        </div> }
+        </>
     )
     
  }

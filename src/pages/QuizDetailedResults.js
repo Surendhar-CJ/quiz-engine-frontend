@@ -3,6 +3,7 @@ import { QuizContext } from '../context/QuizContext';
 import React, { useState } from 'react';
 import { FaUser } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 import Header from '../components/Header.js';
 import Footer from '../components/Footer.js';
 import QuizSummary from '../components/QuizSummary';
@@ -13,7 +14,11 @@ const QuizDetailedResults = () => {
     const quizResult = JSON.parse(localStorage.getItem('quizResult'));
    // const [showProfile, setShowProfile] = useState(false);
     const navigate = useNavigate();
-     
+    const location = useLocation();
+
+    React.useEffect(() => {
+        window.scrollTo(0, 0);
+      }, [location.pathname]);
      
     const handleHomeClick = () => {
         navigate('/home');
