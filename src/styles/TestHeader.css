@@ -15,7 +15,7 @@
 .test-header-content {
     display: flex;
     align-items: center;
-    max-width: 170ch;
+    max-width: 125ch;
     width: 100%;
     margin: 0 auto;
 }
