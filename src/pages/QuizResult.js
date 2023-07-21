@@ -154,8 +154,10 @@ import 'react-circular-progressbar/dist/styles.css';
         return "#FFA500"; // golden yellow
       } else if (percentage < 91) {
         return "#86CB5C"; // light green
-      } else {
+      } else if (percentage <= 99) {
         return "#006400"; // dark green
+      } else {
+        return "#0D99FF"; //blue
       }
     }
 
