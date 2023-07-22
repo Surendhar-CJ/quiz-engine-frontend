@@ -141,6 +141,9 @@ const QuizConfiguration = (props) => {
                     setQuizData(data);
                     contextValue.setQuizDetails(data); 
                     localStorage.setItem('quizDetails', JSON.stringify(data));
+                    if(JSON.parse(window.localStorage.getItem('firstQuestion'))) {
+                        localStorage.removeItem('firstQuestion');
+                    }
                     navigate('/quiz');
             }
         }

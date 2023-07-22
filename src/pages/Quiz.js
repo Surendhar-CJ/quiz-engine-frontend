@@ -20,6 +20,7 @@ const Quiz = () => {
     const contextValue = useContext(QuizContext);
     const navigate = useNavigate();
 
+
     const [showQuizStarted, setShowQuizStarted] = useState(false);
     const [quizQuestion, setQuizQuestion] = useState(null);
     const [quizQuestions, setQuizQuestions] = useState([]);
@@ -47,10 +48,17 @@ const Quiz = () => {
         setIsLoading(false);
     }, [])
 
+
+
         
     const handleOnStartQuizClick = () => {
         setShowQuizStarted(true);
-        getFirstQuestion();
+        const storedFirstQuestion = JSON.parse(window.localStorage.getItem('firstQuestion'));
+        if(!storedFirstQuestion) {
+            getFirstQuestion();
+        } else {
+            setQuizQuestion(storedFirstQuestion);
+        }
     }
 
     const toggleQuizStarted = () => {
@@ -94,6 +102,7 @@ const Quiz = () => {
             if(response.ok) {
                 setQuizQuestion(data);
                 setQuestionCount(questionCount + 1);
+                localStorage.setItem('firstQuestion', JSON.stringify(data));
             }
 
         } catch (error) {
