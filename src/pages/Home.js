@@ -4,6 +4,7 @@ import { FaUser } from 'react-icons/fa';
 import { useContext } from 'react';
 import { QuizContext } from '../context/QuizContext.js';
 import { useNavigate } from "react-router-dom";
+import { baseURL } from '../config.js';
 import Header from '../components/Header.js';
 import Topic from '../components/Topic.js';
 import Footer from '../components/Footer.js';
@@ -60,7 +61,7 @@ const Home = () => {
     const getTopics = async() =>  {
         try {
            const token = localStorage.getItem('token');
-           const response =  await fetch("http://localhost:9090/api/v1/topics", {
+           const response =  await fetch(`${baseURL}/api/v1/topics`, {
                 headers: {
                     'Authorization': `Bearer ${token}`, // include token in headers
                 },
