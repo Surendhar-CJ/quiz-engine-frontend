@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { FaUser } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
+import { baseURL } from '../config.js';
 import Header from '../components/Header.js';
 import Footer from '../components/Footer.js';
 import ProfileCard from '../components/ProfileCard.js';
@@ -77,7 +78,7 @@ import 'react-circular-progressbar/dist/styles.css';
       const quizId = contextValue.quizDetails? contextValue.quizDetails.id : quizDetails.id;
       try {
           const token = localStorage.getItem('token');
-          const response = await fetch(`http://localhost:9090/api/v1/quizzes/quiz-result/${quizId}`, {
+          const response = await fetch(`${baseURL}/api/v1/quizzes/quiz-result/${quizId}`, {
             headers : {
               "Authorization":`Bearer ${token}`
             }
@@ -90,7 +91,6 @@ import 'react-circular-progressbar/dist/styles.css';
                 throw new Error(`HTTP error! status: ${response.status}`);
             } else {
                 const data = await response.json();
-                console.log(data);
                 contextValue.setQuizResult(data);
                 const dataL = localStorage.setItem('quizResult', JSON.stringify(data));
             }
@@ -208,7 +208,7 @@ import 'react-circular-progressbar/dist/styles.css';
                         labelAlignment="center"
                         labelSize="10px"
                         isLabelVisible={false}
-                        transitionDuration="3s"
+                        transitionDuration="2s"
                         transitionTimingFunction="ease-in-out"
                       />
                     </td>
@@ -241,6 +241,8 @@ import 'react-circular-progressbar/dist/styles.css';
           }, 5000);
         }
     }, [sessionExpired]);
+
+
     
     return (
 
@@ -253,7 +255,7 @@ import 'react-circular-progressbar/dist/styles.css';
           </Modal>
       }
        
-          {  <div className="quiz-result-page">
+          { quizResult && <div className="quiz-result-page">
             <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
               
             <div className="quiz-result-content">
@@ -268,6 +270,8 @@ import 'react-circular-progressbar/dist/styles.css';
                         styles= {buildStyles ({
                           pathColor: getProgressColor(quizResult.finalPercentage),
                           textColor: getProgressColor(quizResult.finalPercentage),
+                          pathTransitionDuration: 1.5
+
                         })
                       }                    
                     />

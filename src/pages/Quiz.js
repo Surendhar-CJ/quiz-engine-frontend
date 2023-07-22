@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useContext } from 'react';
 import { QuizContext } from '../context/QuizContext';
 import { useNavigate } from "react-router-dom";
+import { baseURL } from '../config.js';
 import Modal from "../components/Modal";
 import TestHeader from "../components/TestHeader";
 import StartQuiz from '../components/StartQuiz';
@@ -72,7 +73,7 @@ const Quiz = () => {
    const getFirstQuestion = async() => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch("http://localhost:9090/api/v1/quizzes/quiz-start", {
+            const response = await fetch(`${baseURL}/api/v1/quizzes/quiz-start`, {
                 method : "POST",
                 headers : {
                     "Content-Type" : "application/json",
@@ -104,7 +105,7 @@ const Quiz = () => {
       // event.preventDefault();
         try {
                 const token = localStorage.getItem('token');
-                const response = await fetch("http://localhost:9090/api/v1/quizzes/submit-answer", {
+                const response = await fetch(`${baseURL}/api/v1/quizzes/submit-answer`, {
                 method : "POST",
                 headers : {
                     "Content-Type" : "application/json",
@@ -139,7 +140,7 @@ const Quiz = () => {
     const handleOnClickNext = async (selectedChoices) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch("http://localhost:9090/api/v1/quizzes/quiz-questions", {
+            const response = await fetch(`${baseURL}/api/v1/quizzes/quiz-questions`, {
                 method : "POST",
                 headers : {
                     "Content-Type" : "application/json",
@@ -230,7 +231,7 @@ const Quiz = () => {
         const quizId = contextValue.quizDetails.id;
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:9090/api/v1/quizzes/submit-quiz/${quizId}`, {
+            const response = await fetch(`${baseURL}/api/v1/quizzes/submit-quiz/${quizId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`, 
                 },

@@ -11,7 +11,7 @@ const LineChart = (props) => {
     
     return (
         <div className="line-chart" style={{height: "300px",  width: "600px", padding: "10px"}}>
-            <Line data={props.data} option={props.options}/>
+            <Line data={props.data} options={props.options}/>
         </div>
     )
 }

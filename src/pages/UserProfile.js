@@ -3,6 +3,7 @@ import { QuizContext } from '../context/QuizContext';
 import React, { useState } from 'react';
 import { FaUser } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
+import { baseURL } from '../config.js';
 import BarChart from '../components/visual/BarChart';
 import LineChart from '../components/visual/LineChart';
 import Header from '../components/Header.js';
@@ -25,7 +26,7 @@ const UserProfile = () => {
         const userId = user.id;
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:9090/api/v1/users/${userId}`, {
+            const response = await fetch(`${baseURL}/api/v1/users/${userId}`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
@@ -176,14 +177,14 @@ const UserProfile = () => {
         maintainAspectRatio: false,
         plugins: {
             legend: {
-                labels : {
-                    display: true,
-                    color: "red"
+                display: false,
+                labels: {
+                    color: "black"
                 }
-               
             }
         }
     }
+    
 
     const weakness = () => {
         const topics = contextValue.availableTopics;
@@ -315,7 +316,7 @@ const UserProfile = () => {
     const handleOnClickQuizCard = async(quizId) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:9090/api/v1/quizzes/quiz-result/${quizId}`, {
+            const response = await fetch(`${baseURL}/api/v1/quizzes/quiz-result/${quizId}`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
@@ -347,58 +348,81 @@ const UserProfile = () => {
 
     const progressByTopic = () => {
         const quizList = userProfileDetails.quizList;
-      
-        // Prepare the data for the Line chart
+        quizList.sort((a, b) => new Date(a.completedAt) - new Date(b.completedAt));
         let dataByTopic = {};
+    
         for (let quiz of quizList) {
-            let date = new Date(quiz.completedAt).toLocaleDateString();  // Format the date
+            let date = new Date(quiz.completedAt).toLocaleDateString('en-GB');
             let topicId = quiz.topic.id.toString();
             let topicName = quiz.topic.name;
             let score = quiz.finalPercentage;
     
-            // Initialize this topic's data if it hasn't been initialized yet
             if (!dataByTopic[topicId]) {
                 dataByTopic[topicId] = {
                     name: topicName,
-                    datesAndScores: {}
+                    data: [],
+                    quizCounter: 0 // Initialize a quizCounter for each topic
                 };
             }
     
-            // Add this date and score to this topic's data
-            dataByTopic[topicId].datesAndScores[date] = score;
+            // Increase the quizCounter for this topic
+            dataByTopic[topicId].quizCounter++;
+            // Add this quiz number, date, and score to this topic's data
+            dataByTopic[topicId].data.push({ x: dataByTopic[topicId].quizCounter, 
+                                             y: score, 
+                                             date: date,
+                                             quizNum: dataByTopic[topicId].quizCounter});
         }
     
-        // Prepare the datasets for the Line chart using dataByTopic
         let datasets = [];
         for (let topicId in dataByTopic) {
             let topicData = dataByTopic[topicId];
-    
-            // Check if the color mapping exists for this topic
             let color = topicColorMapping[topicId] ? topicColorMapping[topicId].color : 'rgba(0,123,255,0.5)';
             let borderColor = topicColorMapping[topicId] ? topicColorMapping[topicId].border : 'rgba(0,123,255,1)';
     
             let data = {
                 label: topicData.name,
-                labels:[],
-                data: [], 
-                backgroundColor: color, // use the previously assigned color
-                borderColor: borderColor, // use the previously assigned border color
+                data: topicData.data,
+                backgroundColor: color,
+                borderColor: borderColor,
                 fill: false,
             };
-    
-            let datesAndScores = topicData.datesAndScores;
-            for (let date in datesAndScores) {
-                data.labels.push(date);
-                data.data.push(datesAndScores[date]);
-            }
     
             datasets.push(data);
         }
     
-        // Prepare the final data for the Line chart
         let finalData = {
-            labels: Object.keys(dataByTopic).sort(), // this will contain your x-axis labels (dates)
             datasets: datasets,
+        };
+    
+        // Customize tooltip
+        let options = {
+            scales: {
+                x: {
+                    type: 'linear',  // or 'category' if your x values are categorical
+                    ticks: {
+                        stepSize: 1,  // this will make the x-axis go 1, 2, 3, ...
+                    }
+                },
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        boxWidth: 10,
+                        boxHeight: 10,
+                        padding: 10
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let dataset = context.dataset;
+                            let currentItem = dataset.data[context.dataIndex];
+                            return `Quiz ${currentItem.quizNum}, Date: ${currentItem.date}, Score: ${context.parsed.y}%`;
+                        }
+                    }
+                }
+            }
         };
     
         return (
@@ -406,7 +430,7 @@ const UserProfile = () => {
         );
     }
     
-
+     
 
     React.useEffect(() => {
         if (sessionExpired) {

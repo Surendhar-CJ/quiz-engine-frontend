@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useContext } from 'react';
 import { QuizContext } from '../context/QuizContext';
+import { baseURL } from '../config.js';
 import "../styles/Login.css";
 
 
@@ -25,7 +26,7 @@ const Login = ({ toggleLogin, toggleSignUp }) => {
 
     const postLoginRequest = async() => {
         try {
-            const response = await fetch("http://localhost:9090/api/v1/login", {
+            const response = await fetch(`${baseURL}/api/v1/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -87,13 +88,15 @@ const Login = ({ toggleLogin, toggleSignUp }) => {
                     placeholder="Username"
                     onChange={handleChange}
                     value={formData.username}
+                    required
                 />
                 <input 
                     type="password" 
                     name="password" 
                     placeholder="Password"
                     onChange={handleChange}
-                    value={formData.password} 
+                    value={formData.password}
+                    required 
                 />
                 <button type="submit">Submit</button>
                 {serverErrors && <div className="error-message">{serverErrors}</div>}

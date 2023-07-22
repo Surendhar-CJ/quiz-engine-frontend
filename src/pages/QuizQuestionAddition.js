@@ -3,6 +3,7 @@ import { QuizContext } from '../context/QuizContext';
 import React, { useState } from 'react';
 import { FaUser } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
+import { baseURL } from '../config.js';
 import Modal from "../components/Modal";
 import Header from '../components/Header.js';
 import Footer from '../components/Footer.js';
@@ -217,7 +218,7 @@ const QuizQuestionAddition = () => {
  
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch("http://localhost:9090/api/v1/questions", 
+            const response = await fetch(`${baseURL}/api/v1/questions`, 
             {
                 method: "POST",
                 headers: {
@@ -227,6 +228,7 @@ const QuizQuestionAddition = () => {
                 body: JSON.stringify(formData)
                 
             });
+
 
             if(response.status === 403) {
                 setSessionExpired(true);
@@ -319,6 +321,7 @@ const QuizQuestionAddition = () => {
                                 value={formData.topicId}
                                 onChange={handleChange}
                                 name="topicId"
+                                required
                             >
                                 <option value="">--Select--</option>
                                 {topicElements}
@@ -343,6 +346,7 @@ const QuizQuestionAddition = () => {
                                 value={formData.questionType}
                                 onChange={handleChange}
                                 name="questionType"
+                                required
                             >
                                 <option value="">--Select--</option>
                                 {questionTypeElements()}
@@ -356,6 +360,7 @@ const QuizQuestionAddition = () => {
                             placeholder="Question"
                             onChange={handleChange}
                             name="questionText"
+                            required
                         />
                     </div>
 
@@ -403,6 +408,7 @@ const QuizQuestionAddition = () => {
                             placeholder="Explanation"
                             onChange={handleChange}
                             name="explanation"
+                            required
                         />
                     </div>
                     
@@ -413,6 +419,7 @@ const QuizQuestionAddition = () => {
                                 value={formData.difficultyLevel}
                                 onChange={handleChange}
                                 name="difficultyLevel"
+                                required
                             >
                                 <option value="">--Select--</option>
                                 {difficultyElements()}

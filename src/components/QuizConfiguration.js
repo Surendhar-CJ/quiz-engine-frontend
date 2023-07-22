@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useContext } from 'react';
 import { QuizContext } from '../context/QuizContext';
+import { baseURL } from '../config.js';
 import "../styles/QuizConfiguration.css";
 import { async } from 'q';
 import { useNavigate } from "react-router-dom";
@@ -64,7 +65,7 @@ const QuizConfiguration = (props) => {
     const getFeedbackTypes = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch("http://localhost:9090/api/v1/quiz-configuration", {
+            const response = await fetch(`${baseURL}/api/v1/quiz-configuration`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -121,7 +122,7 @@ const QuizConfiguration = (props) => {
         try {
             
             const token = localStorage.getItem('token');
-            const response = await fetch("http://localhost:9090/api/v1/quizzes", 
+            const response = await fetch(`${baseURL}/api/v1/quizzes`, 
             {
                 method: "POST",
                 headers: {
@@ -290,6 +291,7 @@ const QuizConfiguration = (props) => {
                         value={formData.feedbackType}
                         onChange={handleChange}
                         name="feedbackType"
+                        required
                     >
                         <option value="">--Select--</option>
                         {feedbackElements}

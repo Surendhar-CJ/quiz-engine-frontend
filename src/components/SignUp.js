@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { baseURL } from '../config.js';
 import "../styles/SignUp.css";
 
 
@@ -29,7 +30,7 @@ const SignUp = ({ toggleLogin, toggleSignUp }) => {
 
     const postSignUpRequest = async() => {
         try {
-            const response = await fetch("http://localhost:9090/api/v1/users", {
+            const response = await fetch(`${baseURL}/api/v1/users`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -89,7 +90,8 @@ const SignUp = ({ toggleLogin, toggleSignUp }) => {
                     name="firstName" 
                     placeholder="Firstname"
                     onChange={handleChange}
-                    value={formData.firstName} 
+                    value={formData.firstName}
+                    required 
                 />
                 <input 
                     type="text" 
@@ -104,6 +106,7 @@ const SignUp = ({ toggleLogin, toggleSignUp }) => {
                     placeholder="Email"
                     onChange={handleChange}
                     value={formData.email}
+                    required
                 />
                 <input 
                     type="password" 
@@ -111,6 +114,7 @@ const SignUp = ({ toggleLogin, toggleSignUp }) => {
                     placeholder="Password" 
                     onChange={handleChange}
                     value={formData.password}
+                    required
                 />
                 <button type="submit">Submit</button>
                 {serverErrors && <div className="error-message">{serverErrors}</div>}

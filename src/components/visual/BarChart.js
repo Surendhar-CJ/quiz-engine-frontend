@@ -11,7 +11,7 @@ const BarChart = (props) => {
     
     return (
         <div className="bar-chart" style={{height: "300px",  width: "500px", padding: "10px"}} >
-            <Bar data={props.chartData} option={props.options}/>
+            <Bar data={props.chartData} options={props.options}/>
         </div>
     )
 }
