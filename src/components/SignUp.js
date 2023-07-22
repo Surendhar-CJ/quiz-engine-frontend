@@ -13,7 +13,8 @@ const SignUp = ({ toggleLogin, toggleSignUp }) => {
             firstName : "",
             lastName : "",
             email : "",
-            password : ""
+            password : "",
+            confirmPassword: ""
         }
     );
 
@@ -114,6 +115,14 @@ const SignUp = ({ toggleLogin, toggleSignUp }) => {
                     placeholder="Password" 
                     onChange={handleChange}
                     value={formData.password}
+                    required
+                />
+                <input 
+                    type="password" 
+                    name="confirmPassword" 
+                    placeholder="Confirm Password" 
+                    onChange={handleChange}
+                    value={formData.confirmPassword}
                     required
                 />
                 <button type="submit">Submit</button>
