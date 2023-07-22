@@ -99,6 +99,11 @@ const QuizQuestionAddition = () => {
 
     
     const handleChange = (event) => {
+        if(event.target.name === "questionType") {
+            setChoices([{ text: '', isCorrect: false }]);
+            setCorrectAnswerIndex(-1);
+        }
+
         setFormData((prevFormData) => ({
             ...prevFormData,
             [event.target.name]: event.target.value
@@ -237,6 +242,8 @@ const QuizQuestionAddition = () => {
             if(response.status === 201) {
                     setShowQuestionSubmitted(true);                    
             }
+
+
         }
          catch(error) {
             console.log("Error : ", error);
