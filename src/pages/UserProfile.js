@@ -43,6 +43,7 @@ const UserProfile = () => {
             if(response.status === 302) {
                 const data = await response.json();
                 setUserProfileDetails(data);
+                console.log(data);
             }
 
         } catch (error) {
@@ -272,83 +273,6 @@ const UserProfile = () => {
             <BarChart chartData={data} options={options}/>
         );
     }
-    
-    
-    const quizHistory = () => {
-        const quizzes = userProfileDetails.quizList;
-
-        quizzes.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-        const quizCards = quizzes.map(quiz => {
-        let dateString = quiz.createdAt; 
-        let dateObj = new Date(dateString);
-        let day = String(dateObj.getDate()).padStart(2, '0');
-        let month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Months are 0-11 in JavaScript
-        let year = dateObj.getFullYear();
-
-        let formattedDate = `${day}/${month}/${year}`; // "12/07/2023"
-
-        return <QuizCard 
-                    key={quiz.quizId}
-                    id={quiz.quizId}
-                    topic={quiz.topic.name}
-                    finalScore={quiz.finalScore}
-                    totalMarks={quiz.totalNumberOfMarks}
-                    date={formattedDate}
-                    onClickQuizCard={handleOnClickQuizCard}
-                />;
-            });
-    
-        return quizCards;
-    }
-
-
-    const lastQuizDate = () => {
-        const quizzes = userProfileDetails.quizList;
-
-        quizzes.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-        const lastQuizDate =  quizzes[0].createdAt;
-        const dateObj = new Date(lastQuizDate);
-        const day = String(dateObj.getDate()).padStart(2, '0');
-        const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Months are 0-11 in JavaScript
-        const year = dateObj.getFullYear();
-
-        return `${day}/${month}/${year}`; 
-    }
-
-    const handleOnClickQuizCard = async(quizId) => {
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`${baseURL}/api/v1/quizzes/quiz-result/${quizId}`, {
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            });
-
-            if(response.status === 403) {
-                setSessionExpired(true);
-            }
-            else if(!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            } else {
-                const data = await response.json();
-                window.localStorage.setItem('quizResult', JSON.stringify(data));
-                window.localStorage.setItem('topic', JSON.stringify(data.topic));
-                navigate('/result');
-            }
-        } catch(error) {
-            console.error('An error occurred while submitting the quiz:', error);
-        }
-
-       
-    }
-
-
-    const handleCreateQuizOnUserProfileClick = () => {
-        navigate('/home');
-    }
-
 
     const progressByTopic = () => {
         const quizList = userProfileDetails.quizList;
@@ -437,6 +361,155 @@ const UserProfile = () => {
             <LineChart data={finalData} options={options} />
         );
     }
+
+    const comparisonChart = () => {
+        const topics = contextValue.availableTopics;
+        const userScores = userProfileDetails.averageScoreByTopic;
+        const otherScores = userProfileDetails.averagePercentageByOtherUsersPerTopic;
+    
+        const data = {
+            labels: [], // this will contain your x-axis labels (topic names)
+            datasets: [
+                {
+                    label: 'Your Average Score',
+                    data: [], // this will contain your y-axis values (percentage)
+                    backgroundColor: [],
+                    hoverBackgroundColor: [],
+                    borderColor: [],
+                    borderWidth: 1,
+                    barThickness: 30,
+                },
+                {
+                    label: 'Other Users\' Average Score',
+                    data: [], // this will contain your y-axis values (percentage)
+                    backgroundColor: [],
+                    hoverBackgroundColor: [],
+                    borderColor: [],
+                    borderWidth: 1,
+                    barThickness: 30,
+                }
+            ],
+        };
+    
+        for (let topicId in userScores) {
+            let percentage = userScores[topicId];
+            let otherPercentage = otherScores[topicId];
+    
+            let topicName;
+            for(let topic of topics) {
+                if(topic.id.toString() === topicId) {
+                    topicName = topic.name;
+                }
+            }
+    
+            let topicColors = topicColorMapping[topicId];
+            if (!topicColors) {
+                // if there is no color mapping for this topic, use default colors
+                topicColors = {
+                    color: 'rgba(0,123,255,0.5)',
+                    hoverColor: 'rgba(0,123,255,1)',
+                    border: 'rgba(0,123,255,1)'
+                }
+            }
+            let color = topicColors.color;
+            let hoverColor = topicColors.hoverColor;
+            let border = topicColors.border;
+    
+            data.labels.push(topicName);
+            data.datasets[0].data.push(percentage);
+            data.datasets[0].backgroundColor.push(color);
+            data.datasets[0].hoverBackgroundColor.push(hoverColor);
+            data.datasets[0].borderColor.push(border);
+    
+            data.datasets[1].data.push(otherPercentage);
+            data.datasets[1].backgroundColor.push(color);
+            data.datasets[1].hoverBackgroundColor.push(hoverColor);
+            data.datasets[1].borderColor.push(border);
+        }
+    
+        return (
+            <BarChart chartData={data} options={options} />
+        );
+    }
+    
+    
+    const quizHistory = () => {
+        const quizzes = userProfileDetails.quizList;
+
+        quizzes.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        const quizCards = quizzes.map(quiz => {
+        let dateString = quiz.createdAt; 
+        let dateObj = new Date(dateString);
+        let day = String(dateObj.getDate()).padStart(2, '0');
+        let month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Months are 0-11 in JavaScript
+        let year = dateObj.getFullYear();
+
+        let formattedDate = `${day}/${month}/${year}`; // "12/07/2023"
+
+        return <QuizCard 
+                    key={quiz.quizId}
+                    id={quiz.quizId}
+                    topic={quiz.topic.name}
+                    finalScore={quiz.finalScore}
+                    totalMarks={quiz.totalNumberOfMarks}
+                    date={formattedDate}
+                    onClickQuizCard={handleOnClickQuizCard}
+                />;
+            });
+    
+        return quizCards;
+    }
+
+
+    const lastQuizDate = () => {
+        const quizzes = userProfileDetails.quizList;
+
+        quizzes.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        const lastQuizDate =  quizzes[0].createdAt;
+        const dateObj = new Date(lastQuizDate);
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Months are 0-11 in JavaScript
+        const year = dateObj.getFullYear();
+
+        return `${day}/${month}/${year}`; 
+    }
+
+    const handleOnClickQuizCard = async(quizId) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${baseURL}/api/v1/quizzes/quiz-result/${quizId}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if(response.status === 403) {
+                setSessionExpired(true);
+            }
+            else if(!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            } else {
+                const data = await response.json();
+                window.localStorage.setItem('quizResult', JSON.stringify(data));
+                window.localStorage.setItem('topic', JSON.stringify(data.topic));
+                navigate('/result');
+            }
+        } catch(error) {
+            console.error('An error occurred while submitting the quiz:', error);
+        }
+
+       
+    }
+
+
+    const handleCreateQuizOnUserProfileClick = () => {
+        navigate('/home');
+    }
+
+
+    
     
      
 
@@ -479,17 +552,17 @@ const UserProfile = () => {
                     </div>
                 </div> 
                 <div className="performance-analysis">
-                    <p className="performance-analysis-title">Performance Analysis</p>
+                    <p className="performance-analysis-title">Areas of Strength and Potential Growth</p>
                    {userProfileDetails.quizList.length > 0 ? 
                     <div className="strength-weakness">
                         <div className="strength">
-                            <p>You're good at</p>
+                            <p>Areas You Shine In</p>
                             <div className="user-strengths">
                                 {strength()}
                             </div>
                         </div>
                         <div className="weakness">
-                            <p>Focus more on</p>
+                            <p>Areas for Improvement</p>
                             <div className="user-weaknesses">
                                 {weakness()}
                             </div>
@@ -502,7 +575,7 @@ const UserProfile = () => {
                 <div className="performance-analysis-by-topic">
                     {userProfileDetails.quizList.length > 0 ?
                         <>
-                            <p className="performance-analysis-by-topic-title">Progress</p>
+                            <p className="performance-analysis-by-topic-title">Your Quiz Performance Over Time</p>
                             <div className="progress-by-topic">
                                 {progressByTopic()}
                             </div>
@@ -510,7 +583,21 @@ const UserProfile = () => {
                         : null
                     }
                 </div>
-                
+
+                <div className="comparison-chart">
+                {
+                    Object.keys(userProfileDetails.averagePercentageByOtherUsersPerTopic).length > 0
+                    ? <>
+                        <p className="comparison-bar-title">Benchmarking with Learning Community</p>
+                        <div className="comparison-bar-chart-picture">
+                        {comparisonChart()}
+                        </div>
+                    </>
+                    : null
+                }
+                </div>
+               
+
                 <div className="quiz-history" ref={quizHistoryRef}>
                     <p className="quiz-history-title">Quiz History</p>
                     <div className="quiz-history-cards">
