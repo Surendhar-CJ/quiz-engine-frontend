@@ -1,0 +1,32 @@
+
+
+
+
+.page {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    max-width: 125ch;
+    width: 100%;
+    margin-top: 82px;
+    margin-left: auto;
+    margin-right: auto;
+    flex-grow: 1;
+    background-color: white;
+    border-left: 2px solid rgb(237, 237, 237);
+    border-right: 2px solid rgb(237, 237, 237);
+}
+
+.sidebar {
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 15%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 40px;
+}
+.sidebar p {
+    border: 1px solid green;
+}
