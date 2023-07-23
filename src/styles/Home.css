@@ -6,7 +6,6 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background-color: rgba(212, 227, 238, 0.652);
 }
 
 
@@ -65,9 +64,11 @@
     margin-left: auto;
     margin-right: auto;
     flex-grow: 1;
-    padding: 20px 40px;
+    padding: 60px 40px;
     background-color: white;
     margin-top: 82px;
+    border-left: 2px solid rgb(237, 237, 237);
+    border-right: 2px solid rgb(237, 237, 237);
 }
 
 .pick-topic-intro {

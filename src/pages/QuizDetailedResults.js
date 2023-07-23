@@ -1,7 +1,9 @@
 import { useContext } from 'react';
 import { QuizContext } from '../context/QuizContext';
 import React, { useState } from 'react';
+import {BiSolidHome} from 'react-icons/bi'
 import { FaUser } from 'react-icons/fa';
+import { IoLogOut } from 'react-icons/io5';
 import { useNavigate } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 import Header from '../components/Header.js';
@@ -105,7 +107,7 @@ const QuizDetailedResults = () => {
     return (
              
         <div className="quiz-detailed-results">
-            <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
+            <Header options={[{ label: 'Home', Icon: BiSolidHome, action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', Icon: IoLogOut, action: handleLogoutClick}]}  />
             <div className="detailed-results">
                 <h1>Detailed Quiz Results</h1>
                 <QuizSummary quizResult = {quizResult} />

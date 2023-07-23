@@ -20,6 +20,7 @@ const Quiz = () => {
     const contextValue = useContext(QuizContext);
     const navigate = useNavigate();
 
+
     const [showQuizStarted, setShowQuizStarted] = useState(false);
     const [quizQuestion, setQuizQuestion] = useState(null);
     const [quizQuestions, setQuizQuestions] = useState([]);
@@ -47,10 +48,17 @@ const Quiz = () => {
         setIsLoading(false);
     }, [])
 
+
+
         
     const handleOnStartQuizClick = () => {
         setShowQuizStarted(true);
-        getFirstQuestion();
+        const storedFirstQuestion = JSON.parse(window.localStorage.getItem('firstQuestion'));
+        if(!storedFirstQuestion) {
+            getFirstQuestion();
+        } else {
+            setQuizQuestion(storedFirstQuestion);
+        }
     }
 
     const toggleQuizStarted = () => {
@@ -59,7 +67,7 @@ const Quiz = () => {
 
     const toggleShowSubmitQuiz = () => {
         const feedback = contextValue.quizDetails.feedbackType.type;
-        if(feedback.toLowerCase() === "immediate_response" || feedback.toLowerCase() === "immediate_correct_answer_response" || feedback.toLowerCase() === "immediate_elaborated") {
+        if(feedback.toLowerCase() === "immediate response" || feedback.toLowerCase() === "immediate correct answer response" || feedback.toLowerCase() === "immediate elaborated") {
             return;
         }
         setShowSubmitQuiz(!showSubmitQuiz);
@@ -94,6 +102,7 @@ const Quiz = () => {
             if(response.ok) {
                 setQuizQuestion(data);
                 setQuestionCount(questionCount + 1);
+                localStorage.setItem('firstQuestion', JSON.stringify(data));
             }
 
         } catch (error) {
@@ -200,9 +209,9 @@ const Quiz = () => {
         const quizFeedbackType = contextValue.quizDetails.feedbackType.type;
         let displayFeedback;
         
-        if(quizFeedbackType === "IMMEDIATE_RESPONSE" ||
-            quizFeedbackType === "IMMEDIATE_CORRECT_ANSWER_RESPONSE" || 
-            quizFeedbackType ==="IMMEDIATE_ELABORATED") {  
+        if(quizFeedbackType === "IMMEDIATE RESPONSE" ||
+            quizFeedbackType === "IMMEDIATE CORRECT ANSWER RESPONSE" || 
+            quizFeedbackType ==="IMMEDIATE ELABORATED") {  
             displayFeedback = true;
         } else {
             displayFeedback = false;

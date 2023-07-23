@@ -38,6 +38,10 @@ const QuizSummary = ({quizResult}) => {
         return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
 
+    const toTitleCase = (str) => {
+        return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    }
+
     return (
         <div className="quiz-summary-table">
             <table className= "quiz-summary">
@@ -50,9 +54,9 @@ const QuizSummary = ({quizResult}) => {
                 <tr><td className="quiz-summary-label">Time started</td><td>:</td><td className="quiz-summary-value">{formatTime(startedAt)}</td></tr>
                 <tr><td className="quiz-summary-label">Time completed</td><td>:</td><td className="quiz-summary-value">{formatTime(endedAt)}</td></tr>
                 <tr><td className="quiz-summary-label">Time elapsed</td><td>:</td><td className="quiz-summary-value">{calculateTimeElapsed(startedAt, endedAt)}</td></tr>
-                <tr><td className="quiz-summary-label">Difficulty level</td><td>:</td><td className="quiz-summary-value">{difficultyLevel ? difficultyLevel : "No"}</td></tr>
+                <tr><td className="quiz-summary-label">Difficulty level</td><td>:</td><td className="quiz-summary-value">{difficultyLevel ? toTitleCase(difficultyLevel) : "No"}</td></tr>
                 <tr><td className="quiz-summary-label">Question limit</td><td>:</td><td className="quiz-summary-value">{questionsLimit ? questionsLimit : "No"}</td></tr>
-                <tr><td className="quiz-summary-label">Feedback type</td><td>:</td><td className="quiz-summary-value">{feedbackType}</td></tr>
+                <tr><td className="quiz-summary-label">Feedback type</td><td>:</td><td className="quiz-summary-value">{toTitleCase(feedbackType)}</td></tr>
             </table>
         </div>
     )

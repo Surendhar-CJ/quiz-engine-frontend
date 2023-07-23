@@ -1,7 +1,9 @@
 import { useContext } from 'react';
 import { QuizContext } from '../context/QuizContext';
 import React, { useState } from 'react';
+import {BiSolidHome} from 'react-icons/bi'
 import { FaUser } from 'react-icons/fa';
+import { IoLogOut } from 'react-icons/io5';
 import { useNavigate } from "react-router-dom";
 import { baseURL } from '../config.js';
 import Modal from "../components/Modal";
@@ -99,6 +101,11 @@ const QuizQuestionAddition = () => {
 
     
     const handleChange = (event) => {
+        if(event.target.name === "questionType") {
+            setChoices([{ text: '', isCorrect: false }]);
+            setCorrectAnswerIndex(-1);
+        }
+
         setFormData((prevFormData) => ({
             ...prevFormData,
             [event.target.name]: event.target.value
@@ -237,6 +244,8 @@ const QuizQuestionAddition = () => {
             if(response.status === 201) {
                     setShowQuestionSubmitted(true);                    
             }
+
+
         }
          catch(error) {
             console.log("Error : ", error);
@@ -309,7 +318,7 @@ const QuizQuestionAddition = () => {
         }
 
         {<div className="question-addition-page">
-            <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
+            <Header options={[{ label: 'Home', Icon: BiSolidHome, action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', Icon: IoLogOut, action: handleLogoutClick}]}  />
             <div className="question-addition-main">
                 <h2 className="add-question-title">Add Question</h2>
                 <form className="question-addition-form" onSubmit={submitClick}>

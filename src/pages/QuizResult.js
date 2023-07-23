@@ -1,17 +1,17 @@
 import { useContext } from 'react';
 import { QuizContext } from '../context/QuizContext';
 import React, { useState } from 'react';
+import {BiSolidHome} from 'react-icons/bi'
 import { FaUser } from 'react-icons/fa';
+import { IoLogOut } from 'react-icons/io5';
 import { useNavigate } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 import { baseURL } from '../config.js';
 import Header from '../components/Header.js';
 import Footer from '../components/Footer.js';
-import ProfileCard from '../components/ProfileCard.js';
 import IncorrectFeedbackCard from '../components/IncorrectFeedbackCard';
 import Modal from '../components/Modal';
 import '../styles/QuizResult.css';
-import QuizDetailedResults from './QuizDetailedResults';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import ProgressBar from '@ramonak/react-progress-bar';
 import 'react-circular-progressbar/dist/styles.css';
@@ -20,7 +20,6 @@ import 'react-circular-progressbar/dist/styles.css';
  const QuizResult = () => {
 
     const [error, setError] = useState(null);
-    const [showProfile, setShowProfile] = useState(false);
     const navigate = useNavigate();
     const [showDetailedResults, setShowDetailedResults] = useState(false);
     const contextValue = useContext(QuizContext);
@@ -256,7 +255,7 @@ import 'react-circular-progressbar/dist/styles.css';
       }
        
           { quizResult && <div className="quiz-result-page">
-            <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
+            <Header options={[{ label: 'Home', Icon: BiSolidHome, action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', Icon: IoLogOut, action: handleLogoutClick}]}  />
               
             <div className="quiz-result-content">
                
@@ -270,7 +269,7 @@ import 'react-circular-progressbar/dist/styles.css';
                         styles= {buildStyles ({
                           pathColor: getProgressColor(quizResult.finalPercentage),
                           textColor: getProgressColor(quizResult.finalPercentage),
-                          pathTransitionDuration: 1.5
+                          pathTransitionDuration: 0.5
 
                         })
                       }                    
@@ -293,8 +292,10 @@ import 'react-circular-progressbar/dist/styles.css';
 
                 <div className="quiz-feedback">
                     <h2 className="quiz-feedback-title">Feedback</h2>
-                    <p>{quizResult.overallFeedback}</p>
-                    <p className="subtopic-feedback">{quizResult.feedbackBySubtopic}</p>
+                    <div className="quiz-feedback-content">
+                      <p>{quizResult.overallFeedback}</p>
+                      <p className="subtopic-feedback">{quizResult.feedbackBySubtopic}</p>
+                    </div>
                 </div>
                 {quizResult.finalPercentage <= 99 ? <p className="answer-explain-heading">Growth happens when we understand our mistakes. Here are the question(s) that didn't go as planned.</p> : null}
                 <div className="incorrect-answer-explanations">
