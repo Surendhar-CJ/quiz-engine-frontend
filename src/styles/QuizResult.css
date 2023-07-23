@@ -87,7 +87,6 @@
 }
 
 /**Subtopic**/
-/**Subtopic**/
 .marks-by-subtopic {
     display: flex;
     justify-content: center;
@@ -152,6 +151,7 @@
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     padding: 20px;
     text-align: justify;
+    border-radius: 5pt;
 }
 
 
@@ -168,7 +168,7 @@
 .detailed-results-link {
     margin-top: 40px;
     margin-bottom: 30px;
-    font-size: 14pt;
+    font-size: 12pt;
     color: #0D99FF;
     font-weight: 500;
 }
