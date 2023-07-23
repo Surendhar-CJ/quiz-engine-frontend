@@ -67,7 +67,7 @@ const Quiz = () => {
 
     const toggleShowSubmitQuiz = () => {
         const feedback = contextValue.quizDetails.feedbackType.type;
-        if(feedback.toLowerCase() === "immediate_response" || feedback.toLowerCase() === "immediate_correct_answer_response" || feedback.toLowerCase() === "immediate_elaborated") {
+        if(feedback.toLowerCase() === "immediate response" || feedback.toLowerCase() === "immediate correct answer response" || feedback.toLowerCase() === "immediate elaborated") {
             return;
         }
         setShowSubmitQuiz(!showSubmitQuiz);
@@ -209,9 +209,9 @@ const Quiz = () => {
         const quizFeedbackType = contextValue.quizDetails.feedbackType.type;
         let displayFeedback;
         
-        if(quizFeedbackType === "IMMEDIATE_RESPONSE" ||
-            quizFeedbackType === "IMMEDIATE_CORRECT_ANSWER_RESPONSE" || 
-            quizFeedbackType ==="IMMEDIATE_ELABORATED") {  
+        if(quizFeedbackType === "IMMEDIATE RESPONSE" ||
+            quizFeedbackType === "IMMEDIATE CORRECT ANSWER RESPONSE" || 
+            quizFeedbackType ==="IMMEDIATE ELABORATED") {  
             displayFeedback = true;
         } else {
             displayFeedback = false;

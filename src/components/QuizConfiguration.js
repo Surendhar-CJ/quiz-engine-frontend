@@ -89,14 +89,22 @@ const QuizConfiguration = (props) => {
     }, []);
 
 
+    const toTitleCase = (str) => {
+        return str
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
+    };
+
+
     const feedbackElements = feedbackTypes.map(feedbackType => {
         return (
             <option 
                 key={feedbackType.id} 
                 value={feedbackType.type}
-                name={feedbackType.type.replace(/_/g, ' ')}
+                name={toTitleCase(feedbackType.type)}
                 >
-                {feedbackType.type.replace(/_/g, ' ')}
+                {toTitleCase(feedbackType.type)}
             </option>
         )
     }) 
@@ -226,7 +234,7 @@ const QuizConfiguration = (props) => {
         {<div className="quiz-configure-card">
             <h2>Quiz Settings</h2>
             <h3>{contextValue.topic.name}</h3>
-            <form className="quiz-configure-form">
+            <form className="quiz-configure-form" onSubmit={handleConfigureClick}>
 
                 <div className="set-difficulty-checkbox">
                     <label htmlFor="setDifficultyLevel">Set difficulty level</label>
@@ -303,7 +311,7 @@ const QuizConfiguration = (props) => {
 
                 
                 <div className="configure-button">
-                    <button type="submit" onClick={handleConfigureClick}>Configure</button>
+                    <button type="submit">Configure</button>
                 </div>        
             </form>
         </div>}

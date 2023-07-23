@@ -19,7 +19,8 @@
 }
 
 .quiz-question-area {
-    background-color: rgba(13, 153, 255, 0.04); 
+   /* background-color: rgba(13, 153, 255, 0.04); */
+    background-color: rgba(219, 217, 217, 0.445);
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     border-radius: 5pt;
 }

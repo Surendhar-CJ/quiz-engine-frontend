@@ -5,7 +5,7 @@ const SubmitQuiz = (props) => {
 
     return(
         <div className="submit-quiz">
-            <p>{feedback.toLowerCase() === "immediate_response" || feedback.toLowerCase() === "immediate_correct_answer_response" || feedback.toLowerCase() === "immediate_elaborated" ?
+            <p>{feedback.toLowerCase() === "immediate response" || feedback.toLowerCase() === "immediate correct answer response" || feedback.toLowerCase() === "immediate_elaborated" ?
                 "Click to submit the quiz" : "Are you sure to submit the quiz? If NO, click anywhere on the screen"}</p>
             <button type="submit" onClick={() => props.onSubmitQuizClick()}>Submit Quiz</button>
         </div>

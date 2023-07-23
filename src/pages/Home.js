@@ -1,6 +1,8 @@
 
 import React, { useState } from 'react';
+import {BiSolidHome} from 'react-icons/bi'
 import { FaUser } from 'react-icons/fa';
+import { IoLogOut } from 'react-icons/io5';
 import { useContext } from 'react';
 import { QuizContext } from '../context/QuizContext.js';
 import { useNavigate } from "react-router-dom";
@@ -8,13 +10,11 @@ import { baseURL } from '../config.js';
 import Header from '../components/Header.js';
 import Topic from '../components/Topic.js';
 import Footer from '../components/Footer.js';
-import ProfileCard from '../components/ProfileCard.js';
 import "../styles/Home.css";
 import QuizConfiguration from '../components/QuizConfiguration.js';
 import Modal from '../components/Modal';
 
 const Home = () => {
-  //  const [showProfile, setShowProfile] = useState(false);
     const [showQuizConfig, setShowQuizConfig] = useState(false);
     const [selectedTopicId, setSelectedTopicId] = useState(null);
     const contextValue = useContext(QuizContext);
@@ -40,19 +40,8 @@ const Home = () => {
     }
 
     const handleProfileClick = () => {
-       // setShowProfile(true);
         navigate('/profile');
     }
-
-    /*const toggleProfile = () => {
-        setShowProfile(!showProfile);
-
-        //In Header component
-        showProfile={showProfile} toggleProfile={toggleProfile}
-        //After Header component
-         {showProfile && <ProfileCard />}
-    } */
-
 
     /** TOPIC */
 
@@ -154,7 +143,7 @@ const Home = () => {
         }
         {contextValue.user &&   
         <div className="home-page">
-            <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
+            <Header options={[{ label: 'Home', Icon: BiSolidHome, action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', Icon: IoLogOut, action: handleLogoutClick}]}  />
            
             <div className="home-content">
                 <h1>Welcome, {contextValue.user.firstName}!</h1>

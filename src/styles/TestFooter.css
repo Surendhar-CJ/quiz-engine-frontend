@@ -8,7 +8,9 @@
     margin-top: 0;
     padding: 50px;
     height: 82px;
-    color: rgb(0, 0, 0, 0.57);
+    color: black;
     font-size: 10pt;
-    background-color: rgba(0, 148, 255, 0.07);
+   /* background-color: #e9f6ff; */
+   background-color: white;
+   border-top: 2px solid rgb(237, 237, 237);
 }

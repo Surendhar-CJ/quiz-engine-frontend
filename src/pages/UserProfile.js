@@ -1,7 +1,10 @@
 import { useContext } from 'react';
 import { QuizContext } from '../context/QuizContext';
 import React, { useState } from 'react';
+import { useRef } from 'react';
+import {BiSolidHome} from 'react-icons/bi'
 import { FaUser } from 'react-icons/fa';
+import { IoLogOut } from 'react-icons/io5';
 import { useNavigate } from "react-router-dom";
 import { baseURL } from '../config.js';
 import BarChart from '../components/visual/BarChart';
@@ -18,6 +21,7 @@ const UserProfile = () => {
     const navigate = useNavigate();
     const [userProfileDetails, setUserProfileDetails] = useState(null);
     const [sessionExpired, setSessionExpired] = useState(false);
+    const quizHistoryRef = useRef(null);
 
    
    
@@ -399,11 +403,15 @@ const UserProfile = () => {
         let options = {
             scales: {
                 x: {
-                    type: 'linear',  // or 'category' if your x values are categorical
+                    type: 'linear',  
                     ticks: {
-                        stepSize: 1,  // this will make the x-axis go 1, 2, 3, ...
+                        stepSize: 1,  
                     }
                 },
+                y: {  
+                    min: 0,  
+                    max: 100,  
+                }
             },
             plugins: {
                 legend: {
@@ -458,11 +466,11 @@ const UserProfile = () => {
         }
 
         {<div className="user-profile-page">
-             <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
+            <Header options={[{ label: 'Home', Icon: BiSolidHome, action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', Icon: IoLogOut, action: handleLogoutClick}]}  /> 
               {userProfileDetails && <div className="user-profile-details">
                 <div className="first-section">    
                     <UserCard firstName={userProfileDetails.firstName} lastName={userProfileDetails.lastName} email={userProfileDetails.email} />
-                    <div className="quizzes-count" onClick={() => navigate('#quiz-history')}>
+                    <div className="quizzes-count" onClick={() => quizHistoryRef.current.scrollIntoView({ behavior: 'smooth' })}>
                         <p className="quiz-count">{userProfileDetails.quizList.length}</p>
                         <div className="quiz-count-info">
                             <p>{userProfileDetails.quizList.length === 1 ? "Quiz" : "Quizzes"} taken so far</p>
@@ -503,7 +511,7 @@ const UserProfile = () => {
                     }
                 </div>
                 
-                <div className="quiz-history" id="quiz-history">
+                <div className="quiz-history" ref={quizHistoryRef}>
                     <p className="quiz-history-title">Quiz History</p>
                     <div className="quiz-history-cards">
                         {userProfileDetails.quizList.length > 0 ? quizHistory() : <p className="no-quiz-history">You haven't challenged yourself with a quiz yet. <span className="create-quiz-link" onClick = {handleCreateQuizOnUserProfileClick}>Let's change that!</span></p>}
