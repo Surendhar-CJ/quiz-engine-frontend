@@ -151,6 +151,15 @@
     min-width: 0; /* This allows the element to shrink below its content size */
 }
 
+/**RESPONSIVENESS**/
+@media (max-width: 1200px) {
+    .strength-weakness {
+        display: flex;
+        flex-direction: column;
+    }
+    
+}
+
 /**Line chart**/
 
 .performance-analysis-by-topic {
@@ -272,6 +281,12 @@
     font-weight: 400;
 }
 
+.no-quiz-history-last {
+    font-size: 12pt;
+    font-weight: 400;
+    margin-left: 250px;
+}
+
 .create-quiz-link {
     color:#0D99FF;
     font-weight: 400;
@@ -281,4 +296,3 @@
     text-decoration: underline;
 
 }
-

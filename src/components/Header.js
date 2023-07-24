@@ -1,7 +1,7 @@
 import { BiSolidHome } from 'react-icons/bi';
 import { FaUser } from 'react-icons/fa';
 import { IoLogOut } from 'react-icons/io';
-import '../index.css'
+import '../styles/Header.css';
 
 const title = "QUIZ ENGINE"
 

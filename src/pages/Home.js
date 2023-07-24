@@ -131,7 +131,9 @@ const Home = () => {
         }
     }, [sessionExpired]);
 
-                                            
+    
+    //Icon: BiSolidHome, Icon: FaUser, Icon: IoLogOut, 
+
     return (
         <>
         {
@@ -143,7 +145,7 @@ const Home = () => {
         }
         {contextValue.user &&   
         <div className="home-page">
-            <Header options={[{ label: 'Home', Icon: BiSolidHome, action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', Icon: IoLogOut, action: handleLogoutClick}]}  />
+            <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
            
             <div className="home-content">
                 <h1>Welcome, {contextValue.user.firstName}!</h1>
