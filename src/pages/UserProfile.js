@@ -540,7 +540,9 @@ const UserProfile = () => {
 
         {<div className="user-profile-page">
             <Header options={[{ label: 'Home', Icon: BiSolidHome, action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', Icon: IoLogOut, action: handleLogoutClick}]}  /> 
+              
               {userProfileDetails && <div className="user-profile-details">
+                
                 <div className="first-section">    
                     <UserCard firstName={userProfileDetails.firstName} lastName={userProfileDetails.lastName} email={userProfileDetails.email} />
                     <div className="quizzes-count" onClick={() => quizHistoryRef.current.scrollIntoView({ behavior: 'smooth' })}>
@@ -550,7 +552,9 @@ const UserProfile = () => {
                             {userProfileDetails.quizList.length > 0 && <p>Last Quiz Date: {lastQuizDate()}</p>}
                         </div>
                     </div>
-                </div> 
+                </div>
+
+
                 <div className="performance-analysis">
                     <p className="performance-analysis-title">Areas of Strength and Potential Growth</p>
                    {userProfileDetails.quizList.length > 0 ? 
@@ -572,36 +576,33 @@ const UserProfile = () => {
                     <p className="no-quiz-history">Take a quiz to know your areas of strength and improvements. <span className="create-quiz-link" onClick = {handleCreateQuizOnUserProfileClick}>Let's quiz!</span></p>}
                 </div>
 
+                {userProfileDetails.quizList.length > 0 &&
                 <div className="performance-analysis-by-topic">
-                    {userProfileDetails.quizList.length > 0 ?
-                        <>
+                    
+                        
                             <p className="performance-analysis-by-topic-title">Your Quiz Performance Over Time</p>
                             <div className="progress-by-topic">
                                 {progressByTopic()}
-                            </div>
-                        </>
-                        : null
-                    }
-                </div>
+                            </div> 
+                </div> }
 
+
+                {Object.keys(userProfileDetails.averagePercentageByOtherUsersPerTopic).length > 0
+                    &&
                 <div className="comparison-chart">
-                {
-                    Object.keys(userProfileDetails.averagePercentageByOtherUsersPerTopic).length > 0
-                    ? <>
+                
                         <p className="comparison-bar-title">Benchmarking with Learning Community</p>
                         <div className="comparison-bar-chart-picture">
                         {comparisonChart()}
                         </div>
-                    </>
-                    : null
-                }
-                </div>
+                </div> 
+            }
                
 
                 <div className="quiz-history" ref={quizHistoryRef}>
                     <p className="quiz-history-title">Quiz History</p>
                     <div className="quiz-history-cards">
-                        {userProfileDetails.quizList.length > 0 ? quizHistory() : <p className="no-quiz-history">You haven't challenged yourself with a quiz yet. <span className="create-quiz-link" onClick = {handleCreateQuizOnUserProfileClick}>Let's change that!</span></p>}
+                        {userProfileDetails.quizList.length > 0 ? quizHistory() : <p className="no-quiz-history-last">You haven't challenged yourself with a quiz yet. <span className="create-quiz-link" onClick = {handleCreateQuizOnUserProfileClick}>Let's change that!</span></p>}
                     </div>
                 </div>
               </div> 

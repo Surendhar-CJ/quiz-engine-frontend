@@ -7,7 +7,7 @@
     flex-wrap: wrap;
     justify-content: flex-start;
     width: 88%;   
-    margin-left: 60px; 
+    margin-left: 65px; 
 } 
 
 .topic {
@@ -36,4 +36,26 @@
 .topic p {
     font-size: 10pt;
     font-weight: 400;
+}
+
+
+
+/**RESPONSIVENESS**/
+
+@media (max-width: 1245px) {
+    .topics-list {
+        justify-content: center;
+    }
+}
+
+
+@media (max-width: 530px) {
+    .topics-list {
+
+        margin-left: 20px;
+    }
+    
+    .topic {
+        margin: 10px;  
+    }
 }

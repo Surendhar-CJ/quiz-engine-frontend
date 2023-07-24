@@ -272,6 +272,12 @@
     font-weight: 400;
 }
 
+.no-quiz-history-last {
+    font-size: 12pt;
+    font-weight: 400;
+    margin-left: 250px;
+}
+
 .create-quiz-link {
     color:#0D99FF;
     font-weight: 400;
@@ -281,4 +287,3 @@
     text-decoration: underline;
 
 }
-
