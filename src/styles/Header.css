@@ -112,7 +112,7 @@
         width: 100%;
     }
 
-    .home-content, .user-profile-details, .quiz-result-content, .detailed-results {
+    .home-content, .user-profile-details, .quiz-result-content, .detailed-results, .question-addition-main {
         margin-top: 250px;
     }
 }

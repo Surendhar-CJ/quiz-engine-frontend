@@ -368,11 +368,11 @@ const UserProfile = () => {
         const otherScores = userProfileDetails.averagePercentageByOtherUsersPerTopic;
     
         const data = {
-            labels: [], // this will contain your x-axis labels (topic names)
+            labels: [], 
             datasets: [
                 {
                     label: 'Your Average Score',
-                    data: [], // this will contain your y-axis values (percentage)
+                    data: [], 
                     backgroundColor: [],
                     hoverBackgroundColor: [],
                     borderColor: [],
@@ -381,7 +381,7 @@ const UserProfile = () => {
                 },
                 {
                     label: 'Other Users\' Average Score',
-                    data: [], // this will contain your y-axis values (percentage)
+                    data: [], 
                     backgroundColor: [],
                     hoverBackgroundColor: [],
                     borderColor: [],

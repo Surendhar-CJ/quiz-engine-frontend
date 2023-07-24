@@ -151,6 +151,15 @@
     min-width: 0; /* This allows the element to shrink below its content size */
 }
 
+/**RESPONSIVENESS**/
+@media (max-width: 1200px) {
+    .strength-weakness {
+        display: flex;
+        flex-direction: column;
+    }
+    
+}
+
 /**Line chart**/
 
 .performance-analysis-by-topic {
