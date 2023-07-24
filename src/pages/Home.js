@@ -148,8 +148,8 @@ const Home = () => {
             <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
            
             <div className="home-content">
-                <h1>Welcome, {contextValue.user.firstName}!</h1>
-                <h2>Ready for a quiz?</h2>
+                <h1 className="welcome">Welcome, <span className="welcome-user-name">{contextValue.user.firstName}</span>!</h1>
+                <p className="ready">Ready for a quiz?</p>
                 <p className="pick-topic-intro">Pick a topic and challenge yourself!</p>
                 <div className="topics-list">
                     {topicElements}
@@ -161,7 +161,7 @@ const Home = () => {
                         {showQuizConfig && <QuizConfiguration topicId={selectedTopicId}  />}
                     </Modal>
                 </div>
-                <p className="add-question-intro">Got anything interesting to add? <span className="add-question-link" onClick={handleAddQuestionClick}>Click here</span> </p>
+                <p className="add-question-intro">Got a question to add? <span className="add-question-link" onClick={handleAddQuestionClick}>Click me!</span> </p>
                 
             </div>
             <Footer />

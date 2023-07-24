@@ -539,7 +539,7 @@ const UserProfile = () => {
         }
 
         {<div className="user-profile-page">
-            <Header options={[{ label: 'Home', Icon: BiSolidHome, action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', Icon: IoLogOut, action: handleLogoutClick}]}  /> 
+            <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  /> 
               
               {userProfileDetails && <div className="user-profile-details">
                 

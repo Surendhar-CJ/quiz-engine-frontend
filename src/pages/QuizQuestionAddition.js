@@ -318,7 +318,7 @@ const QuizQuestionAddition = () => {
         }
 
         {<div className="question-addition-page">
-            <Header options={[{ label: 'Home', Icon: BiSolidHome, action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', Icon: IoLogOut, action: handleLogoutClick}]}  />
+            <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
             <div className="question-addition-main">
                 <h2 className="add-question-title">Add Question</h2>
                 <form className="question-addition-form" onSubmit={submitClick}>

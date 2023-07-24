@@ -1,11 +1,13 @@
 *{
     font-family: 'Inter', sans-serif;
+    cursor: default;
 }
 
 .home-page {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-color: #F7FBFE;
 }
 
 .home-content {
@@ -17,16 +19,24 @@
     margin-right: auto;
     flex-grow: 1;
     padding: 60px 40px;
-    background-color: white;
-    margin-top: 82px;
-    border-left: 2px solid rgb(237, 237, 237);
-    border-right: 2px solid rgb(237, 237, 237);
+    margin-top: 85px;
+    background-color: #F7FBFE;
+    border-left: 1px solid #cce3f5;
+    border-right: 1px solid #cce3f5;
+}
+
+.welcome-user-name {
+    font-style: italic;
 }
 
 
+.ready {
+    font-size: 16pt;
+    font-weight: 700;
+}
 
 .pick-topic-intro {
-    font-size: 18pt;
+    font-size: 16pt;
     font-weight: 700;
 }
 
@@ -42,12 +52,19 @@
     font-size: 16pt;
     color: #0D99FF;
     font-weight: 500;
+    text-shadow: 1px 4px 4px rgba(0, 0, 0, 0.3);
 }
 
 .add-question-link:hover {
-    text-decoration: underline;
-    
+    padding: 10px;
+    border-radius: 5pt;
+    color: white;
+    background-color: #0D99FF;
+    font-weight: 600;
+    cursor:pointer;
 }
+
+
 
 
 
