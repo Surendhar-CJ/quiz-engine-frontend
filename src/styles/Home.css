@@ -22,8 +22,8 @@
     padding: 60px 40px;
     margin-top: 82px;
     background-color: #F6F7F7;
-    border-left: 1px solid #cce3f5;
-    border-right: 1px solid #cce3f5;
+    border-left: 2px solid rgb(237, 237, 237);
+    border-right: 2px solid rgb(237, 237, 237);
 }
 
 .welcome-user-name {
