@@ -8,54 +8,6 @@
     min-height: 100vh;
 }
 
-
-.home, .profile {
-    margin: 0 10px; 
-    font-size: 12pt;
-    font-weight: 600;
-}
-
-
-.home{
-    font-size: 12pt;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    border-radius: 10pt;
-}
-
-.home:hover {
-    background-color: rgba(159, 212, 250, 0.5);
-}
-
-.profile {
-    font-size: 12pt;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    border-radius: 10pt;
-}
-
-.profile:hover {
-    background-color: rgba(159, 212, 250, 0.5);
-}
-
-.logout {
-    font-size: 12pt;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    border-radius: 10pt;
-}
-
-.logout:hover {
-    background-color: rgba(159, 212, 250, 0.5);
-}
-
-
 .home-content {
     display: flex;
     flex-direction: column;
@@ -70,6 +22,8 @@
     border-left: 2px solid rgb(237, 237, 237);
     border-right: 2px solid rgb(237, 237, 237);
 }
+
+
 
 .pick-topic-intro {
     font-size: 18pt;
