@@ -32,7 +32,7 @@
 .question-addition-form {
     display: flex;
     flex-direction: column;
-    background-color: #D2D2D2;
+    background-color: #d9d7d7;
     border-radius: 5pt;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 }
