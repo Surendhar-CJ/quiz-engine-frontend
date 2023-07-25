@@ -1,11 +1,15 @@
 *{
     font-family: 'Inter', sans-serif;
+    cursor: default;
 }
 
 .home-page {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+   /* background-color: #E3F2FD;*/
+   background-color: #F2FAFF;
+   /* background-color: #F6F7F7; */
 }
 
 .home-content {
@@ -17,16 +21,24 @@
     margin-right: auto;
     flex-grow: 1;
     padding: 60px 40px;
-    background-color: white;
     margin-top: 82px;
+    background-color: #F2FAFF;
     border-left: 2px solid rgb(237, 237, 237);
     border-right: 2px solid rgb(237, 237, 237);
 }
 
+.welcome-user-name {
+    font-style: italic;
+}
 
+
+.ready {
+    font-size: 16pt;
+    font-weight: 700;
+}
 
 .pick-topic-intro {
-    font-size: 18pt;
+    font-size: 16pt;
     font-weight: 700;
 }
 
@@ -41,13 +53,19 @@
 .add-question-link {
     font-size: 16pt;
     color: #0D99FF;
-    font-weight: 500;
+    font-weight: 800;
 }
 
 .add-question-link:hover {
-    text-decoration: underline;
-    
+    padding: 10px;
+    border-radius: 5pt;
+    color: white;
+    background-color: #0D99FF;
+    font-weight: 600;
+    cursor:pointer;
 }
+
+
 
 
 

@@ -107,7 +107,7 @@ const QuizDetailedResults = () => {
     return (
              
         <div className="quiz-detailed-results">
-            <Header options={[{ label: 'Home', Icon: BiSolidHome, action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', Icon: IoLogOut, action: handleLogoutClick}]}  />
+            <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
             <div className="detailed-results">
                 <h1>Detailed Quiz Results</h1>
                 <QuizSummary quizResult = {quizResult} />

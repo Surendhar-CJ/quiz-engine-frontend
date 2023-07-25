@@ -6,6 +6,7 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-color: #F2FAFF;
 }
 
 
@@ -20,7 +21,8 @@
     margin-top: 82px;
     flex-grow: 1;
     padding: 20px;
-    background-color: white;
+    background-color: #F2FAFF;
+   /* background-color: #F6F7F7; */
     padding: 60px 40px;
     border-left: 2px solid rgb(237, 237, 237);
     border-right: 2px solid rgb(237, 237, 237);
@@ -49,7 +51,8 @@
 
 .first-section {
     border-radius: 5pt;
-    border: 1px solid black;
+    background-color: white;
+    border: 2px solid rgb(237, 237, 237);
 }
 
 /** UserCard **/
@@ -128,7 +131,8 @@
     align-items: center;
     width: 100%;
     border-radius: 5pt;
-    border: 1px solid black;
+    border: 2px solid rgb(237, 237, 237);
+    background-color: white;
     margin-bottom: 40px;
 }
 
@@ -168,7 +172,8 @@
     align-items: center;
     width: 100%;
     border-radius: 5pt;
-    border: 1px solid black;
+    border: 2px solid rgb(237, 237, 237);
+    background-color: white;
     font-weight: 700;
     font-size: 25pt;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
@@ -190,7 +195,8 @@
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
     padding-top: 20px;
     width: 100%;
-    border: 1px solid black;
+    border: 2px solid rgb(237, 237, 237);
+    background-color: white;
     border-radius: 5pt;
     margin-bottom: 30px;
     padding-bottom: 20px;
@@ -214,8 +220,9 @@
     align-items: center;
     overflow: auto;
     border-radius: 5pt;
-    border: 1px solid black;
-    padding-bottom: 30px;
+    border: 2px solid rgb(237, 237, 237);
+    background-color: white;
+    padding-bottom: 50px;
 }
 
 .quiz-history-title {
@@ -228,6 +235,7 @@
     width: 300px;
     height: 120px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    background-color: white;
     margin: 10px;
     margin-top: 30px;
     padding: 10px 20px;
@@ -236,8 +244,9 @@
 }
 
 .quiz-card:hover {
-    background-color: #0D99FF;
+    background-color: #1c9efa;
     transform: scale(1.05);
+    cursor: pointer;
 
 }
 
@@ -257,24 +266,35 @@
 .quiz-topic {
     font-weight: 600;
     font-size: 14pt;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    color:#0D99FF;
     
 }
 
 .quiz-mark {
     font-weight: 400;
     font-size: 10pt;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
     display: flex;
     align-items: center;
-    padding: 5px;
-    
+    padding: 5px;   
 }
 
 .quiz-date {
     font-weight: 400;
     font-size: 10pt;
 }
+
+.quiz-card:hover .quiz-topic{
+    color:white;
+}
+
+.quiz-card:hover .quiz-mark{
+    color:white;
+}
+
+.quiz-card:hover .quiz-date{
+    color:white;
+}
+
 
 .no-quiz-history {
     font-size: 12pt;

@@ -43,7 +43,12 @@ const UserProfile = () => {
             if(response.status === 302) {
                 const data = await response.json();
                 setUserProfileDetails(data);
-                console.log(data);
+            }
+
+
+            if(response.status === 400) {
+                const data = await response.json();
+                throw new Error(data.message);
             }
 
         } catch (error) {
@@ -334,7 +339,7 @@ const UserProfile = () => {
                 },
                 y: {  
                     min: 0,  
-                    max: 100,  
+                    max: 150,  
                 }
             },
             plugins: {
@@ -436,7 +441,7 @@ const UserProfile = () => {
     const quizHistory = () => {
         const quizzes = userProfileDetails.quizList;
 
-        quizzes.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        quizzes.sort((a, b) => parseDate(b.createdAt) - parseDate(a.createdAt));
 
         const quizCards = quizzes.map(quiz => {
         let dateString = quiz.createdAt; 
@@ -461,11 +466,32 @@ const UserProfile = () => {
         return quizCards;
     }
 
+    const parseDate = (dateStr) => {
+        // Split date and time
+        let [date, time] = dateStr.split('T');
+    
+        // Split date into components
+        let [year, month, day] = date.split('-');
+    
+        // Split time into components
+        let [hour, minute, second] = time.split(':');
+    
+        // Remove fractional seconds if they exist
+        second = second.split('.')[0];
+    
+        // Adjust month index (JavaScript months are 0-11)
+        month = parseInt(month) - 1;
+    
+        // Create new date object
+        let dateObj = new Date(year, month, day, hour, minute, second);
+    
+        return dateObj;
+    }
 
     const lastQuizDate = () => {
         const quizzes = userProfileDetails.quizList;
 
-        quizzes.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        quizzes.sort((a, b) => parseDate(b.createdAt) - parseDate(a.createdAt));
 
         const lastQuizDate =  quizzes[0].createdAt;
         const dateObj = new Date(lastQuizDate);
@@ -475,6 +501,8 @@ const UserProfile = () => {
 
         return `${day}/${month}/${year}`; 
     }
+
+
 
     const handleOnClickQuizCard = async(quizId) => {
         try {
@@ -509,7 +537,12 @@ const UserProfile = () => {
     }
 
 
+    const hasCommonKeys = (obj1, obj2) => {
+        const keys1 = Object.keys(obj1);
+        const keys2 = Object.keys(obj2);
     
+        return keys1.some(key => keys2.includes(key));
+    }
     
      
 
@@ -539,7 +572,7 @@ const UserProfile = () => {
         }
 
         {<div className="user-profile-page">
-            <Header options={[{ label: 'Home', Icon: BiSolidHome, action: handleHomeClick }, { label: 'Profile', Icon: FaUser, action: handleProfileClick }, {label: 'Logout', Icon: IoLogOut, action: handleLogoutClick}]}  /> 
+            <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  /> 
               
               {userProfileDetails && <div className="user-profile-details">
                 
@@ -578,8 +611,6 @@ const UserProfile = () => {
 
                 {userProfileDetails.quizList.length > 0 &&
                 <div className="performance-analysis-by-topic">
-                    
-                        
                             <p className="performance-analysis-by-topic-title">Your Quiz Performance Over Time</p>
                             <div className="progress-by-topic">
                                 {progressByTopic()}
@@ -587,16 +618,15 @@ const UserProfile = () => {
                 </div> }
 
 
-                {Object.keys(userProfileDetails.averagePercentageByOtherUsersPerTopic).length > 0
-                    &&
-                <div className="comparison-chart">
-                
+                {
+                    hasCommonKeys(userProfileDetails.averagePercentageByOtherUsersPerTopic, userProfileDetails.averageScoreByTopic) &&
+                    <div className="comparison-chart">
                         <p className="comparison-bar-title">Benchmarking with Learning Community</p>
                         <div className="comparison-bar-chart-picture">
-                        {comparisonChart()}
+                            {comparisonChart()}
                         </div>
-                </div> 
-            }
+                    </div> 
+                }
                
 
                 <div className="quiz-history" ref={quizHistoryRef}>

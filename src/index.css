@@ -20,11 +20,11 @@ body {
     justify-content: center;
     margin-top: 0;
     padding: 50px;
-    height: 82px;
+    height: 200px;
     color: black;
-    font-size: 10pt;
+    font-size: 12pt;
     border-top: 2px solid rgb(237, 237, 237);
-   /* background-color: #e9f6ff; */
+    background-color: white;
 }
 
 
