@@ -241,6 +241,7 @@
     padding: 10px 20px;
     transition: transform 0.2s ease-in-out;
     border-radius: 5pt;
+    border: 1px solid rgb(237, 237, 237);
 }
 
 .quiz-card:hover {

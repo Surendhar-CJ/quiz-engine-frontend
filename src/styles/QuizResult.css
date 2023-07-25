@@ -113,6 +113,7 @@
     padding: 20px;
     border-radius: 5px;
     background-color: white;
+    border: 1px solid rgb(237, 237, 237);
 }
 
 .subtopic-table td:nth-child(2) {
@@ -155,6 +156,7 @@
     padding: 20px;
     text-align: justify;
     border-radius: 5pt;
+    border: 1px solid rgb(237, 237, 237);
 }
 
 
