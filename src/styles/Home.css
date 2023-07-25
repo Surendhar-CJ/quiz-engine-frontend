@@ -7,8 +7,9 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background-color: #F6F7F7;
-    /*background-color: #F7FBFE;*/
+   /* background-color: #E3F2FD;*/
+   background-color: #F2FAFF;
+   /* background-color: #F6F7F7; */
 }
 
 .home-content {
@@ -21,7 +22,7 @@
     flex-grow: 1;
     padding: 60px 40px;
     margin-top: 82px;
-    background-color: #F6F7F7;
+    background-color: #F2FAFF;
     border-left: 2px solid rgb(237, 237, 237);
     border-right: 2px solid rgb(237, 237, 237);
 }
@@ -52,8 +53,7 @@
 .add-question-link {
     font-size: 16pt;
     color: #0D99FF;
-    font-weight: 500;
-    text-shadow: 1px 4px 4px rgba(0, 0, 0, 0.3);
+    font-weight: 800;
 }
 
 .add-question-link:hover {

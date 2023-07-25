@@ -254,6 +254,9 @@ const Quiz = () => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             } else {
                 setHasQuizBeenSubmitted(true);
+                if(localStorage.getItem('quizResult')) {
+                    localStorage.removeItem('quizResult');
+                }
             }
         }
         } catch(error) {

@@ -6,6 +6,7 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-color: #F2FAFF;
 }
 
 
@@ -24,7 +25,7 @@
     margin-top: 82px;
     flex-grow: 1;
     padding: 30px;
-    background-color: white;
+    background-color: #F2FAFF;
     padding: 60px 30px;
     border-left: 2px solid rgb(237, 237, 237);
     border-right: 2px solid rgb(237, 237, 237);
@@ -35,6 +36,7 @@
     border-collapse: collapse;  /* this makes the cell borders collapse into a single border where possible */
     box-shadow: 0 5px 10px 0 rgba(0,0,0,0.2);
     border-radius: 5pt;
+    background-color: white;
 }
 
 .all-answers-table th, .all-answers-table td {
@@ -73,12 +75,14 @@
 .partially-correct-answer{
     background-color: rgba(250, 255, 0, 0.29);
 }
+
 .results-link {
     margin-top: 40px;
     margin-bottom: 30px;
     font-size: 12pt;
     color: #0D99FF;
-    font-weight: 500;
+    font-weight: 600;
+    cursor: pointer;
 }
 
 .results-link:hover {

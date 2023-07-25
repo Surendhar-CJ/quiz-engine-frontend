@@ -1,0 +1,57 @@
+
+.card1, .card2, .card3, .card4 {
+    border-radius: 5pt;
+    font-style: italic;
+    
+}
+
+.landing-cards {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 125ch;
+    justify-content: center;
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+.card1, .card3 {
+    display: flex;
+    justify-content: flex-start;
+    padding: 10px;
+    font-size: 30pt;
+    margin: 20px;
+    font-weight: 600;
+    margin-bottom: 0;
+    margin-top: 0;
+    color: #94c4e7;
+}
+
+.card1 {
+    padding-bottom: 0px;
+}
+.card1 p {
+    margin-bottom: 5px;
+}
+
+
+.card2, .card4 {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+    font-size: 30pt;
+    margin: 20px;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 0;
+    color: #41c1f3;
+}
+
+.card1 p, .card2 p, .card3 p, .card4 p {
+    transition: transform 0.3s ease;
+}
+
+.card1 p:hover, .card2 p:hover, .card3 p:hover, .card4 p:hover {
+    transform: scale(1.25);
+}
+

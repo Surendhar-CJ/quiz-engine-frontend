@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-   /* background-color: rgba(212, 227, 238, 0.652); */
+    background-color: #F2FAFF;
 }
 
 
@@ -22,7 +22,7 @@
     flex-grow: 1;
     padding: 20px;
     padding-bottom: 60px;
-    background-color: white;
+    background-color: #F2FAFF;
     border-left: 2px solid rgb(237, 237, 237);
     border-right: 2px solid rgb(237, 237, 237);
 }
@@ -32,8 +32,9 @@
 .question-addition-form {
     display: flex;
     flex-direction: column;
-    background-color: rgb(234, 234, 234);
+    background-color: #D2D2D2;
     border-radius: 5pt;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 }
 
 .question-addition-form label {

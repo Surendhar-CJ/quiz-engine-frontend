@@ -85,7 +85,7 @@ const QuizQuestion = (props) => {
                 {choices()}
             </div>
             <div className="quiz-question-buttons">
-                {props.displayFeedback && !props.allQuestionsReceived && <button id="submit-answer-button" className={hasAnswerBeenSubmitted ? 'disabled' : ''} disabled={hasAnswerBeenSubmitted}onClick={handleSubmitAnswerClick}>Submit Answer</button>}
+                {props.displayFeedback && !props.allQuestionsReceived && <button id="submit-answer-button" className={hasAnswerBeenSubmitted ? 'disabled' : ''} disabled={hasAnswerBeenSubmitted} onClick={handleSubmitAnswerClick}>Submit Answer</button>}
                 {!props.displayFeedback && props.questionCount > 1 && <button id="back-button" onClick={handleBackClick}>Back</button>}
                 {props.displayFeedback ? 
                     <button id="next-button" className={hasAnswerBeenSubmitted ? '' : 'disabled'} disabled={!hasAnswerBeenSubmitted} onClick={handleNextClick}>Next</button>

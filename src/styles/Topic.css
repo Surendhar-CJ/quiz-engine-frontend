@@ -30,7 +30,6 @@
     color: white;
     transform: scale(1.05);
     cursor: pointer;
-
 }
 
 
@@ -39,6 +38,15 @@
     font-weight: 500;
 }
 
+.topic-questions-available {
+    font-weight: 400;
+    font-size: 10pt;
+    color: black;
+}
+
+.topic:hover .topic-questions-available {
+    color: white;
+}
 
 
 
