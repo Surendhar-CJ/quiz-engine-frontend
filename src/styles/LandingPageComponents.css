@@ -1,9 +1,9 @@
 
 .card1, .card2, .card3, .card4 {
     border-radius: 5pt;
-    font-style: italic;
     
 }
+
 
 .landing-cards {
     display: flex;
@@ -15,43 +15,42 @@
     margin-bottom: 40px;
 }
 
-.card1, .card3 {
+.card1 p, .card2 p, .card3 p {
     display: flex;
-    justify-content: flex-start;
     padding: 10px;
-    font-size: 30pt;
-    margin: 20px;
-    font-weight: 600;
-    margin-bottom: 0;
-    margin-top: 0;
-    color: #94c4e7;
-}
-
-.card1 {
-    padding-bottom: 0px;
-}
-.card1 p {
     margin-bottom: 5px;
+    width: 40%;
+    font-size: 40pt;
+    font-weight: 700;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
 }
 
-
-.card2, .card4 {
+.card1, .card2, .card3 {
     display: flex;
-    justify-content: flex-end;
-    padding: 10px;
-    font-size: 30pt;
-    margin: 20px;
-    font-weight: 600;
-    margin-top: 0;
-    margin-bottom: 0;
-    color: #41c1f3;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    max-width: 100%;
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
-.card1 p, .card2 p, .card3 p, .card4 p {
-    transition: transform 0.3s ease;
+.card1 p {
+    margin-left: 80px;
+    padding-right: 0
 }
 
-.card1 p:hover, .card2 p:hover, .card3 p:hover, .card4 p:hover {
-    transform: scale(1.25);
+.card2  {
+    margin-bottom: 100px;
 }
+
+
+
+
+
+
+
+
+
+
 

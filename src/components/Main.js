@@ -4,7 +4,6 @@ import Modal from './Modal';
 import Card1 from "./landingPageComponents/Card1.js";
 import Card2 from "./landingPageComponents/Card2.js";
 import Card3 from "./landingPageComponents/Card3.js";
-import Card4 from "./landingPageComponents/Card4.js";
 import "../styles/LandingPageComponents.css";
 
 const Main = ({showLogin, toggleLogin, showSignUp, toggleSignUp}) => {
@@ -20,7 +19,6 @@ const Main = ({showLogin, toggleLogin, showSignUp, toggleSignUp}) => {
                 <Card1 />
                 <Card2 />
                 <Card3 />
-                <Card4 />
             </div>
       
 

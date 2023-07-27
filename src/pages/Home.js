@@ -1,8 +1,5 @@
 
 import React, { useState } from 'react';
-import {BiSolidHome} from 'react-icons/bi'
-import { FaUser } from 'react-icons/fa';
-import { IoLogOut } from 'react-icons/io5';
 import { useContext } from 'react';
 import { QuizContext } from '../context/QuizContext.js';
 import { useNavigate } from "react-router-dom";
@@ -12,6 +9,7 @@ import Topic from '../components/Topic.js';
 import Footer from '../components/Footer.js';
 import "../styles/Home.css";
 import QuizConfiguration from '../components/QuizConfiguration.js';
+import CreateQuiz from '../components/CreateQuiz.js';
 import Modal from '../components/Modal';
 
 const Home = () => {
@@ -19,6 +17,7 @@ const Home = () => {
     const [selectedTopicId, setSelectedTopicId] = useState(null);
     const contextValue = useContext(QuizContext);
     const [sessionExpired, setSessionExpired] = useState(false);
+    const [showCreateQuiz, setShowCreateQuiz] = useState(false);
 
     const navigate = useNavigate();
 
@@ -67,6 +66,7 @@ const Home = () => {
                 setTopics(data);
                 contextValue.setAvailableTopics(data);
                 localStorage.setItem('topics', JSON.stringify(data));
+                console.log(data);
            } 
         } catch (error) {
             console.error("Error :", error);
@@ -106,13 +106,22 @@ const Home = () => {
     const topicElements = topics.map(topic => <Topic 
                                                 key={topic.id} 
                                                 id={topic.id} 
-                                                name={topic.name} 
+                                                name={topic.name}
+                                                rating={topic.rating}
+                                                numberOfRaters={topic.numberOfRaters}
+                                                createdBy={topic.userName}
                                                 numberOfQuestions={topic.numberOfQuestions}
                                                 onTopicClick={handleOnTopicClick}
                                               />
                                             )
 
+    const handleCreateQuizClick = () => {
+        setShowCreateQuiz(true);
+    }
 
+    const toggleShowCreateQuiz = () => {
+        setShowCreateQuiz(!showCreateQuiz);
+    }
 
     const handleAddQuestionClick = () => {
         navigate('/add-question');
@@ -133,6 +142,7 @@ const Home = () => {
 
     
     //Icon: BiSolidHome, Icon: FaUser, Icon: IoLogOut, 
+    const quizTopics = JSON.parse(localStorage.getItem('topics'));
 
     return (
         <>
@@ -143,14 +153,21 @@ const Home = () => {
                 <p className="session-expired-message-content">Your session has expired. You will be redirected to the home page, please log in again to continue.</p>
             </Modal>
         }
-        {contextValue.user &&   
+        {contextValue.user &&   contextValue.availableTopics &&
         <div className="home-page">
             <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
            
             <div className="home-content">
                 <h1 className="welcome">Welcome, <span className="welcome-user-name">{contextValue.user.firstName}</span>!</h1>
-                <p className="ready">Ready for a quiz?</p>
-                <p className="pick-topic-intro">Pick a topic and challenge yourself!</p>
+              
+               { quizTopics.length !== 0 && <p className="ready">Ready for a quiz?</p>}
+                
+                {quizTopics.length !== 0 ? 
+                    <p className="pick-topic-intro">Pick a topic and challenge yourself!</p>
+                                :
+                    <p className="add-quiz-intro">Create a quiz, challenge yourself and your peers!</p> 
+                }
+
                 <div className="topics-list">
                     {topicElements}
                     <Modal 
@@ -161,8 +178,21 @@ const Home = () => {
                         {showQuizConfig && <QuizConfiguration topicId={selectedTopicId}  />}
                     </Modal>
                 </div>
-                <p className="add-question-intro">Got a question to add? <span className="add-question-link" onClick={handleAddQuestionClick}>Click me!</span> </p>
-                
+
+                 {showCreateQuiz &&
+                    <Modal
+                        show={showCreateQuiz}
+                        onClose={toggleShowCreateQuiz}
+                        className={showCreateQuiz ? 'visible' : ''}
+                    >
+                        <CreateQuiz userId={contextValue.user.id}/>
+                    </Modal> 
+                }
+                  
+                <div className="create-add">
+                    <p className="add-topic-intro" onClick={handleCreateQuizClick}>Create a quiz and help your peers!</p>
+                    <p className="add-question-intro" onClick={handleAddQuestionClick}>Got a question to add?</p>
+                </div>
             </div>
             <Footer />
         </div> }

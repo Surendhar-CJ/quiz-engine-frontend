@@ -2,9 +2,6 @@ import { useContext } from 'react';
 import { QuizContext } from '../context/QuizContext';
 import React, { useState } from 'react';
 import { useRef } from 'react';
-import {BiSolidHome} from 'react-icons/bi'
-import { FaUser } from 'react-icons/fa';
-import { IoLogOut } from 'react-icons/io5';
 import { useNavigate } from "react-router-dom";
 import { baseURL } from '../config.js';
 import BarChart from '../components/visual/BarChart';
@@ -13,6 +10,8 @@ import Header from '../components/Header.js';
 import Footer from '../components/Footer.js';
 import UserCard from '../components/UserProfileComponents/UserCard.js';
 import QuizCard from '../components/UserProfileComponents/QuizCard';
+import { useLocation } from 'react-router-dom';
+import { FaTrash } from 'react-icons/fa';
 import Modal from "../components/Modal";
 import '../styles/UserProfile.css';
 
@@ -22,8 +21,11 @@ const UserProfile = () => {
     const [userProfileDetails, setUserProfileDetails] = useState(null);
     const [sessionExpired, setSessionExpired] = useState(false);
     const quizHistoryRef = useRef(null);
+    const [selectedOption, setSelectedOption] = useState('Me');
+    const [isDeleteClicked, setIsDeleteClicked] = useState(false);
+    const [deleteTopicId, setDeleteTopicId] = useState(null);
+    const [refresh, setRefresh] = useState(false);
 
-   
    
    
     const getUserProfileDetails = async (user) => {
@@ -93,6 +95,10 @@ const UserProfile = () => {
       // navigate('/profile');
     }
 
+    const handleOptionClick = (option) => {
+        setSelectedOption(option);
+    };
+
     const topicColorMapping = {
         // color mapping for each topicId
     };
@@ -102,19 +108,20 @@ const UserProfile = () => {
         const averagePercentageByTopic = userProfileDetails.averageScoreByTopic;
     
         const colors = [
-            'rgba(75,192,192,0.4)',
-            'rgba(134, 203, 92, 0.4)',
-            'rgba(161, 92, 203, 0.4)',
-            'rgba(35, 43, 244, 0.4)',
-            'rgba(35, 244, 106, 0.4)',
+            'rgba(75,192,192,0.8)',
+            'rgba(134,203,92,0.8)',
+            'rgba(161,92,203,0.8)',
+            'rgba(35,43,244,0.8)',
+            'rgba(35,244,106,0.8)',
+            
         ];
     
         const hoverColors = [
-            'rgba(75,192,192,1)',
-            'rgba(134,203,92,1)',
-            'rgba(161,92,203,1)',
-            'rgba(35,43,244,1)',
-            'rgba(35,244,106,1)',
+            'rgba(75,192,192,0.6)',
+            'rgba(134, 203, 92, 0.6)',
+            'rgba(161, 92, 203, 0.6)',
+            'rgba(35, 43, 244, 0.6)',
+            'rgba(35, 244, 106, 0.6)',
         ];
     
         const borderColor = [
@@ -201,19 +208,20 @@ const UserProfile = () => {
         const averagePercentageByTopic = userProfileDetails.averageScoreByTopic;
     
         const colors = [
-            'rgba(255,0,0,0.4)',
-            'rgba(203,199,92,0.4)',
-            'rgba(255,107,0,0.4)',
-            'rgba(240,244,35,0.4)',
-            'rgba(185,140,52,0.4)',
+            'rgba(255,0,0,0.8)',
+            'rgba(203,199,92,0.8)',
+            'rgba(255,107,0,0.8)',
+            'rgba(240,244,35,0.8)',
+            'rgba(185,140,52,0.8)',
         ];
     
         const hoverColors = [
-            'rgba(255,0,0,1)',
-            'rgba(203,199,92,1)',
-            'rgba(255,107,0,1)',
-            'rgba(240,244,35,1)',
-            'rgba(185,140,52,1)',
+            'rgba(255,0,0,0.6)',
+            'rgba(203,199,92,0.6)',
+            'rgba(255,107,0,0.6)',
+            'rgba(240,244,35,0.6)',
+            'rgba(185,140,52,0.6)',
+           
         ];
     
         const borderColor = [
@@ -339,7 +347,7 @@ const UserProfile = () => {
                 },
                 y: {  
                     min: 0,  
-                    max: 150,  
+                    max: 100,  
                 }
             },
             plugins: {
@@ -356,6 +364,10 @@ const UserProfile = () => {
                             let dataset = context.dataset;
                             let currentItem = dataset.data[context.dataIndex];
                             return `Quiz ${currentItem.quizNum}, Date: ${currentItem.date}, Score: ${context.parsed.y}%`;
+                        },
+                        title: function(context) {
+                            let dataset = context[0].dataset;
+                            return dataset.label; // Shows the topic name as the title of the tooltip.
                         }
                     }
                 }
@@ -420,6 +432,11 @@ const UserProfile = () => {
             let hoverColor = topicColors.hoverColor;
             let border = topicColors.border;
     
+            // apply lighter version of color for other's data, using hoverColor
+            let otherColor = topicColors.hoverColor;
+            let otherHoverColor = topicColors.hoverColor;
+            let otherBorder = topicColors.border;
+    
             data.labels.push(topicName);
             data.datasets[0].data.push(percentage);
             data.datasets[0].backgroundColor.push(color);
@@ -427,15 +444,16 @@ const UserProfile = () => {
             data.datasets[0].borderColor.push(border);
     
             data.datasets[1].data.push(otherPercentage);
-            data.datasets[1].backgroundColor.push(color);
-            data.datasets[1].hoverBackgroundColor.push(hoverColor);
-            data.datasets[1].borderColor.push(border);
+            data.datasets[1].backgroundColor.push(otherColor);
+            data.datasets[1].hoverBackgroundColor.push(otherHoverColor);
+            data.datasets[1].borderColor.push(otherBorder);
         }
     
         return (
             <BarChart chartData={data} options={options} />
         );
     }
+    
     
     
     const quizHistory = () => {
@@ -536,6 +554,75 @@ const UserProfile = () => {
         navigate('/home');
     }
 
+    const handleCreateQuizOnUserProfileQuizzesClick = () => {
+        navigate('/home');
+    }
+
+
+    const handleDeleteClick = (topicId, event) => {
+        event.stopPropagation(); // prevents triggering the topic click when delete is clicked
+        setIsDeleteClicked(true);
+        setDeleteTopicId(topicId);
+    }
+    
+    const handleConfirmDelete = async () => {
+        const userId = userProfileDetails.userId;
+
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${baseURL}/api/v1/topics/${deleteTopicId}/${userId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            
+            if(response.status === 200) {
+                setIsDeleteClicked(false);
+                setDeleteTopicId(null);
+                window.location.reload(); 
+            }
+
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+    
+    const handleCancelDelete = () => {
+        setIsDeleteClicked(false);
+        setDeleteTopicId(null);
+    }
+
+  
+    
+    const quizTopicsCreated = () => {
+        const topics = userProfileDetails.topicsCreated;
+    
+        return topics.map((topic, index) => (
+            <div className="topic-created-card" key={index}>
+                <div className="user-topic">
+                    <p className="user-created-topic-name">{topic.name}</p>
+                    <p className="current-rating">{topic.rating}<span className="golden-star">★</span><span className="raters-count">({topic.numberOfRaters})</span></p>
+                </div>
+                <button className="delete-button" onClick={(event) => handleDeleteClick(topic.id, event)}>
+                    <FaTrash />
+                </button>
+                {
+                    isDeleteClicked && deleteTopicId === topic.id &&
+                    <Modal className= {isDeleteClicked ? 'visible' : ''}>
+                        <p className="delete-topic">Are you sure you want to delete the quiz topic created?</p>
+                        <div className="delete-buttons">
+                            <button className="delete-topic-yes-button" type="submit" onClick={handleConfirmDelete}>Yes</button>
+                            <button className="delete-topic-no-button" type="submit" onClick={handleCancelDelete}>No</button>
+                        </div>
+                    </Modal>
+                }
+            </div>
+        ));
+    }
+    
+    
 
     const hasCommonKeys = (obj1, obj2) => {
         const keys1 = Object.keys(obj1);
@@ -575,19 +662,51 @@ const UserProfile = () => {
             <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  /> 
               
               {userProfileDetails && <div className="user-profile-details">
+
+
+                <div className="user-profile-options">
+                     <p 
+                        className={`option ${selectedOption === 'Me' ? 'options-active' : ''}`} 
+                        onClick={() => handleOptionClick('Me')}
+                    >
+                        Me
+                    </p>
+                    <p 
+                        className={`option ${selectedOption === 'My Progress' ? 'options-active' : ''}`} 
+                        onClick={() => handleOptionClick('My Progress')}
+                    >
+                        My Progress
+                    </p>
+                    <p 
+                        className={`option ${selectedOption === 'Quiz History' ? 'options-active' : ''}`} 
+                        onClick={() => handleOptionClick('Quiz History')}
+                    >
+                        Quiz History
+                    </p>
+                    <p 
+                        className={`option ${selectedOption === 'Quizzes created' ? 'options-active' : ''}`} 
+                        onClick={() => handleOptionClick('Quizzes created')}
+                    >
+                        Quizzes created
+                    </p>
+                </div>
                 
-                <div className="first-section">    
-                    <UserCard firstName={userProfileDetails.firstName} lastName={userProfileDetails.lastName} email={userProfileDetails.email} />
-                    <div className="quizzes-count" onClick={() => quizHistoryRef.current.scrollIntoView({ behavior: 'smooth' })}>
-                        <p className="quiz-count">{userProfileDetails.quizList.length}</p>
-                        <div className="quiz-count-info">
-                            <p>{userProfileDetails.quizList.length === 1 ? "Quiz" : "Quizzes"} taken so far</p>
-                            {userProfileDetails.quizList.length > 0 && <p>Last Quiz Date: {lastQuizDate()}</p>}
+
+                {selectedOption === 'Me' && (
+                    <div className="first-section">    
+                        <UserCard firstName={userProfileDetails.firstName} lastName={userProfileDetails.lastName} email={userProfileDetails.email} />
+                        <div className="quizzes-count" onClick={() => setSelectedOption('Quiz History')}>
+                            <p className="quiz-count">{userProfileDetails.quizList.length}</p>
+                            <div className="quiz-count-info">
+                                <p>{userProfileDetails.quizList.length === 1 ? "Quiz" : "Quizzes"} taken so far</p>
+                                {userProfileDetails.quizList.length > 0 && <p>Last Quiz Date: {lastQuizDate()}</p>}
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
 
-
+                {selectedOption === 'My Progress' && (
+                <>
                 <div className="performance-analysis">
                     <p className="performance-analysis-title">Areas of Strength and Potential Growth</p>
                    {userProfileDetails.quizList.length > 0 ? 
@@ -611,7 +730,7 @@ const UserProfile = () => {
 
                 {userProfileDetails.quizList.length > 0 &&
                 <div className="performance-analysis-by-topic">
-                            <p className="performance-analysis-by-topic-title">Your Quiz Performance Over Time</p>
+                            <p className="performance-analysis-by-topic-title">My Performance Over Time</p>
                             <div className="progress-by-topic">
                                 {progressByTopic()}
                             </div> 
@@ -629,13 +748,39 @@ const UserProfile = () => {
                 }
                
 
+               </>
+            )}
+
+            {selectedOption === 'Quiz History' && (
                 <div className="quiz-history" ref={quizHistoryRef}>
                     <p className="quiz-history-title">Quiz History</p>
                     <div className="quiz-history-cards">
                         {userProfileDetails.quizList.length > 0 ? quizHistory() : <p className="no-quiz-history-last">You haven't challenged yourself with a quiz yet. <span className="create-quiz-link" onClick = {handleCreateQuizOnUserProfileClick}>Let's change that!</span></p>}
                     </div>
                 </div>
+            )}
+
+            {selectedOption === 'Quizzes created' && (
+                <>
+                {userProfileDetails.topicsCreated.length > 0  ?
+                <div className="topics-created">
+                    <p className="topics-created-title">Quizzes created</p>
+                    <div className="topics-created-cards">
+                        {quizTopicsCreated()}
+                    </div>
+                </div>
+                
+                    :
+                    <div className= "no-quiz">
+                    <p className="no-quiz-created">No quizzes created yet. <span className="create-quiz-link" onClick = {handleCreateQuizOnUserProfileQuizzesClick}>Would you like to try?</span></p>
+                    </div>
+                    }
+                </>
+                )}
+
               </div> 
+            
+
             }
              <Footer />
         </div>}
@@ -643,6 +788,5 @@ const UserProfile = () => {
     )
 }
 
-//<UserCard firstName={userProfileDetails.firstName} lastName={userProfileDetails.lastName} email={userProfileDetails.email} />
 // 
 export default UserProfile;

@@ -1,0 +1,44 @@
+.ask-rating {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    margin-top: 50px; 
+}
+
+.ask-rating-text {
+    text-align: justify;
+    margin-bottom: 20px;
+}
+
+.ask-rating button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    color: white;
+    background-color: #0D99FF;
+    border-radius: 5pt;
+    transition: transform 0.2s ease-in-out;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.ask-rating button:hover {
+    background-color: rgba(11, 138, 231, 1);
+}
+
+.star-rating-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+}
+
