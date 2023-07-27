@@ -125,7 +125,7 @@ const QuizDetailedResults = () => {
                         {getAllAnswers()}
                     </tbody>
                 </table>
-                <p className="results-link" onClick={handleOnResultClick}>Click here for the results</p>
+                <p className="results-link" onClick={handleOnResultClick}>Go back to the results</p>
             </div>
             
             <Footer />    

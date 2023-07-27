@@ -1,7 +1,7 @@
 import "../styles/TestHeader.css"
 
 
-const title = "Quizlect"
+const title = "Quizflect"
 
 const TestHeader = (props) => {
 

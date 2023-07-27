@@ -356,6 +356,17 @@ const Quiz = () => {
                 </div>
             </Modal> 
             }
+
+            <div className="students-trust">
+                <p className="students-trust-headline"> In students, we trust!</p>
+                <p className="students-trust-text">
+                    In our self-moderated learning community, we trust each of you as quiz takers. Your integrity and honesty while quizzing not only uphold our community standards but also contribute to your personal growth. Remember, the ultimate goal is learning, not just scoring. Thank you for honoring this trust.
+                </p>
+            </div>
+
+
+
+
             {showQuizStarted && quizQuestion ? 
                 <div className="quiz-question-area">
                     <div className="question-number">{questionCount} / {numberOfQuestions()}</div>

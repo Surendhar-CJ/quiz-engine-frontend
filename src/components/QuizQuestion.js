@@ -14,19 +14,37 @@ const QuizQuestion = (props) => {
         setSelectedChoices(props.userAnswer || []);
     }, [props]);
 
+    
+    const handleMultipleAnswerChoiceChange = (choice) => {
+        // Check if the choice is already selected
+        const isAlreadySelected = selectedChoices.some(
+            (selectedChoice) => selectedChoice.id === choice.id
+        );
+    
+        let newSelectedChoices;
+    
+        if (isAlreadySelected) {
+            // If it is already selected, then remove it from the selected choices
+            newSelectedChoices = selectedChoices.filter(
+                (selectedChoice) => selectedChoice.id !== choice.id
+            );
+        } else {
+            // If it is not selected, then add it to the selected choices
+            newSelectedChoices = [...selectedChoices, choice];
+        }
+    
+        // Update the state
+        setSelectedChoices(newSelectedChoices);
+    };
+    
     const handleChoiceChange = (choice) => {
-        if (question.type === "Multiple Choice") {
+        if (question.type === "Multiple Choice" || question.type === "True or False") {
             setSelectedChoices([choice]);
         } else if (question.type === "Multiple Answer") {
-            if (selectedChoices.some(selectedChoice => selectedChoice.id === choice.id)) {
-                setSelectedChoices(selectedChoices.filter(selectedChoice => selectedChoice.id !== choice.id));
-            } else {
-                setSelectedChoices([...selectedChoices, choice]);
-            }
-        } else if (question.type === "True or False") {
-            setSelectedChoices([choice]);
+            handleMultipleAnswerChoiceChange(choice);
         }
-    }
+    };
+    
 
 
     const renderChoice = (inputType) => {

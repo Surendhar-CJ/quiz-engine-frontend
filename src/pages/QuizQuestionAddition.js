@@ -10,19 +10,31 @@ import Modal from "../components/Modal";
 import Header from '../components/Header.js';
 import Footer from '../components/Footer.js';
 import "../styles/QuizQuestionAddition.css";
+import { useLocation } from 'react-router-dom';
 
 
 const QuizQuestionAddition = () => {
+    const location = useLocation();
     const contextValue = useContext(QuizContext);
     const navigate = useNavigate();
     const [formSubmitted, setFormSubmitted] = useState(null);
     const [showQuestionSubmitted, setShowQuestionSubmitted] = useState(false);
     const [sessionExpired, setSessionExpired] = useState(false);
+    const [showSubtopicInput, setShowSubtopicInput] = useState(false);
+    const [subtopics, setSubtopics] = useState([]);
+
+
  
     const handleHomeClick = () => {
         navigate('/home');
     }
  
+
+    React.useEffect(() => {
+        window.scrollTo(0, 0);
+      }, [location.pathname]);
+
+      
     const handleLogoutClick = () => {
         if (window.confirm("Are you sure you want to logout?")) {
             // Clear context
@@ -98,20 +110,47 @@ const QuizQuestionAddition = () => {
             score:''
         }
     );
-
+   
+    const getSubtopics = (topicId) => {
+        const selectedTopic = availableTopics.find(topic => topic.id == topicId);
+        console.log(selectedTopic);
+        return selectedTopic ? selectedTopic.subtopics : [];
+    };
+    
     
     const handleChange = (event) => {
         if(event.target.name === "questionType") {
             setChoices([{ text: '', isCorrect: false }]);
             setCorrectAnswerIndex(-1);
         }
-
+    
+        if (event.target.name === "topicId") {
+            // retrieve subtopics when topicId changes
+            const newSubtopics = getSubtopics(event.target.value);
+            setSubtopics(newSubtopics);
+            setFormData({ ...formData, subtopic: "" }); // also reset subtopic selection
+        }
+    
+        if (event.target.name === "subtopic") {
+            if (event.target.value === "new") {
+                // If user selects 'Add New Subtopic', show the subtopic input field
+                setShowSubtopicInput(true);
+                setFormData({ ...formData, subtopic: "" });
+            } else if (!showSubtopicInput) {
+                // If an existing subtopic is selected, hide the input field only if it's currently hidden
+                setShowSubtopicInput(false);
+            }
+        }
+    
         setFormData((prevFormData) => ({
             ...prevFormData,
             [event.target.name]: event.target.value
         }))
     };
-
+    
+    
+    
+    
    
     const [choices, setChoices] = useState([
         { text: '', isCorrect: false }
@@ -188,6 +227,11 @@ const QuizQuestionAddition = () => {
         setChoices([...choices, { text: '', isCorrect: false }]);
     };
 
+    const handleRemoveChoice = () => {
+        const newChoices = choices.slice(0, -1); // creates a new array without the last element
+        setChoices(newChoices);
+    };
+    
     
     
     const submitClick = (event) => {
@@ -293,6 +337,9 @@ const QuizQuestionAddition = () => {
         navigate('/home');
     };
 
+
+
+
     React.useEffect(() => {
         if (sessionExpired) {
           setTimeout(() => {
@@ -305,6 +352,8 @@ const QuizQuestionAddition = () => {
           }, 5000);
         }
     }, [sessionExpired]);
+
+
 
     return (
 
@@ -319,8 +368,18 @@ const QuizQuestionAddition = () => {
 
         {<div className="question-addition-page">
             <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
+           
             <div className="question-addition-main">
                 <h2 className="add-question-title">Add Question</h2>
+                <div className="question-addition-guidelines">
+                    <p className="guidelines"> 
+                        Your questions play a vital role in our learning community. When creating questions, please ensure they are of high quality, accurate, and appropriate. Remember, the quizzes will be rated by your peers, take special care especially when contributing questions to the other creator's quiz topic. Your thoughtful contributions help shape our collective knowledge base. Thank you for your efforts!
+                    </p>
+                </div>
+
+                
+            
+                
                 <form className="question-addition-form" onSubmit={submitClick}>
                     
                     <div className="question-addition-topic">
@@ -338,15 +397,33 @@ const QuizQuestionAddition = () => {
                     </div>
 
                     <div className="question-addition-subtopic">
-                           <label htmlFor="subtopic">Mention the subtopic for the question if you wish. </label> 
-                           <input 
-                                type="text" 
-                                value={formData.subtopic} 
-                                onChange={handleChange} 
-                                placeholder="Subtopic" 
-                                name="subtopic"
-                            />       
-                    </div>
+                        <label htmlFor="subtopic">Mention the subtopic for the question if you wish. </label>
+                        {showSubtopicInput ? (
+                            <>
+                                <input 
+                                    type="text" 
+                                    value={formData.subtopic} 
+                                    onChange={handleChange} 
+                                    placeholder="Enter new subtopic" 
+                                    name="subtopic"
+                                /> 
+                                <button type="button" onClick={() => setShowSubtopicInput(false)} className="cancel-subtopic-button">Cancel</button>
+                            </>
+                        ) : (
+                            <select value={formData.subtopic} onChange={handleChange} name="subtopic">
+                                <option value="">Select Subtopic</option>
+                                {subtopics.map(subtopic => (
+                                    <option value={subtopic.name} key={subtopic.id}>
+                                        {subtopic.name}
+                                    </option>
+                                ))}
+                                <option value="new">Add New Subtopic</option>
+                            </select>
+                        )}
+                </div>
+
+
+
 
                     <div className="question-addition-type">    
                            <label htmlFor="questionType">Question type </label> 
@@ -382,8 +459,8 @@ const QuizQuestionAddition = () => {
                                     <select 
                                         onChange={event => handleCorrectAnswerChangeForTF(event, index)}
                                     >
-                                        <option value={false}>Incorrect</option>
-                                        <option value={true}>Correct</option>
+                                        <option className="tf-first" value={false}>Incorrect</option>
+                                        <option className="tf-second"value={true}>Correct</option>
                                     </select>
                                 </div>
                             ))
@@ -405,9 +482,12 @@ const QuizQuestionAddition = () => {
                                 </div>
                             ))
                         }
-                        {["Multiple Choice", "Multiple Answer"].includes(formData.questionType) && 
+                       {["Multiple Choice", "Multiple Answer"].includes(formData.questionType) && 
+                        <div className="choice-buttons">
                             <button type="button" onClick={handleAddChoice} className="add-choice-button">Add Choice</button>
-                        }
+                            {choices.length > 1 && <button type="button" onClick={handleRemoveChoice} className="remove-choice-button">Remove Choice</button>}
+                        </div>
+                    }
                     </div>
 
                     <div className="question-addition-correct-answer-explanation">
@@ -422,7 +502,7 @@ const QuizQuestionAddition = () => {
                     </div>
                     
                     <div className="question-addition-difficulty">
-                           <label htmlFor="difficultyLevel">Question type What do you think the difficulty level of the question should be? </label> 
+                           <label htmlFor="difficultyLevel">What do you think the difficulty level of the question should be? </label> 
                            <select
                                 id="difficultyLevel"
                                 value={formData.difficultyLevel}

@@ -108,4 +108,5 @@
 
 .quiz-configure-card button:hover {
     background-color: rgba(11, 138, 231, 1);
+    cursor: pointer;
 } 

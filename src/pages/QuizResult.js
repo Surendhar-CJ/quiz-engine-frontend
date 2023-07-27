@@ -1,9 +1,6 @@
 import { useContext } from 'react';
 import { QuizContext } from '../context/QuizContext';
 import React, { useState } from 'react';
-import {BiSolidHome} from 'react-icons/bi'
-import { FaUser } from 'react-icons/fa';
-import { IoLogOut } from 'react-icons/io5';
 import { useNavigate } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 import { baseURL } from '../config.js';
@@ -14,6 +11,7 @@ import Modal from '../components/Modal';
 import '../styles/QuizResult.css';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import ProgressBar from '@ramonak/react-progress-bar';
+import AskRating from '../components/AskRating.js';
 import 'react-circular-progressbar/dist/styles.css';
 
 
@@ -24,6 +22,7 @@ import 'react-circular-progressbar/dist/styles.css';
     const [showDetailedResults, setShowDetailedResults] = useState(false);
     const contextValue = useContext(QuizContext);
     const [sessionExpired, setSessionExpired] = useState(false);
+    const [isRatingSubmitted, setIsRatingSubmitted] = useState(false);
     
     const location = useLocation();
     const fromQuiz = location.state?.fromQuiz;
@@ -42,6 +41,11 @@ import 'react-circular-progressbar/dist/styles.css';
       }
     }, [fromQuiz]);
 
+    React.useEffect(() => {
+      if (isRatingSubmitted) {
+        // Any code you want to run after isRatingSubmitted changes goes here.
+      }
+    }, [isRatingSubmitted]);
     
        
     const handleHomeClick = () => {
@@ -92,6 +96,7 @@ import 'react-circular-progressbar/dist/styles.css';
                 const data = await response.json();
                 contextValue.setQuizResult(data);
                 const dataL = localStorage.setItem('quizResult', JSON.stringify(data));
+                
             }
         }
       } catch(error) {
@@ -260,36 +265,36 @@ import 'react-circular-progressbar/dist/styles.css';
             <div className="quiz-result-content">
                
                 <h1>Quiz results</h1>
+                <div className="quiz-marks-all">
+                  <div className="quiz-marks-section">
+                    <div className="percentage-card" style={{ width: 150, height: 150 }}>
+                      <CircularProgressbar 
+                          value={quizResult.finalPercentage} 
+                          text={`${quizResult.finalPercentage}%`} 
+                          styles= {buildStyles ({
+                            pathColor: getProgressColor(quizResult.finalPercentage),
+                            textColor: getProgressColor(quizResult.finalPercentage),
+                            pathTransitionDuration: 0.5
 
-                <div className="quiz-marks-section">
-                  <div className="percentage-card" style={{ width: 150, height: 150 }}>
-                     <CircularProgressbar 
-                        value={quizResult.finalPercentage} 
-                        text={`${quizResult.finalPercentage}%`} 
-                        styles= {buildStyles ({
-                          pathColor: getProgressColor(quizResult.finalPercentage),
-                          textColor: getProgressColor(quizResult.finalPercentage),
-                          pathTransitionDuration: 0.5
+                          })
+                        }                    
+                      />
+                    </div>
 
-                        })
-                      }                    
-                    />
+                    <div className="topic-marks-card" style={{ backgroundColor: lightenColor(getProgressColor(quizResult.finalPercentage), 60) }}>
+                      <div className="quiz-topic-result">
+                          <p>Topic: <span>{quizTopic}</span></p>
+                      </div>
+                      <div className="marks-card">
+                          <p>Marks: <span>{quizResult.finalScore} / {quizResult.totalNumberOfMarks}</span></p>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="topic-marks-card" style={{ backgroundColor: lightenColor(getProgressColor(quizResult.finalPercentage), 60) }}>
-                    <div className="quiz-topic-result">
-                        <p>Topic: <span>{quizTopic}</span></p>
-                    </div>
-                    <div className="marks-card">
-                        <p>Marks: <span>{quizResult.finalScore} / {quizResult.totalNumberOfMarks}</span></p>
-                    </div>
+                  <div className="marks-by-subtopic">
+                      {getSubtopicScores()}
                   </div>
                 </div>
-
-                <div className="marks-by-subtopic">
-                    {getSubtopicScores()}
-                </div>
-
                 <div className="quiz-feedback">
                     <h2 className="quiz-feedback-title">Feedback</h2>
                     <div className="quiz-feedback-content">
@@ -301,8 +306,13 @@ import 'react-circular-progressbar/dist/styles.css';
                 <div className="incorrect-answer-explanations">
                     {getIncorrectCards()}
                 </div>
-
-                <p className="detailed-results-link" onClick={handleOnDetailedResultsClick}>Click here to get the detailed results</p>
+                
+                {quizResult.userId !== quizResult.topic.user.id && !quizResult.isRated && !isRatingSubmitted && (
+                  <div className="rating-area">
+                      <AskRating onRatingSubmit={() => setIsRatingSubmitted(true)}/>
+                  </div>
+              )}
+                <p className="detailed-results-link" onClick={handleOnDetailedResultsClick}>Get detailed results</p>
             
             </div>
           

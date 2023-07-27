@@ -9,6 +9,8 @@ import QuizDetailedResults from './pages/QuizDetailedResults.js';
 import UserProfile from './pages/UserProfile.js';
 import QuizQuestionAddition from './pages/QuizQuestionAddition.js';
 import PrivateRoute from './components/PrivateRoute.js';
+import { ToastContainer, toast  } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const App = () => {
@@ -28,6 +30,7 @@ const App = () => {
           </Routes>
         </BrowserRouter>
       </QuizContextProvider>
+      <ToastContainer position={toast.POSITION.BOTTOM_CENTER} />
     </div>
   ); 
 }

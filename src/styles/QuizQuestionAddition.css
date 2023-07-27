@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background-color: #F8FCFF;
+    background-color: #edf5fb;
 }
 
 
@@ -22,27 +22,38 @@
     flex-grow: 1;
     padding: 20px;
     padding-bottom: 60px;
-    background-color: #F8FCFF;
+    background-color: #edf5fb;
     border-left: 2px solid rgb(237, 237, 237);
     border-right: 2px solid rgb(237, 237, 237);
 }
 
+.question-addition-guidelines {
+    background-color: rgb(204, 229, 237);
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    padding: 20px;
+    margin: 40px;
+    border-radius: 5pt;
+}
+
+.guidelines {
+    text-align: justify;
+}
 
 
 .question-addition-form {
     display: flex;
     flex-direction: column;
-    background-color: #d9d7d7;
+    background-color: rgba(183, 182, 182, 0.323);
     border-radius: 5pt;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     border: 1px solid rgb(237, 237, 237);
+    font-size: 10pt;
 }
 
 .question-addition-form label {
-    font-size: 14pt;
+    font-size: 12pt;
     font-weight: 600;
     margin-bottom: 10px;
-    
 }
 
 
@@ -60,27 +71,33 @@
 }
 
 .question-addition-topic select,
+.question-addition-subtopic select,
 .question-addition-type select,
 .question-addition-difficulty select {
-    width: 25%;
+    width: 30%;
     padding: 5px;
     border-radius: 5pt;
-    font-size: 12pt;
+    font-size: 10.5pt;
 }
 
 .question-addition-text textarea,
 .question-addition-correct-answer-explanation textarea {
-    width: 80%;
-    padding: 10px;
+    width: 100%;
+    padding: 10px 5px;
     border-radius: 5pt;
-    font-size: 12pt;
+    font-size: 10.5pt;
+}
+
+.question-addition-text textarea:hover,
+.question-addition-correct-answer-explanation textarea:hover {
+    cursor:text;
 }
 
 .question-addition-subtopic input{
     width: 45%;
     padding: 5px;
     border-radius: 5pt;
-    font-size: 12pt;
+    font-size: 10.5pt;
 }
 
 
@@ -100,42 +117,40 @@
 
 
 .question-addition-options {
-    font-size: 12pt;
+    font-size: 10.5pt;
     font-weight: 300;
     margin-bottom: 10px;
 }
 
 
 .question-addition-options .true-false {
-    display: flex;
-    align-items: center;
-    font-size: 14pt;
+    font-size: 10.5pt;
     margin-bottom: 10px;
     padding: 10px;
     
 }
 
 .question-addition-options .true-false label {
-    font-size: 14pt;
+    font-size: 12pt;
     font-weight: 500;
     margin-right: 10px;
 }
 
 .question-addition-options .true-false label:first-child {
-    font-size: 14pt;
+    font-size: 12pt;
     font-weight: 500;
-    margin-right: 15px;
+    margin-right: 12px;
 }
 
 .question-addition-options .true-false select {
     width: 20%;
     padding: 5px;
     border-radius: 5pt;
-    font-size: 12pt;
+    font-size: 10pt;
 }
 
 .question-addition-options .mcq-maq input {
-    font-size: 12pt;
+    font-size: 10pt;
     font-weight: 500;
     margin-right: 10px;
     border-radius: 5pt;
@@ -148,34 +163,45 @@
     width: 20%;
     padding: 5px;
     border-radius: 5pt;
-    font-size: 12pt;
+    font-size: 10pt;
 }
 
 
-.add-choice-button {
-    width: 15%;
+.cancel-subtopic-button, .add-choice-button, .remove-choice-button {
+    width: 25%;
     padding: 9px;
     border-radius: 5pt;
     color: white;
-    background-color: rgb(34, 33, 33);
+    background-color: #242323a3;
     border: none;
+    margin-right: 30px;
 }
 
-.add-choice-button:hover {
+.cancel-subtopic-button {
+    margin-top: 10px;
+}
+
+.cancel-subtopic-button:hover, .add-choice-button:hover, .remove-choice-button:hover {
     cursor: pointer;
-    background-color: #000000;
+    background-color: rgb(34, 33, 33);
+}
+
+
+.question-addition-score label {
+    font-size: 12pt;
 }
 
 .question-addition-score input {
     width: 25%;
     padding: 5px;
     border-radius: 5pt;
-    font-size: 12pt;
+    font-size: 10pt;
 }
 
 .question-addition-submit-button {
     display: flex;
     justify-content: center;
+    width: 100%;
 }
 
 .question-addition-submit-button button {
@@ -222,4 +248,5 @@
 
 .quiz-question-submitted button:hover {
     background-color: rgba(11, 138, 231, 1);
+    cursor: pointer;
 }
