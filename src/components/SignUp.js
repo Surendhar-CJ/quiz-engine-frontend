@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { baseURL } from '../config.js';
+import { useErrorHandler } from '../hooks/useErrorHandler';
 import "../styles/SignUp.css";
 
 
 
 const SignUp = ({ toggleLogin, toggleSignUp }) => {
 
+    const [serverErrors, setServerErrors] = useState('');
     const [successMessage, setSuccessMessage] = useState(false);
-
     const [formData, setFormData] = useState( 
         {
             firstName : "",
@@ -18,6 +19,26 @@ const SignUp = ({ toggleLogin, toggleSignUp }) => {
         }
     );
 
+    const handleError = useErrorHandler();
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        postSignUpRequest();
+    }
+
+    const showSuccessMessage = (message) => {
+        setSuccessMessage(message);
+        setTimeout(() => {
+          setSuccessMessage(false);
+        }, 1500);
+      }
+
+    const handleLoginLinkClick = (event) => {
+        event.preventDefault();
+        toggleSignUp();  
+        toggleLogin();  
+      };
+
     const handleChange = (event) => {
         setFormData(prevFormData => {
             return {
@@ -27,7 +48,8 @@ const SignUp = ({ toggleLogin, toggleSignUp }) => {
         })
     };
 
-    const [serverErrors, setServerErrors] = useState('');
+   
+
 
     const postSignUpRequest = async() => {
         try {
@@ -51,28 +73,17 @@ const SignUp = ({ toggleLogin, toggleSignUp }) => {
                 }, 1500); 
             }
         } catch (error) {
-            console.error("Error :", error);
-            setServerErrors(error.message);
+            if (error.name === 'TypeError') {
+                // This error is due to a network problem or any problem preventing the fetch from completing
+                handleError('An error occurred while trying to reach the server. Please check your network connection and try again.');
+            } else {
+                // This error is from the backend
+                setServerErrors(error.message);
+            }
         }
     }
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        postSignUpRequest();
-    }
-
-    const showSuccessMessage = (message) => {
-        setSuccessMessage(message);
-        setTimeout(() => {
-          setSuccessMessage(false);
-        }, 1500);
-      }
-
-    const handleLoginLinkClick = (event) => {
-        event.preventDefault();
-        toggleSignUp();  
-        toggleLogin();  
-      };
+   
 
 
       return (
