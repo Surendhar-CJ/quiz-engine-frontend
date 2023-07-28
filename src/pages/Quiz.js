@@ -10,6 +10,7 @@ import QuizQuestion from '../components/QuizQuestion';
 import FeedbackCard from '../components/FeedbackCard';
 import SubmitQuiz from '../components/SubmitQuiz';
 import TestFooter from '../components/TestFooter';
+import { useErrorHandler } from '../hooks/useErrorHandler';
 import "../styles/Quiz.css";
 
 
@@ -33,6 +34,7 @@ const Quiz = () => {
 
     const contextValue = useContext(QuizContext);
     const navigate = useNavigate();
+    const handleError = useErrorHandler();
 
     React.useEffect(() => {
         const storedQuizDetails = JSON.parse(localStorage.getItem('quizDetails'));
@@ -172,8 +174,12 @@ const Quiz = () => {
                 localStorage.setItem('firstQuestion', JSON.stringify(data));
             }
 
-        } catch (error) {
-            console.error("Error :", error);
+        }  catch(error) {
+            if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
+                handleError('An error occurred while trying to reach the server. Please try again');
+            } else {
+                handleError(error);
+            }
         }
     } ;
 
@@ -208,8 +214,12 @@ const Quiz = () => {
                 }
             }
 
-        } catch(error) {
-            console.log("Error :", error);
+        }  catch(error) {
+            if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
+                handleError('An error occurred while trying to reach the server. Please try again');
+            } else {
+                handleError(error);
+            }
         }
     }
 
@@ -265,8 +275,12 @@ const Quiz = () => {
         }
     }
 
-    } catch (error) {
-        console.error("Error :", error);
+    }  catch(error) {
+        if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
+            handleError('An error occurred while trying to reach the server. Please try again');
+        } else {
+            handleError(error);
+        }
     }
 }
 
@@ -293,8 +307,12 @@ const Quiz = () => {
                 }
             }
         }
-        } catch(error) {
-            console.error('An error occurred while submitting the quiz:', error);
+        }  catch(error) {
+            if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
+                handleError('An error occurred while trying to reach the server. Please try again');
+            } else {
+                handleError(error);
+            }
         }
     }
     
@@ -304,10 +322,6 @@ const Quiz = () => {
         }
     }, [hasQuizBeenSubmitted == true]);
 
-
-
-    
-   
 
     React.useEffect(() => {
         if (sessionExpired) {
@@ -322,10 +336,6 @@ const Quiz = () => {
         }
     }, [sessionExpired]);
 
-    
-    {if (isLoading) {
-        return <div>Loading...</div>;
-    }}
 
     return (
         <>
