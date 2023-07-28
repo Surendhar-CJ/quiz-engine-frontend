@@ -1,47 +1,56 @@
 import { useContext } from 'react';
 import { QuizContext } from '../context/QuizContext';
 import React, { useState } from 'react';
-import {BiSolidHome} from 'react-icons/bi'
-import { FaUser } from 'react-icons/fa';
-import { IoLogOut } from 'react-icons/io5';
 import { useNavigate } from "react-router-dom";
+import Home from './Home';
 import { baseURL } from '../config.js';
 import Modal from "../components/Modal";
 import Header from '../components/Header.js';
 import Footer from '../components/Footer.js';
 import "../styles/QuizQuestionAddition.css";
 import { useLocation } from 'react-router-dom';
+import { useErrorHandler } from '../hooks/useErrorHandler';
+
 
 
 const QuizQuestionAddition = () => {
-    const location = useLocation();
-    const contextValue = useContext(QuizContext);
-    const navigate = useNavigate();
+    
     const [formSubmitted, setFormSubmitted] = useState(null);
     const [showQuestionSubmitted, setShowQuestionSubmitted] = useState(false);
     const [sessionExpired, setSessionExpired] = useState(false);
     const [showSubtopicInput, setShowSubtopicInput] = useState(false);
     const [subtopics, setSubtopics] = useState([]);
+    const [formData, setFormData] = useState(
+        {
+            topicId: '',
+            subtopic:'',
+            questionType: '',
+            difficultyLevel: '',
+            questionText:'',
+            choices:'',
+            explanation:'',
+            score:''
+        }
+    );
+    const [choices, setChoices] = useState([
+        { text: '', isCorrect: false }
+    ]);
+    const [correctAnswerIndex, setCorrectAnswerIndex] = useState(-1);  
 
     
- 
+    const location = useLocation();
+    const contextValue = useContext(QuizContext);
+    const navigate = useNavigate();
+    const handleError = useErrorHandler();
+
+
+    const availableTopics = JSON.parse(localStorage.getItem("topics"));
+
+
     const handleHomeClick = () => {
         navigate('/home');
     }
  
-
-    React.useEffect(() => {
-        window.scrollTo(0, 0);
-      }, [location.pathname]);
-
-    React.useEffect(() => {
-        const storedUser = JSON.parse(window.localStorage.getItem('user'));
-        
-        if(storedUser !== null) {
-            contextValue.setUser(storedUser);
-        }
-    }, []);
-
 
     const handleLogoutClick = () => {
         if (window.confirm("Are you sure you want to logout?")) {
@@ -60,8 +69,6 @@ const QuizQuestionAddition = () => {
     }
     
     
-    const availableTopics = JSON.parse(localStorage.getItem("topics"))
-
     
     const topicElements = availableTopics.map(topic => {
         return (
@@ -106,25 +113,14 @@ const QuizQuestionAddition = () => {
     }
 
 
-    const [formData, setFormData] = useState(
-        {
-            topicId: '',
-            subtopic:'',
-            questionType: '',
-            difficultyLevel: '',
-            questionText:'',
-            choices:'',
-            explanation:'',
-            score:''
-        }
-    );
+   
    
     const getSubtopics = (topicId) => {
         const selectedTopic = availableTopics.find(topic => topic.id == topicId);
-        console.log(selectedTopic);
         return selectedTopic ? selectedTopic.subtopics : [];
     };
     
+
     
     const handleChange = (event) => {
         if(event.target.name === "questionType") {
@@ -157,15 +153,7 @@ const QuizQuestionAddition = () => {
     };
     
     
-    
-    
    
-    const [choices, setChoices] = useState([
-        { text: '', isCorrect: false }
-    ]);
-   
-   
-    const [correctAnswerIndex, setCorrectAnswerIndex] = useState(-1);  // For single correct answer types
     
     
     const handleChoiceTextChange = (event, index) => {
@@ -262,7 +250,36 @@ const QuizQuestionAddition = () => {
     
         setFormSubmitted(true);
     }
+
+
+    const resetForm = () => {
+        setFormData({
+            topicId: '',
+            subtopic: '',
+            questionType: '',
+            difficultyLevel: '',
+            questionText:'',
+            choices:'',
+            explanation:'',
+            score:''
+        });
+        setChoices([{ text: '', isCorrect: false }]);
+        setCorrectAnswerIndex(-1);
+    };
     
+    
+    const handleQuizQuestionSubmittedClick = () => {
+        setShowQuestionSubmitted(!showQuestionSubmitted);
+        getTopics();
+        resetForm();
+    };
+
+    
+    const handleQuizQuestionSubmittedExitClick = () => {
+        setShowQuestionSubmitted(!showQuestionSubmitted);
+        navigate('/home');
+    };
+
 
 
     const postSubmitClick = async () => {
@@ -296,26 +313,58 @@ const QuizQuestionAddition = () => {
                 
             });
 
-
-
-            console.log(user);
-            console.log(user.id);
-
-
             if(response.status === 403) {
                // setSessionExpired(true);
             }
 
             if(response.status === 201) {
-                    setShowQuestionSubmitted(true);                    
+                setShowQuestionSubmitted(true);                    
             }
-
-
-        }
-         catch(error) {
-            console.log("Error : ", error);
-        }
+            else {
+                const error = await response.json();
+                throw new Error(error.message);
+            }
+            
+            } catch(error) {
+                 handleError(error); 
+            }
     }
+
+
+    const getTopics = async() => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${baseURL}/api/v1/topics`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`, // include token in headers
+                },
+            });
+    
+            if(response.status === 403) {
+                setSessionExpired(true);
+            }
+    
+            if(response.status === 200) {
+                const data = await response.json();
+                contextValue.setAvailableTopics(data);
+                localStorage.setItem('topics', JSON.stringify(data));
+            } 
+    
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message);
+            }
+        } catch(error) {
+            if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
+                handleError('An error occurred while trying to reach the server. Please try again.');
+            } else if (error.message === 'Network response was not ok') {
+                handleError('There was a problem with the network response.');
+            } else {
+                handleError(error);
+            }
+        }
+    };
+    
 
 
 
@@ -327,38 +376,19 @@ const QuizQuestionAddition = () => {
     }, [formData, formSubmitted]);
 
 
-  
-    const resetForm = () => {
-        setFormData({
-            topicId: '',
-            subtopic: '',
-            questionType: '',
-            difficultyLevel: '',
-            questionText:'',
-            choices:'',
-            explanation:'',
-            score:''
-        });
-        setChoices([{ text: '', isCorrect: false }]);
-        setCorrectAnswerIndex(-1);
-    };
+
+    React.useEffect(() => {
+        window.scrollTo(0, 0);
+      }, [location.pathname]);
 
 
-    
-    const handleQuizQuestionSubmittedClick = () => {
-        setShowQuestionSubmitted(!showQuestionSubmitted);
+    React.useEffect(() => {
+        const storedUser = JSON.parse(window.localStorage.getItem('user'));
         
-        // Call the reset function
-        resetForm();
-    };
-
-    
-    const handleQuizQuestionSubmittedExitClick = () => {
-        setShowQuestionSubmitted(!showQuestionSubmitted);
-        navigate('/home');
-    };
-
-
+        if(storedUser !== null) {
+            contextValue.setUser(storedUser);
+        }
+    }, []);
 
 
     React.useEffect(() => {
@@ -373,6 +403,8 @@ const QuizQuestionAddition = () => {
           }, 5000);
         }
     }, [sessionExpired]);
+
+
 
 
 
@@ -404,7 +436,7 @@ const QuizQuestionAddition = () => {
                 <form className="question-addition-form" onSubmit={submitClick}>
                     
                     <div className="question-addition-topic">
-                           <label htmlFor="topicId">Which topic would you like to add question to? </label> 
+                           <label htmlFor="topicId">Select the topic</label> 
                            <select
                                 id="topicId"
                                 value={formData.topicId}
@@ -418,7 +450,7 @@ const QuizQuestionAddition = () => {
                     </div>
 
                     <div className="question-addition-subtopic">
-                        <label htmlFor="subtopic">Mention the subtopic for the question if you wish. </label>
+                        <label htmlFor="subtopic">Mention the subtopic for the question (optional). </label>
                         {showSubtopicInput ? (
                             <>
                                 <input 
@@ -512,7 +544,7 @@ const QuizQuestionAddition = () => {
                     </div>
 
                     <div className="question-addition-correct-answer-explanation">
-                        <label htmlFor="explanation">Provide an explanation on why the choice(s) is the correct answer</label>   
+                        <label htmlFor="explanation">Provide an explanation for the correct answer(s)</label>   
                         <textarea 
                             value={formData.explanation}
                             placeholder="Explanation"
@@ -538,8 +570,6 @@ const QuizQuestionAddition = () => {
                     
                     <div className="question-addition-score">
                         <label htmlFor="score">Would you like to give a score to the question? 
-                                              <br></br>If not given, score will be assigned based on its difficulty level. 
-                                              <br></br>Default scores : Easy - 1,  Medium - 2,  Hard - 3.
                                               </label>   
                         <input
                             type="number"

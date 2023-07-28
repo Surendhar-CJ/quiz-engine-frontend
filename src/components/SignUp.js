@@ -73,11 +73,9 @@ const SignUp = ({ toggleLogin, toggleSignUp }) => {
                 }, 1500); 
             }
         } catch (error) {
-            if (error.name === 'TypeError') {
-                // This error is due to a network problem or any problem preventing the fetch from completing
-                handleError('An error occurred while trying to reach the server. Please check your network connection and try again.');
+            if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
+                handleError('An error occurred while trying to reach the server. Please try again');
             } else {
-                // This error is from the backend
                 setServerErrors(error.message);
             }
         }
