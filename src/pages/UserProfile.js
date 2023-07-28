@@ -13,66 +13,26 @@ import QuizCard from '../components/UserProfileComponents/QuizCard';
 import { useLocation } from 'react-router-dom';
 import { FaTrash } from 'react-icons/fa';
 import Modal from "../components/Modal";
+import {useErrorHandler} from "../hooks/useErrorHandler";
+import {useSuccessHandler} from "../hooks/useSuccessHandler";
 import '../styles/UserProfile.css';
 
 const UserProfile = () => {
-    const contextValue = useContext(QuizContext);
-    const navigate = useNavigate();
+    
     const [userProfileDetails, setUserProfileDetails] = useState(null);
     const [sessionExpired, setSessionExpired] = useState(false);
     const quizHistoryRef = useRef(null);
     const [selectedOption, setSelectedOption] = useState('Me');
     const [isDeleteClicked, setIsDeleteClicked] = useState(false);
     const [deleteTopicId, setDeleteTopicId] = useState(null);
-    const [refresh, setRefresh] = useState(false);
-
-   
-   
-    const getUserProfileDetails = async (user) => {
-        const userId = user.id;
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`${baseURL}/api/v1/users/${userId}`, {
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            });
-
-            if(response.status === 403) {
-                setSessionExpired(true);
-            }
-
-            if(response.status === 302) {
-                const data = await response.json();
-                setUserProfileDetails(data);
-            }
-
-
-            if(response.status === 400) {
-                const data = await response.json();
-                throw new Error(data.message);
-            }
-
-        } catch (error) {
-            console.log("Error :", error);
-        }
-    };
-
-    React.useEffect(() => {
-        const storedUser = JSON.parse(window.localStorage.getItem('user'));
-        const storedTopics = JSON.parse(window.localStorage.getItem('topics'));
-
-        if (storedUser) {
-            contextValue.setUser(storedUser);
-            getUserProfileDetails(storedUser);
-        }
-        
-       if(contextValue.availableTopics == null && storedTopics !== null) {
-            contextValue.setAvailableTopics(storedTopics);
-        } 
-        
-    }, [])
-
+    const [isQuestionDeleteClicked, setIsQuestionDeleteClicked] = useState(false);
+    const [deleteQuestionId, setDeleteQuestionId] = useState(null);
+    
+    
+    const handleError = useErrorHandler();
+    const handleSuccess = useSuccessHandler();
+    const contextValue = useContext(QuizContext);
+    const navigate = useNavigate();
 
 
 
@@ -92,7 +52,7 @@ const UserProfile = () => {
     }
 
     const handleProfileClick = () => {
-      // navigate('/profile');
+      // Stays in the same page
     }
 
     const handleOptionClick = (option) => {
@@ -520,41 +480,15 @@ const UserProfile = () => {
         return `${day}/${month}/${year}`; 
     }
 
-
-
-    const handleOnClickQuizCard = async(quizId) => {
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`${baseURL}/api/v1/quizzes/quiz-result/${quizId}`, {
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            });
-
-            if(response.status === 403) {
-                setSessionExpired(true);
-            }
-            else if(!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            } else {
-                const data = await response.json();
-                window.localStorage.setItem('quizResult', JSON.stringify(data));
-                window.localStorage.setItem('topic', JSON.stringify(data.topic));
-                navigate('/result');
-            }
-        } catch(error) {
-            console.error('An error occurred while submitting the quiz:', error);
-        }
-
-       
-    }
-
-
     const handleCreateQuizOnUserProfileClick = () => {
         navigate('/home');
     }
 
     const handleCreateQuizOnUserProfileQuizzesClick = () => {
+        navigate('/home');
+    }
+
+    const handleAddQuestionOnUserProfileQuestionsClick = () => {
         navigate('/home');
     }
 
@@ -564,38 +498,7 @@ const UserProfile = () => {
         setIsDeleteClicked(true);
         setDeleteTopicId(topicId);
     }
-    
-    const handleConfirmDelete = async () => {
-        const userId = userProfileDetails.userId;
 
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`${baseURL}/api/v1/topics/${deleteTopicId}/${userId}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
-            
-            if(response.status === 200) {
-                setIsDeleteClicked(false);
-                setDeleteTopicId(null);
-                window.location.reload(); 
-            }
-
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    }
-    
-    const handleCancelDelete = () => {
-        setIsDeleteClicked(false);
-        setDeleteTopicId(null);
-    }
-
-  
-    
     const quizTopicsCreated = () => {
         const topics = userProfileDetails.topicsCreated;
     
@@ -622,6 +525,25 @@ const UserProfile = () => {
         ));
     }
     
+    const handleQuestionDeleteClick = (questionId, event) => {
+        event.stopPropagation(); // prevents triggering the question click when delete is clicked
+        setIsQuestionDeleteClicked(true);
+        setDeleteQuestionId(questionId);
+    }
+    
+
+    
+    const handleCancelQuestionDelete = () => {
+        setIsQuestionDeleteClicked(false);
+        setDeleteQuestionId(null);
+    }
+
+
+    const handleCancelDelete = () => {
+        setIsDeleteClicked(false);
+        setDeleteTopicId(null);
+    }
+
     
 
     const hasCommonKeys = (obj1, obj2) => {
@@ -632,6 +554,204 @@ const UserProfile = () => {
     }
     
      
+
+
+    const quizQuestionsCreated = () => {
+        const questions = userProfileDetails.questionsCreated;
+    
+        return questions.map((question, index) => (
+            <div className="user-question-created-card" key={index}>
+                <div className="user-question">
+                    <h4>Topic</h4>
+                    <p className="user-question-for-topic">{question.topicName}</p>
+                    <h4>Question</h4>
+                    <p className="user-question-text">{question.text}</p>
+                    <h4>Choices</h4>
+                    {
+                        question.choices && question.choices.map((choice, choiceIndex) => (
+                            <p key={choiceIndex} className="user-question-choice">Choice {choiceIndex + 1}: {choice.text}</p>
+                        ))
+                    }
+                    <h4>Explanation</h4>
+                    <p className="user-question-explanation">{question.explanation}</p>
+                </div>
+                <button className="delete-question-button" onClick={(event) => handleQuestionDeleteClick(question.id, event)}>
+                    <FaTrash />
+                </button>
+                {
+                    isQuestionDeleteClicked && deleteQuestionId === question.id &&
+                    <Modal className={isQuestionDeleteClicked ? 'visible' : ''}>
+                        <p className="delete-question">Are you sure you want to delete the question added?</p>
+                        <div className="delete-buttons">
+                            <button className="delete-question-yes-button" type="submit" onClick={handleConfirmQuestionDelete}>Yes</button>
+                            <button className="delete-question-no-button" type="submit" onClick={handleCancelQuestionDelete}>No</button>
+                        </div>
+                    </Modal>
+                }
+            </div>
+        ));
+    }
+
+    const feedbacksReceived = () => {
+        const feedbacks = userProfileDetails.feedbacksReceived;
+        console.log(userProfileDetails.feedbacksReceived);
+    
+        return feedbacks.map((feedback, index) => (
+            <div className="feedback-received-card" key={index}>
+                <div className="feedback">
+                    <h4>Topic</h4>
+                    <p className="feedback-topic-name">{feedback.topicName}</p>
+                    <h4>Feedback</h4>
+                    <p className="feedback-comment">{feedback.feedback}</p>
+                </div>
+            </div> 
+         ));
+    }
+
+
+    const getUserProfileDetails = async (user) => {
+        const userId = user.id;
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${baseURL}/api/v1/users/${userId}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if(response.status === 403) {
+                setSessionExpired(true);
+            }
+
+            if(response.status === 302) {
+                const data = await response.json();
+                setUserProfileDetails(data);
+            }
+
+
+            if(response.status === 400) {
+                const data = await response.json();
+                throw new Error(data.message);
+            }
+
+        } catch (error) {
+            console.log("Error :", error);
+        }
+    };
+
+   
+
+    const handleOnClickQuizCard = async(quizId) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${baseURL}/api/v1/quizzes/quiz-result/${quizId}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if(response.status === 403) {
+                setSessionExpired(true);
+            }
+            else if(!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            } else {
+                const data = await response.json();
+                window.localStorage.setItem('quizResult', JSON.stringify(data));
+                window.localStorage.setItem('topic', JSON.stringify(data.topic));
+                navigate('/result');
+            }
+        } catch(error) {
+            if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
+                handleError('An error occurred while trying to reach the server. Please try again');
+            } else {
+                handleError(error);
+            }
+        }
+
+       
+    }
+
+
+    const handleConfirmQuestionDelete = async () => {
+        const userId = userProfileDetails.userId;
+    
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${baseURL}/api/v1/questions/${deleteQuestionId}/${userId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            
+            if(response.status === 200) {
+                setIsQuestionDeleteClicked(false);
+                setDeleteQuestionId(null);
+                handleSuccess("Question deleted successfully");
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000); // delay of 3 seconds
+            }
+    
+        } catch(error) {
+            if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
+                handleError('An error occurred while trying to reach the server. Please try again');
+            } else {
+                handleError(error);
+            }
+        }
+    }
+
+    
+    const handleConfirmDelete = async () => {
+        const userId = userProfileDetails.userId;
+
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${baseURL}/api/v1/topics/${deleteTopicId}/${userId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            
+            if(response.status === 200) {
+                setIsDeleteClicked(false);
+                setDeleteTopicId(null);
+                window.location.reload(); 
+                
+            } else  {
+                const error = await response.json();
+                throw new Error(error.message);
+            }
+
+        } catch(error) {
+            if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
+                handleError('An error occurred while trying to reach the server. Please try again');
+            } else {
+                handleError(error);
+            }
+        }
+    }
+    
+    React.useEffect(() => {
+        const storedUser = JSON.parse(window.localStorage.getItem('user'));
+        const storedTopics = JSON.parse(window.localStorage.getItem('topics'));
+
+        if (storedUser) {
+            contextValue.setUser(storedUser);
+            getUserProfileDetails(storedUser);
+        }
+        
+       if(contextValue.availableTopics == null && storedTopics !== null) {
+            contextValue.setAvailableTopics(storedTopics);
+        } 
+        
+    }, [])
+    
 
     React.useEffect(() => {
         if (sessionExpired) {
@@ -689,6 +809,20 @@ const UserProfile = () => {
                     >
                         Quizzes created
                     </p>
+                    <p 
+                        className={`option ${selectedOption === 'Questions added' ? 'options-active' : ''}`} 
+                        onClick={() => handleOptionClick('Questions added')}
+                    >
+                        Questions added
+                    </p>
+
+                    { userProfileDetails.topicsCreated.length > 0 &&
+                    <p 
+                        className={`option ${selectedOption === 'Feedbacks received' ? 'options-active' : ''}`} 
+                        onClick={() => handleOptionClick('Feedbacks received')}
+                    >
+                        Feedbacks recieved
+                    </p>}
                 </div>
                 
 
@@ -707,9 +841,10 @@ const UserProfile = () => {
 
                 {selectedOption === 'My Progress' && (
                 <>
+                {userProfileDetails.quizList.length > 0 ?
                 <div className="performance-analysis">
                     <p className="performance-analysis-title">Areas of Strength and Potential Growth</p>
-                   {userProfileDetails.quizList.length > 0 ? 
+                    
                     <div className="strength-weakness">
                         <div className="strength">
                             <p>Areas You Shine In</p>
@@ -724,9 +859,13 @@ const UserProfile = () => {
                             </div>
                         </div>
                     </div>
-                    :
-                    <p className="no-quiz-history">Take a quiz to know your areas of strength and improvements. <span className="create-quiz-link" onClick = {handleCreateQuizOnUserProfileClick}>Let's quiz!</span></p>}
                 </div>
+                    :
+                    <div className="no-quiz-history">
+                    <p className="no-quiz-history-last">Take a quiz to know your strengths and progress. <span className="create-quiz-link" onClick = {handleCreateQuizOnUserProfileClick}>Let's quiz!</span></p>
+                    </div>
+                }
+                    
 
                 {userProfileDetails.quizList.length > 0 &&
                 <div className="performance-analysis-by-topic">
@@ -752,12 +891,21 @@ const UserProfile = () => {
             )}
 
             {selectedOption === 'Quiz History' && (
+                <>
+                {userProfileDetails.quizList.length > 0 ? 
                 <div className="quiz-history" ref={quizHistoryRef}>
                     <p className="quiz-history-title">Quiz History</p>
                     <div className="quiz-history-cards">
-                        {userProfileDetails.quizList.length > 0 ? quizHistory() : <p className="no-quiz-history-last">You haven't challenged yourself with a quiz yet. <span className="create-quiz-link" onClick = {handleCreateQuizOnUserProfileClick}>Let's change that!</span></p>}
+                       {quizHistory()}
                     </div>
                 </div>
+                :
+                <div className="no-quiz-history">
+                <p className="no-quiz-history-last">You haven't challenged yourself with a quiz yet. <span className="create-quiz-link" onClick = {handleCreateQuizOnUserProfileClick}>Let's change that!</span></p>
+                </div>
+                } 
+
+                </>
             )}
 
             {selectedOption === 'Quizzes created' && (
@@ -772,14 +920,50 @@ const UserProfile = () => {
                 
                     :
                     <div className= "no-quiz">
-                    <p className="no-quiz-created">No quizzes created yet. <span className="create-quiz-link" onClick = {handleCreateQuizOnUserProfileQuizzesClick}>Would you like to try?</span></p>
+                        <p className="no-quiz-created">No quizzes created yet. <span className="create-quiz-link" onClick = {handleCreateQuizOnUserProfileQuizzesClick}>Would you like to try?</span></p>
+                    </div>
+                    }
+                </>
+                )}
+
+                {selectedOption === 'Questions added' && (
+                <>
+                {userProfileDetails.questionsCreated.length > 0  ?
+                <div className="questions-added">
+                    <p className="questions-added-title">Questions added</p>
+                    <div className="questions-added-cards">
+                        {quizQuestionsCreated()}
+                    </div>
+                </div>
+                
+                    :
+                    <div className= "no-question">
+                    <p className="no-question-added">No questions added yet. <span className="add-question-link" onClick = {handleAddQuestionOnUserProfileQuestionsClick}>Would you like to add question(s)?</span></p>
+                    </div>
+                    }
+                </>
+                )}
+
+
+                {selectedOption === 'Feedbacks received' && (
+                <>
+                {userProfileDetails.feedbacksReceived.length > 0  ?
+                <div className="feedbacks-received">
+                    <p className="feedbacks-received-title">Feedbacks Received</p>
+                    <div className="feedback-received-cards">
+                        {feedbacksReceived()}
+                    </div>
+                </div>
+                
+                    :
+                    <div className= "no-feedback">
+                        <p className="no-feedback-received">No feedbacks received for the topics created by you yet.</p>
                     </div>
                     }
                 </>
                 )}
 
               </div> 
-            
 
             }
              <Footer />
@@ -788,5 +972,4 @@ const UserProfile = () => {
     )
 }
 
-// 
 export default UserProfile;

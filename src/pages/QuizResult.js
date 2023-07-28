@@ -10,6 +10,7 @@ import IncorrectFeedbackCard from '../components/IncorrectFeedbackCard';
 import Modal from '../components/Modal';
 import '../styles/QuizResult.css';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import { useErrorHandler } from '../hooks/useErrorHandler';
 import ProgressBar from '@ramonak/react-progress-bar';
 import AskRating from '../components/AskRating.js';
 import 'react-circular-progressbar/dist/styles.css';
@@ -17,36 +18,19 @@ import 'react-circular-progressbar/dist/styles.css';
 
  const QuizResult = () => {
 
-    const [error, setError] = useState(null);
     const navigate = useNavigate();
-    const [showDetailedResults, setShowDetailedResults] = useState(false);
     const contextValue = useContext(QuizContext);
     const [sessionExpired, setSessionExpired] = useState(false);
     const [isRatingSubmitted, setIsRatingSubmitted] = useState(false);
     
     const location = useLocation();
     const fromQuiz = location.state?.fromQuiz;
+    const handleError = useErrorHandler();
 
     const quizTopic = JSON.parse(localStorage.getItem('topic')).name;
     const quizResult = JSON.parse(localStorage.getItem('quizResult'));
     const quizDetails = JSON.parse(localStorage.getItem('quizDetails'));
       
-    React.useEffect(() => {
-      window.scrollTo(0, 0);
-    }, [location.pathname]);
-   
-    React.useEffect(() => {
-      if (fromQuiz) {
-          getQuizResult();
-      }
-    }, [fromQuiz]);
-
-    React.useEffect(() => {
-      if (isRatingSubmitted) {
-        // Any code you want to run after isRatingSubmitted changes goes here.
-      }
-    }, [isRatingSubmitted]);
-    
        
     const handleHomeClick = () => {
         navigate('/home');
@@ -64,47 +48,8 @@ import 'react-circular-progressbar/dist/styles.css';
     }
 
     const handleProfileClick = () => {
-      // setShowProfile(true);
        navigate('/profile');
    }
-
-   /*const toggleProfile = () => {
-       setShowProfile(!showProfile);
-
-       //In Header component
-       showProfile={showProfile} toggleProfile={toggleProfile}
-       //After Header component
-        {showProfile && <ProfileCard />}
-   } */
-
-   const getQuizResult = async () => {
-      const quizId = contextValue.quizDetails? contextValue.quizDetails.id : quizDetails.id;
-      try {
-          const token = localStorage.getItem('token');
-          const response = await fetch(`${baseURL}/api/v1/quizzes/quiz-result/${quizId}`, {
-            headers : {
-              "Authorization":`Bearer ${token}`
-            }
-          });
-
-          if(response.status === 403) {
-            setSessionExpired(true);
-          } else {
-            if(!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            } else {
-                const data = await response.json();
-                contextValue.setQuizResult(data);
-                const dataL = localStorage.setItem('quizResult', JSON.stringify(data));
-                
-            }
-        }
-      } catch(error) {
-        console.error('An error occurred while submitting the quiz:', error);
-        setError(error.message);
-    } 
-  }
-
 
 
   const getIncorrectCards = () => {
@@ -152,13 +97,9 @@ import 'react-circular-progressbar/dist/styles.css';
 
     
     const handleOnDetailedResultsClick = () => {
-       // setShowDetailedResults(true);
        navigate('/detailed-results');
     }
 
-    const toggleShowDetailedResults = () => {
-        setShowDetailedResults(!setShowDetailedResults);
-    }
 
     const getProgressColor = (percentage) => {
       if (percentage < 40) {
@@ -229,11 +170,54 @@ import 'react-circular-progressbar/dist/styles.css';
       return null;
   };
   
-  
+
+      const getQuizResult = async () => {
+        const quizId = contextValue.quizDetails? contextValue.quizDetails.id : quizDetails.id;
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${baseURL}/api/v1/quizzes/quiz-result/${quizId}`, {
+              headers : {
+                "Authorization":`Bearer ${token}`
+              }
+            });
+
+            if(response.status === 403) {
+              setSessionExpired(true);
+            } else {
+              if(!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+              } else {
+                  const data = await response.json();
+                  contextValue.setQuizResult(data);
+                  const dataL = localStorage.setItem('quizResult', JSON.stringify(data));
+                  
+              }
+          }
+        } catch(error) {
+            if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
+                handleError('An error occurred while trying to reach the server. Please try again');
+            } else {
+                handleError(error);
+            }
+       }
+      }
     
 
-
-    React.useEffect(() => {
+      React.useEffect(() => {
+        window.scrollTo(0, 0);
+      }, [location.pathname]);
+     
+      React.useEffect(() => {
+        if (fromQuiz) {
+            getQuizResult();
+        }
+      }, [fromQuiz]);
+  
+      React.useEffect(() => {
+      }, [isRatingSubmitted]);
+  
+      
+      React.useEffect(() => {
         if (sessionExpired) {
           setTimeout(() => {
             // Clear context
@@ -245,6 +229,7 @@ import 'react-circular-progressbar/dist/styles.css';
           }, 5000);
         }
     }, [sessionExpired]);
+      
 
 
     
@@ -315,9 +300,6 @@ import 'react-circular-progressbar/dist/styles.css';
                 <p className="detailed-results-link" onClick={handleOnDetailedResultsClick}>Get detailed results</p>
             
             </div>
-          
-          
-
             <Footer />
         </div> }
         </>

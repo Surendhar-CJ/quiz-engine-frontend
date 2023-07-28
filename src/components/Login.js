@@ -3,17 +3,22 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from 'react';
 import { QuizContext } from '../context/QuizContext';
 import { baseURL } from '../config.js';
+import { useErrorHandler } from '../hooks/useErrorHandler';
 import "../styles/Login.css";
 
 
 const Login = ({ toggleLogin, toggleSignUp }) => {
-    const contextValue = useContext(QuizContext);
-    const setUser = contextValue.setUser;
-
-    const navigate = useNavigate();
+    
+    const [serverErrors, setServerErrors] = useState('');
     const [formData, setFormData] = useState(
         {username: "", password: ""}
     )
+
+    const contextValue = useContext(QuizContext);
+    const setUser = contextValue.setUser;
+    const handleError = useErrorHandler();
+    const navigate = useNavigate();
+  
 
     const handleChange = (event) => {
         setFormData(prevFormData => {
@@ -23,6 +28,18 @@ const Login = ({ toggleLogin, toggleSignUp }) => {
             }
         })
     }
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        postLoginRequest();
+    }
+
+    const handleSignUpLinkClick = (event) => {
+        event.preventDefault();
+        toggleLogin();
+        toggleSignUp();  
+  };
+
 
     const postLoginRequest = async() => {
         try {
@@ -49,9 +66,18 @@ const Login = ({ toggleLogin, toggleSignUp }) => {
                 navigate('/home');
             }
         } catch (error) {
-            setServerErrors(error.message);
+            if (error.name === 'TypeError' || error.message === 'Failed to fetch' ) {
+                // This error is due to a network problem or any problem preventing the fetch from completing
+                handleError('An error occurred while trying to reach the server. Please try again');
+            } else {
+                // This error is from the backend
+                setServerErrors(error.message);
+            }
         }
     }
+
+
+
 
     React.useEffect(() => {
         const token = localStorage.getItem('token');
@@ -63,20 +89,8 @@ const Login = ({ toggleLogin, toggleSignUp }) => {
         }
     }, []);
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        postLoginRequest();
-    }
-
-    const handleSignUpLinkClick = (event) => {
-        event.preventDefault();
-        toggleLogin();
-        toggleSignUp();  
-  };
-
-  const [serverErrors, setServerErrors] = useState('');
-
-
+    
+    
 
     return (
         <div className = "login-card" onSubmit={handleSubmit}>

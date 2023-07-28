@@ -1,9 +1,6 @@
 import { useContext } from 'react';
 import { QuizContext } from '../context/QuizContext';
 import React, { useState } from 'react';
-import {BiSolidHome} from 'react-icons/bi'
-import { FaUser } from 'react-icons/fa';
-import { IoLogOut } from 'react-icons/io5';
 import { useNavigate } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 import Header from '../components/Header.js';
@@ -14,14 +11,10 @@ import '../styles/QuizDetailedResults.css';
 const QuizDetailedResults = () => {
     const contextValue = useContext(QuizContext);
     const quizResult = JSON.parse(localStorage.getItem('quizResult'));
-   // const [showProfile, setShowProfile] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
 
-    React.useEffect(() => {
-        window.scrollTo(0, 0);
-      }, [location.pathname]);
-     
+        
     const handleHomeClick = () => {
         navigate('/home');
     }
@@ -38,19 +31,8 @@ const QuizDetailedResults = () => {
     }
 
     const handleProfileClick = () => {
-       // setShowProfile(true);
        navigate('/profile');
     }
-
-   /* const toggleProfile = () => {
-        setShowProfile(!showProfile);
-        showProfile={showProfile} toggleProfile={toggleProfile}setShowProfile(!showProfile);
-
-        //In Header component
-        showProfile={showProfile} toggleProfile={toggleProfile}
-        //After Header component
-         {showProfile && <ProfileCard />}
-    } */
 
 
     const calculateScore = (userChoicesSet, correctAnswersSet) => {
@@ -103,6 +85,11 @@ const QuizDetailedResults = () => {
         navigate('/result');
      }
 
+
+    React.useEffect(() => {
+    window.scrollTo(0, 0);
+    }, [location.pathname]);
+    
 
     return (
              

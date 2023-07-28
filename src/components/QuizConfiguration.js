@@ -5,18 +5,15 @@ import { baseURL } from '../config.js';
 import "../styles/QuizConfiguration.css";
 import { async } from 'q';
 import { useNavigate } from "react-router-dom";
+import {useErrorHandler} from "../hooks/useErrorHandler";
 import Modal from "../components/Modal";
 
 
 const QuizConfiguration = (props) => {
     const contextValue = useContext(QuizContext);
     const [sessionExpired, setSessionExpired] = useState(false);
-    
-    const navigate = useNavigate();
     const [quizData, setQuizData] = useState(null);
-
-    const [feedbackTypes, setFeedbackTypes] = useState([]);
-    
+    const [feedbackTypes, setFeedbackTypes] = useState([]); 
     const [configuration, setConfiguration] = useState(
         {
             userId: contextValue.user.id,
@@ -26,7 +23,6 @@ const QuizConfiguration = (props) => {
             difficultyLevel: null,        
         }
     )
-
     const [formData, setFormData] = useState(
         {
             isLimited: false,
@@ -36,6 +32,13 @@ const QuizConfiguration = (props) => {
             difficultyLevel: ''
         }
     );
+    
+
+    
+    const navigate = useNavigate();
+    const handleError = useErrorHandler();
+
+  
 
 
     const handleChange = (event) => {
@@ -61,32 +64,6 @@ const QuizConfiguration = (props) => {
           }
     };
 
-
-    const getFeedbackTypes = async () => {
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`${baseURL}/api/v1/quiz-configuration`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if(response.status === 403) {
-                setSessionExpired(true);
-            }
-            
-            if(response.status === 200) {
-                const data = await response.json();
-                setFeedbackTypes(data);
-            }
-        } catch (error) {
-            console.error("Error :",error);
-        }
-    }
-
-    React.useEffect(() => {
-        getFeedbackTypes();
-    }, []);
 
 
     const toTitleCase = (str) => {
@@ -120,52 +97,8 @@ const QuizConfiguration = (props) => {
             questionsLimit: formData.isLimited && formData.questionsLimit !== '' ? formData.questionsLimit : null,  // Set to null if isLimited is not checked or questionsLimit is an empty string
             difficultyLevel: formData.setDifficultyLevel && formData.difficultyLevel !== '' ? formData.difficultyLevel : null // Set to null if setDifficultyLevel is not checked or difficultyLevel is an empty string
         }));
-      } else {
-        console.log('No matching feedback type found.');
-      }
-
+      } 
     }
-
-    const postConfigureQuizRequest = async () => {
-        try {
-            
-            const token = localStorage.getItem('token');
-            const response = await fetch(`${baseURL}/api/v1/quizzes`, 
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify(configuration)    
-            });
-
-            if(response.status === 403) {
-                setSessionExpired(true);
-            }
-
-            if(response.status === 201) {
-                    const data = await response.json();
-                    setQuizData(data);
-                    contextValue.setQuizDetails(data); 
-                    localStorage.setItem('quizDetails', JSON.stringify(data));
-                    if(JSON.parse(window.localStorage.getItem('firstQuestion'))) {
-                        localStorage.removeItem('firstQuestion');
-                    }
-                    navigate('/quiz');
-            }
-        }
-         catch(error) {
-            console.log("Error : ", error);
-        }
-    }
-
-    React.useEffect(() => {
-        if (configuration.feedbackId) {  // Make sure feedbackId is not null
-          postConfigureQuizRequest();
-        }
-      }, [configuration]);  // Run this effect whenever configuration changes
-      
 
     const calculateMaxQuestions = () => {
         if (!formData.setDifficultyLevel || !formData.difficultyLevel) {
@@ -205,6 +138,95 @@ const QuizConfiguration = (props) => {
     
         return availableLevels;
     };
+    
+
+
+    
+    const getFeedbackTypes = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${baseURL}/api/v1/quiz-configuration`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if(response.status === 403) {
+                setSessionExpired(true);
+            }
+            
+            if(response.status === 200) {
+                const data = await response.json();
+                setFeedbackTypes(data);
+            }
+            else {
+                const error = await response.json();
+                throw new Error(error.message);
+            }
+            
+        } catch(error) {
+            if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
+                handleError('An error occurred while trying to reach the server. Please try again');
+            } else {
+                handleError(error);
+            }
+        }
+    }
+
+
+    const postConfigureQuizRequest = async () => {
+        try {
+            
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${baseURL}/api/v1/quizzes`, 
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(configuration)    
+            });
+
+            if(response.status === 403) {
+                setSessionExpired(true);
+            }
+
+            if(response.status === 201) {
+                    const data = await response.json();
+                    setQuizData(data);
+                    contextValue.setQuizDetails(data); 
+                    localStorage.setItem('quizDetails', JSON.stringify(data));
+                    if(JSON.parse(window.localStorage.getItem('firstQuestion'))) {
+                        localStorage.removeItem('firstQuestion');
+                    }
+                    navigate('/quiz');
+            } else {
+                // If HTTP status code is not a success status (2xx), consider it an error
+                const error = await response.json();
+                throw new Error(error.message);
+            }
+            
+        } catch(error) {
+            handleError(error); // call the returned function with the error
+        }
+    }
+
+    
+    React.useEffect(() => {
+        getFeedbackTypes();
+    }, []);
+
+
+
+    React.useEffect(() => {
+        if (configuration.feedbackId) {  // Make sure feedbackId is not null
+          postConfigureQuizRequest();
+        }
+      }, [configuration]);  // Run this effect whenever configuration changes
+      
+
+  
 
     React.useEffect(() => {
         if (sessionExpired) {
@@ -223,6 +245,8 @@ const QuizConfiguration = (props) => {
     return (
 
         <>
+
+    
         {
             sessionExpired &&
             <Modal id="session-expired-modal" onClose={() => {}} className={sessionExpired ? 'visible' : ''}>
@@ -230,6 +254,7 @@ const QuizConfiguration = (props) => {
                 <p className="session-expired-message-content">Your session has expired. You will be redirected to the home page, please log in again to continue.</p>
             </Modal>
         }
+
 
         {<div className="quiz-configure-card">
             <h2>Quiz Settings</h2>

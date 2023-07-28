@@ -33,7 +33,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 60px; /* adjust as per your design requirements */
+    height: 60px; 
 }
 
 .rating {

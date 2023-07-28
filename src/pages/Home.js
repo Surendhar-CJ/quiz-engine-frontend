@@ -10,22 +10,28 @@ import Footer from '../components/Footer.js';
 import "../styles/Home.css";
 import QuizConfiguration from '../components/QuizConfiguration.js';
 import CreateQuiz from '../components/CreateQuiz.js';
+import { useErrorHandler } from '../hooks/useErrorHandler';
 import Modal from '../components/Modal';
 
 const Home = () => {
     const [showQuizConfig, setShowQuizConfig] = useState(false);
     const [selectedTopicId, setSelectedTopicId] = useState(null);
-    const contextValue = useContext(QuizContext);
     const [sessionExpired, setSessionExpired] = useState(false);
     const [showCreateQuiz, setShowCreateQuiz] = useState(false);
-
-    const navigate = useNavigate();
-
+    const [topics, setTopics] = useState([]);
     
 
+    const navigate = useNavigate();
+    const contextValue = useContext(QuizContext);
+    const handleError = useErrorHandler();
+
+    const quizTopics = JSON.parse(localStorage.getItem('topics'));
+
+    
     const handleHomeClick = () => {
-        //redirect to Home
+        //rStays at the same page
     }
+       
 
     const handleLogoutClick = () => {
         if (window.confirm("Are you sure you want to logout?")) {
@@ -42,9 +48,45 @@ const Home = () => {
         navigate('/profile');
     }
 
-    /** TOPIC */
 
-    const [topics, setTopics] = useState([]);
+    const handleOnTopicClick = (topicId) => {
+        setSelectedTopicId(topicId);
+
+        const selectedTopic = topics.find(topic => topic.id === topicId);
+        contextValue.setTopic(selectedTopic);
+        localStorage.setItem('topic', JSON.stringify(selectedTopic));
+        
+        setShowQuizConfig(true);
+    }
+
+    const toggleQuizConfig = () => {
+        setShowQuizConfig(!showQuizConfig);
+    }
+
+    const handleCreateQuizClick = () => {
+        setShowCreateQuiz(true);
+    }
+
+    const toggleShowCreateQuiz = () => {
+        setShowCreateQuiz(!showCreateQuiz);
+    }
+
+    const handleAddQuestionClick = () => {
+        navigate('/add-question');
+    }
+    
+    const topicElements = topics.map(topic => <Topic 
+        key={topic.id} 
+        id={topic.id} 
+        name={topic.name}
+        rating={topic.rating}
+        numberOfRaters={topic.numberOfRaters}
+        createdBy={topic.userName}
+        numberOfQuestions={topic.numberOfQuestions}
+        onTopicClick={handleOnTopicClick}
+      />
+    )
+
 
     const getTopics = async() =>  {
         try {
@@ -66,12 +108,19 @@ const Home = () => {
                 setTopics(data);
                 contextValue.setAvailableTopics(data);
                 localStorage.setItem('topics', JSON.stringify(data));
-                console.log(data);
            } 
-        } catch (error) {
-            console.error("Error :", error);
+           else {
+            const error = await response.json();
+            throw new Error(error.message);
         }
         
+        } catch(error) {
+            if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
+                handleError('An error occurred while trying to reach the server. Please try again');
+            } else {
+                handleError(error);
+            }
+        }
     };
     
 
@@ -88,45 +137,6 @@ const Home = () => {
 
    
 
-
-    const handleOnTopicClick = (topicId) => {
-        setSelectedTopicId(topicId);
-
-        const selectedTopic = topics.find(topic => topic.id === topicId);
-        contextValue.setTopic(selectedTopic);
-        localStorage.setItem('topic', JSON.stringify(selectedTopic));
-        
-        setShowQuizConfig(true);
-    }
-
-    const toggleQuizConfig = () => {
-        setShowQuizConfig(!showQuizConfig);
-    }
-
-    const topicElements = topics.map(topic => <Topic 
-                                                key={topic.id} 
-                                                id={topic.id} 
-                                                name={topic.name}
-                                                rating={topic.rating}
-                                                numberOfRaters={topic.numberOfRaters}
-                                                createdBy={topic.userName}
-                                                numberOfQuestions={topic.numberOfQuestions}
-                                                onTopicClick={handleOnTopicClick}
-                                              />
-                                            )
-
-    const handleCreateQuizClick = () => {
-        setShowCreateQuiz(true);
-    }
-
-    const toggleShowCreateQuiz = () => {
-        setShowCreateQuiz(!showCreateQuiz);
-    }
-
-    const handleAddQuestionClick = () => {
-        navigate('/add-question');
-    }
-
     React.useEffect(() => {
         if (sessionExpired) {
           setTimeout(() => {
@@ -141,8 +151,7 @@ const Home = () => {
     }, [sessionExpired]);
 
     
-    //Icon: BiSolidHome, Icon: FaUser, Icon: IoLogOut, 
-    const quizTopics = JSON.parse(localStorage.getItem('topics'));
+    
 
     return (
         <>

@@ -77,15 +77,21 @@
 }
 
 .results-link {
-    margin-top: 40px;
+    margin-top: 50px;
     margin-bottom: 30px;
     font-size: 12pt;
-    color: #0D99FF;
-    font-weight: 600;
-    cursor: pointer;
+    color: white;
+    font-weight: 400;
+    padding: 10px;
+    border-radius: 5pt;
+    background-color: black;
+    transition: transform 0.2s ease-in-out;
+    box-shadow: 0 8px 10px 0 rgba(0,0,0,0.2);
 }
 
 .results-link:hover {
-    text-decoration: underline;
+    transform: scale(1.05);
+    cursor: pointer;
+    background-color: rgb(32, 32, 32);
     
 }
