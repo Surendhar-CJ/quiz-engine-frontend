@@ -318,15 +318,15 @@
 
 
 .no-quiz-history {
-    font-size: 12pt;
-    font-weight: 400;
+    margin: 60px;
+    background-color: white;
+    border-radius: 5pt;
+    border: 1px solid rgb(237, 237, 237);
+    width: 50%;
+    text-align: center;
 }
 
-.no-quiz-history-last {
-    font-size: 12pt;
-    font-weight: 400;
-    margin-left: 250px;
-}
+
 
 .create-quiz-link {
     color:#0D99FF;
@@ -462,5 +462,134 @@
 
 }
 
+.questions-added {
+    align-items: center;
+    overflow: auto;
+    border-radius: 5pt;
+    padding-bottom: 50px;
+    margin-top: 60px;
+    background-color: white;
+    border: 2px solid rgb(237, 237, 237);
+    width: 100%; 
+}
+
+.questions-added-title {
+    font-weight: 700;
+    font-size: 22pt;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    text-align:center;
+}
+
+.user-question-created-card {
+    padding: 5px 20px;
+    margin: 20px;
+    margin-left: 60px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    border-radius: 5pt;
+    background-color: white;
+    border: 1px solid rgb(237, 237, 237);
+    width: 80%;
+}
+
+.user-question {
+    margin-top: 10px;
+}
+
+.user-question h4 {
+    margin: 5px 0px;
+}
+
+.user-question p {
+    margin: 5px 0px;
+}
 
 
+.delete-question {
+    text-align: center;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.delete-question-button {
+    display: flex;
+    justify-content: flex-end;
+    background-color: white;
+    color: silver;
+    border:none;
+    margin-top: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 14pt;
+    margin-bottom: 5px;;
+}
+
+.delete-question-button:hover {
+    color: black;
+    cursor: pointer;
+    
+}
+
+.delete-question-yes-button, .delete-question-no-button{
+    font-size: 12pt;
+    font-weight: 600;
+    color: white;
+    background-color: #0D99FF;
+    padding: 5px 15px;
+    border: none;
+    border-radius: 5pt;
+    margin-right: 20px;
+    margin-top: 5px;
+}
+
+.delete-question-yes-button:hover, .delete-question-no-button:hover {
+    background-color: rgba(13, 153, 255, 0.90);
+    cursor: pointer;
+}
+
+.no-question, .no-feedback {
+    margin: 60px;
+    background-color: white;
+    border-radius: 5pt;
+    border: 1px solid rgb(237, 237, 237);
+    width: 50%;
+    text-align: center;
+
+}
+
+.add-question-link {
+    color: #0D99FF;
+}
+
+.add-question-link:hover{
+   text-decoration: underline;
+   cursor: pointer;
+}
+
+.feedbacks-received {
+    align-items: center;
+    overflow: auto;
+    border-radius: 5pt;
+    padding-bottom: 50px;
+    margin-top: 60px;
+    background-color: white;
+    border: 2px solid rgb(237, 237, 237);
+    width: 80%; 
+}
+
+.feedbacks-received-title {
+    font-weight: 700;
+    font-size: 22pt;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    text-align:center;
+}
+
+.feedback-received-card {
+    padding: 5px 20px;
+    margin: 20px;
+    margin-left: 60px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    border-radius: 5pt;
+    background-color: white;
+    border: 1px solid rgb(237, 237, 237);
+    width: 80%;
+}

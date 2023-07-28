@@ -5,12 +5,14 @@ import { baseURL } from '../config.js';
 import "../styles/QuizConfiguration.css";
 import { async } from 'q';
 import { useNavigate } from "react-router-dom";
+import {useErrorHandler} from "../hooks/useErrorHandler";
 import Modal from "../components/Modal";
 
 
 const QuizConfiguration = (props) => {
     const contextValue = useContext(QuizContext);
     const [sessionExpired, setSessionExpired] = useState(false);
+    const handleError = useErrorHandler();
     
     const navigate = useNavigate();
     const [quizData, setQuizData] = useState(null);
@@ -153,10 +155,14 @@ const QuizConfiguration = (props) => {
                         localStorage.removeItem('firstQuestion');
                     }
                     navigate('/quiz');
+            } else {
+                // If HTTP status code is not a success status (2xx), consider it an error
+                const error = await response.json();
+                throw new Error(error.message);
             }
-        }
-         catch(error) {
-            console.log("Error : ", error);
+            
+        } catch(error) {
+            handleError(error); // call the returned function with the error
         }
     }
 
@@ -223,6 +229,8 @@ const QuizConfiguration = (props) => {
     return (
 
         <>
+
+    
         {
             sessionExpired &&
             <Modal id="session-expired-modal" onClose={() => {}} className={sessionExpired ? 'visible' : ''}>
@@ -230,6 +238,7 @@ const QuizConfiguration = (props) => {
                 <p className="session-expired-message-content">Your session has expired. You will be redirected to the home page, please log in again to continue.</p>
             </Modal>
         }
+
 
         {<div className="quiz-configure-card">
             <h2>Quiz Settings</h2>

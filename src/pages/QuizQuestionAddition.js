@@ -23,7 +23,7 @@ const QuizQuestionAddition = () => {
     const [showSubtopicInput, setShowSubtopicInput] = useState(false);
     const [subtopics, setSubtopics] = useState([]);
 
-
+    
  
     const handleHomeClick = () => {
         navigate('/home');
@@ -34,7 +34,15 @@ const QuizQuestionAddition = () => {
         window.scrollTo(0, 0);
       }, [location.pathname]);
 
-      
+    React.useEffect(() => {
+        const storedUser = JSON.parse(window.localStorage.getItem('user'));
+        
+        if(storedUser !== null) {
+            contextValue.setUser(storedUser);
+        }
+    }, []);
+
+
     const handleLogoutClick = () => {
         if (window.confirm("Are you sure you want to logout?")) {
             // Clear context
@@ -266,6 +274,14 @@ const QuizQuestionAddition = () => {
                 };
             });
         }
+
+        const user = contextValue.user ? contextValue.user : JSON.parse(window.localStorage.getItem('user')); 
+
+        // Prepare the data to be sent.
+        const dataToSend = {
+            ...formData,
+            userId: user.id  // Add userId to the data
+        };
  
         try {
             const token = localStorage.getItem('token');
@@ -276,13 +292,18 @@ const QuizQuestionAddition = () => {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(dataToSend)
                 
             });
 
 
+
+            console.log(user);
+            console.log(user.id);
+
+
             if(response.status === 403) {
-                setSessionExpired(true);
+               // setSessionExpired(true);
             }
 
             if(response.status === 201) {

@@ -13,6 +13,8 @@ import QuizCard from '../components/UserProfileComponents/QuizCard';
 import { useLocation } from 'react-router-dom';
 import { FaTrash } from 'react-icons/fa';
 import Modal from "../components/Modal";
+import {useErrorHandler} from "../hooks/useErrorHandler";
+import {useSuccessHandler} from "../hooks/useSuccessHandler";
 import '../styles/UserProfile.css';
 
 const UserProfile = () => {
@@ -24,7 +26,11 @@ const UserProfile = () => {
     const [selectedOption, setSelectedOption] = useState('Me');
     const [isDeleteClicked, setIsDeleteClicked] = useState(false);
     const [deleteTopicId, setDeleteTopicId] = useState(null);
+    const [isQuestionDeleteClicked, setIsQuestionDeleteClicked] = useState(false);
+    const [deleteQuestionId, setDeleteQuestionId] = useState(null);
     const [refresh, setRefresh] = useState(false);
+    const handleError = useErrorHandler();
+    const handleSuccess = useSuccessHandler();
 
    
    
@@ -558,6 +564,10 @@ const UserProfile = () => {
         navigate('/home');
     }
 
+    const handleAddQuestionOnUserProfileQuestionsClick = () => {
+        navigate('/home');
+    }
+
 
     const handleDeleteClick = (topicId, event) => {
         event.stopPropagation(); // prevents triggering the topic click when delete is clicked
@@ -582,10 +592,14 @@ const UserProfile = () => {
                 setIsDeleteClicked(false);
                 setDeleteTopicId(null);
                 window.location.reload(); 
+                
+            } else  {
+                const error = await response.json();
+                throw new Error(error.message);
             }
 
         } catch (error) {
-            console.error("Error:", error);
+            handleError(error);
         }
     }
     
@@ -622,6 +636,102 @@ const UserProfile = () => {
         ));
     }
     
+    const handleQuestionDeleteClick = (questionId, event) => {
+        event.stopPropagation(); // prevents triggering the question click when delete is clicked
+        setIsQuestionDeleteClicked(true);
+        setDeleteQuestionId(questionId);
+        console.log(questionId);
+    }
+    
+    const handleConfirmQuestionDelete = async () => {
+        const userId = userProfileDetails.userId;
+    
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${baseURL}/api/v1/questions/${deleteQuestionId}/${userId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            
+            if(response.status === 200) {
+                setIsQuestionDeleteClicked(false);
+                setDeleteQuestionId(null);
+                handleSuccess("Question deleted successfully");
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000); // delay of 3 seconds
+            }
+    
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+    
+    const handleCancelQuestionDelete = () => {
+        setIsQuestionDeleteClicked(false);
+        setDeleteQuestionId(null);
+    }
+
+    const quizQuestionsCreated = () => {
+        const questions = userProfileDetails.questionsCreated;
+    
+        return questions.map((question, index) => (
+            <div className="user-question-created-card" key={index}>
+                <div className="user-question">
+                    <h4>Topic</h4>
+                    <p className="user-question-for-topic">{question.topicName}</p>
+                    <h4>Question</h4>
+                    <p className="user-question-text">{question.text}</p>
+                    <h4>Choices</h4>
+                    {
+                        question.choices && question.choices.map((choice, choiceIndex) => (
+                            <p key={choiceIndex} className="user-question-choice">Choice {choiceIndex + 1}: {choice.text}</p>
+                        ))
+                    }
+                    <h4>Explanation</h4>
+                    <p className="user-question-explanation">{question.explanation}</p>
+                </div>
+                <button className="delete-question-button" onClick={(event) => handleQuestionDeleteClick(question.id, event)}>
+                    <FaTrash />
+                </button>
+                {
+                    isQuestionDeleteClicked && deleteQuestionId === question.id &&
+                    <Modal className={isQuestionDeleteClicked ? 'visible' : ''}>
+                        <p className="delete-question">Are you sure you want to delete the question added?</p>
+                        <div className="delete-buttons">
+                            <button className="delete-question-yes-button" type="submit" onClick={handleConfirmQuestionDelete}>Yes</button>
+                            <button className="delete-question-no-button" type="submit" onClick={handleCancelQuestionDelete}>No</button>
+                        </div>
+                    </Modal>
+                }
+            </div>
+        ));
+    }
+
+    const feedbacksReceived = () => {
+        const feedbacks = userProfileDetails.feedbacksReceived;
+        console.log(userProfileDetails.feedbacksReceived);
+    
+        return feedbacks.map((feedback, index) => (
+            <div className="feedback-received-card" key={index}>
+                <div className="feedback">
+                    <h4>Topic</h4>
+                    <p className="feedback-topic-name">{feedback.topicName}</p>
+                    <h4>Feedback</h4>
+                    <p className="feedback-comment">{feedback.feedback}</p>
+                </div>
+            </div> 
+         ));
+    }
+
+
+   
+
+
+
     
 
     const hasCommonKeys = (obj1, obj2) => {
@@ -689,6 +799,20 @@ const UserProfile = () => {
                     >
                         Quizzes created
                     </p>
+                    <p 
+                        className={`option ${selectedOption === 'Questions added' ? 'options-active' : ''}`} 
+                        onClick={() => handleOptionClick('Questions added')}
+                    >
+                        Questions added
+                    </p>
+
+                    { userProfileDetails.topicsCreated.length > 0 &&
+                    <p 
+                        className={`option ${selectedOption === 'Feedbacks received' ? 'options-active' : ''}`} 
+                        onClick={() => handleOptionClick('Feedbacks received')}
+                    >
+                        Feedbacks recieved
+                    </p>}
                 </div>
                 
 
@@ -707,9 +831,10 @@ const UserProfile = () => {
 
                 {selectedOption === 'My Progress' && (
                 <>
+                {userProfileDetails.quizList.length > 0 ?
                 <div className="performance-analysis">
                     <p className="performance-analysis-title">Areas of Strength and Potential Growth</p>
-                   {userProfileDetails.quizList.length > 0 ? 
+                    
                     <div className="strength-weakness">
                         <div className="strength">
                             <p>Areas You Shine In</p>
@@ -724,9 +849,13 @@ const UserProfile = () => {
                             </div>
                         </div>
                     </div>
-                    :
-                    <p className="no-quiz-history">Take a quiz to know your areas of strength and improvements. <span className="create-quiz-link" onClick = {handleCreateQuizOnUserProfileClick}>Let's quiz!</span></p>}
                 </div>
+                    :
+                    <div className="no-quiz-history">
+                    <p className="no-quiz-history-last">Take a quiz to know your strengths and progress. <span className="create-quiz-link" onClick = {handleCreateQuizOnUserProfileClick}>Let's quiz!</span></p>
+                    </div>
+                }
+                    
 
                 {userProfileDetails.quizList.length > 0 &&
                 <div className="performance-analysis-by-topic">
@@ -752,12 +881,21 @@ const UserProfile = () => {
             )}
 
             {selectedOption === 'Quiz History' && (
+                <>
+                {userProfileDetails.quizList.length > 0 ? 
                 <div className="quiz-history" ref={quizHistoryRef}>
                     <p className="quiz-history-title">Quiz History</p>
                     <div className="quiz-history-cards">
-                        {userProfileDetails.quizList.length > 0 ? quizHistory() : <p className="no-quiz-history-last">You haven't challenged yourself with a quiz yet. <span className="create-quiz-link" onClick = {handleCreateQuizOnUserProfileClick}>Let's change that!</span></p>}
+                       {quizHistory()}
                     </div>
                 </div>
+                :
+                <div className="no-quiz-history">
+                <p className="no-quiz-history-last">You haven't challenged yourself with a quiz yet. <span className="create-quiz-link" onClick = {handleCreateQuizOnUserProfileClick}>Let's change that!</span></p>
+                </div>
+                } 
+
+                </>
             )}
 
             {selectedOption === 'Quizzes created' && (
@@ -772,7 +910,44 @@ const UserProfile = () => {
                 
                     :
                     <div className= "no-quiz">
-                    <p className="no-quiz-created">No quizzes created yet. <span className="create-quiz-link" onClick = {handleCreateQuizOnUserProfileQuizzesClick}>Would you like to try?</span></p>
+                        <p className="no-quiz-created">No quizzes created yet. <span className="create-quiz-link" onClick = {handleCreateQuizOnUserProfileQuizzesClick}>Would you like to try?</span></p>
+                    </div>
+                    }
+                </>
+                )}
+
+                {selectedOption === 'Questions added' && (
+                <>
+                {userProfileDetails.questionsCreated.length > 0  ?
+                <div className="questions-added">
+                    <p className="questions-added-title">Questions added</p>
+                    <div className="questions-added-cards">
+                        {quizQuestionsCreated()}
+                    </div>
+                </div>
+                
+                    :
+                    <div className= "no-question">
+                    <p className="no-question-added">No questions added yet. <span className="add-question-link" onClick = {handleAddQuestionOnUserProfileQuestionsClick}>Would you like to add question(s)?</span></p>
+                    </div>
+                    }
+                </>
+                )}
+
+
+                {selectedOption === 'Feedbacks received' && (
+                <>
+                {userProfileDetails.feedbacksReceived.length > 0  ?
+                <div className="feedbacks-received">
+                    <p className="feedbacks-received-title">Feedbacks Received</p>
+                    <div className="feedback-received-cards">
+                        {feedbacksReceived()}
+                    </div>
+                </div>
+                
+                    :
+                    <div className= "no-feedback">
+                        <p className="no-feedback-received">No feedbacks received. </p>
                     </div>
                     }
                 </>
@@ -788,5 +963,4 @@ const UserProfile = () => {
     )
 }
 
-// 
 export default UserProfile;

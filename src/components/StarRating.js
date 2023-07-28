@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../styles/AskRating.css';
 import { FaStar } from 'react-icons/fa';
 import { baseURL } from '../config.js';
+import UserFeedback from './UserFeedback';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -13,6 +14,7 @@ const Star = ({ selected = false, onSelect = f => f }) => (
 
 const StarRating = ({ totalStars = 5, onRatingSubmit }) => {
     const [selectedStars, setSelectedStars] = useState(0);
+    const [comment, setComment] = useState('');
 
     const quizResult = JSON.parse(localStorage.getItem('quizResult'));
 
@@ -32,9 +34,26 @@ const StarRating = ({ totalStars = 5, onRatingSubmit }) => {
                         topicId: quizResult.topic.id
                     })
                 }); 
+
+                 // If there is a comment, submit it
+                if (comment) {
+                    const commentResponse = await fetch(`${baseURL}/api/v1/comments`, {
+                        method : "POST",
+                        headers : {
+                            "Content-Type" : "application/json",
+                            'Authorization': `Bearer ${token}` 
+                        },
+                        body: JSON.stringify({
+                            feedbackByUserId: quizResult.userId,
+                            topicId: quizResult.topic.id,
+                            comment,
+                            feedbackForUserId: quizResult.topic.user.id
+                        })
+                });
+             }
                 
                 if(response.status === 200) {
-                    toast.success('Your rating has been submitted successfully!');  // toast success message
+                    toast.success('Your feedback has been submitted successfully!');  // toast success message
     
                     onRatingSubmit();
                 }
@@ -66,11 +85,9 @@ const StarRating = ({ totalStars = 5, onRatingSubmit }) => {
                     />
                 ))}
             </div>
-            <p>
-                {selectedStars} of {totalStars} stars
-            </p>
+            <UserFeedback comment={comment} onCommentChange={setComment} />
             <button onClick={handleOnSubmitRatingClick}>
-                Submit Rating
+                Submit
             </button>
         </>
     );

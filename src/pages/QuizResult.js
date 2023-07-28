@@ -12,6 +12,7 @@ import '../styles/QuizResult.css';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import ProgressBar from '@ramonak/react-progress-bar';
 import AskRating from '../components/AskRating.js';
+import UserFeedback from '../components/UserFeedback';
 import 'react-circular-progressbar/dist/styles.css';
 
 
