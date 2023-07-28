@@ -9,30 +9,11 @@
     background-color: #edf5fb; 
 }
 
-.students-trust {
-    max-width: 100%;
-    background-color: rgba(161, 160, 160, 0.187);
-    border-radius: 5pt;
-    padding: 20px;
-    margin-top: 82px;
-    margin-bottom: 80px;
-    font-size: 10pt;
-    text-align: justify;
-}
 
-.students-trust-title p {
-    text-align: center;
-}
-
-/*text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);*/
 .quiz-area {
     display: flex;
-    align-items: center;
     justify-content: center;
-}
-
-.quiz-area {
-    display: flex;
+    align-items: center;
     flex-direction: column;
     max-width: 125ch;
     width: 100%;
@@ -42,6 +23,7 @@
     background-color: #edf5fb; 
     border-left: 2px solid rgb(237, 237, 237);
     border-right: 2px solid rgb(237, 237, 237);
+    margin-top: 82px;
 }
 
 

@@ -17,10 +17,7 @@ import "../styles/Quiz.css";
 
 const Quiz = () => {   
 
-    const contextValue = useContext(QuizContext);
-    const navigate = useNavigate();
-
-
+   
     const [showQuizStarted, setShowQuizStarted] = useState(false);
     const [quizQuestion, setQuizQuestion] = useState(null);
     const [quizQuestions, setQuizQuestions] = useState([]);
@@ -33,6 +30,9 @@ const Quiz = () => {
     const [showExitConfirmation, setShowExitConfirmation] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [sessionExpired, setSessionExpired] = useState(false);
+
+    const contextValue = useContext(QuizContext);
+    const navigate = useNavigate();
 
     React.useEffect(() => {
         const storedQuizDetails = JSON.parse(localStorage.getItem('quizDetails'));
@@ -47,7 +47,6 @@ const Quiz = () => {
         }
         setIsLoading(false);
     }, [])
-
 
 
         
@@ -73,12 +72,80 @@ const Quiz = () => {
         setShowSubmitQuiz(!showSubmitQuiz);
     }
 
+    const handleOnExitQuizClick = () => {
+        setShowExitConfirmation(true);
+    }
+
+    const toggleExitConfirmation = () => {
+        setShowExitConfirmation(!showExitConfirmation);
+    }
+
+    const confirmExit = () => {
+        navigate('/home');
+    }
+
+
+    const numberOfQuestions = () => {
+
+        let numberOfQuestions;
+ 
+        if(contextValue.quizDetails.questionsLimit !== null) {
+             numberOfQuestions = contextValue.quizDetails.questionsLimit
+        }
+         else if( contextValue.quizDetails.difficultyLevel !== null &&  contextValue.quizDetails.questionsLimit === null) {
+             switch(contextValue.quizDetails.difficultyLevel.toLowerCase()) {
+                 case "easy":
+                     numberOfQuestions = contextValue.topic.easyQuestionsAvailable;
+                     break;
+                 case "medium":
+                     numberOfQuestions = contextValue.topic.mediumQuestionsAvailable;
+                     break;
+                 case "hard":
+                     numberOfQuestions = contextValue.topic.hardQuestionsAvailable;
+                     break;
+             }
+        }
+        else {
+             numberOfQuestions = contextValue.topic.numberOfQuestions;
+       }
+ 
+         return numberOfQuestions;
+     }
+
+ 
+
+    const isDisplayFeedback = () => {
+        const quizFeedbackType = contextValue.quizDetails.feedbackType.type;
+        let displayFeedback;
+        
+        if(quizFeedbackType === "IMMEDIATE RESPONSE" ||
+            quizFeedbackType === "IMMEDIATE CORRECT ANSWER RESPONSE" || 
+            quizFeedbackType ==="IMMEDIATE ELABORATED") {  
+            displayFeedback = true;
+        } else {
+            displayFeedback = false;
+        }
+
+        return displayFeedback;
+    }
+
+
+    const handleOnClickBack = () => {
+         // subtract one from the question count
+         setQuestionCount(prevCount => {
+            let newCount = prevCount - 1;
+            
+            // set the current question to be the previous question in the quizQuestions array
+            if(newCount > 0) {
+                setQuizQuestion(quizQuestions[newCount - 1]);
+            }
     
+            return newCount;
+        });
+       
+    }
 
-    
-
-
-   const getFirstQuestion = async() => {
+    const getFirstQuestion = async() => {
         try {
             const token = localStorage.getItem('token');
             const response = await fetch(`${baseURL}/api/v1/quizzes/quiz-start`, {
@@ -203,39 +270,6 @@ const Quiz = () => {
     }
 }
 
-
-
-    const isDisplayFeedback = () => {
-        const quizFeedbackType = contextValue.quizDetails.feedbackType.type;
-        let displayFeedback;
-        
-        if(quizFeedbackType === "IMMEDIATE RESPONSE" ||
-            quizFeedbackType === "IMMEDIATE CORRECT ANSWER RESPONSE" || 
-            quizFeedbackType ==="IMMEDIATE ELABORATED") {  
-            displayFeedback = true;
-        } else {
-            displayFeedback = false;
-        }
-
-        return displayFeedback;
-    }
-
-
-    const handleOnClickBack = () => {
-         // subtract one from the question count
-         setQuestionCount(prevCount => {
-            let newCount = prevCount - 1;
-            
-            // set the current question to be the previous question in the quizQuestions array
-            if(newCount > 0) {
-                setQuizQuestion(quizQuestions[newCount - 1]);
-            }
-    
-            return newCount;
-        });
-       
-    }
-
     const handleOnSubmitQuizClick = async () => {
         const quizId = contextValue.quizDetails.id;
         try {
@@ -272,44 +306,8 @@ const Quiz = () => {
 
 
 
-    const handleOnExitQuizClick = () => {
-        setShowExitConfirmation(true);
-    }
-
-    const toggleExitConfirmation = () => {
-        setShowExitConfirmation(!showExitConfirmation);
-    }
-
-    const confirmExit = () => {
-        navigate('/home');
-    }
-
-    const numberOfQuestions = () => {
-
-       let numberOfQuestions;
-
-       if(contextValue.quizDetails.questionsLimit !== null) {
-            numberOfQuestions = contextValue.quizDetails.questionsLimit
-       }
-        else if( contextValue.quizDetails.difficultyLevel !== null &&  contextValue.quizDetails.questionsLimit === null) {
-            switch(contextValue.quizDetails.difficultyLevel.toLowerCase()) {
-                case "easy":
-                    numberOfQuestions = contextValue.topic.easyQuestionsAvailable;
-                    break;
-                case "medium":
-                    numberOfQuestions = contextValue.topic.mediumQuestionsAvailable;
-                    break;
-                case "hard":
-                    numberOfQuestions = contextValue.topic.hardQuestionsAvailable;
-                    break;
-            }
-       }
-       else {
-            numberOfQuestions = contextValue.topic.numberOfQuestions;
-      }
-
-        return numberOfQuestions;
-    }
+    
+   
 
     React.useEffect(() => {
         if (sessionExpired) {
@@ -356,16 +354,6 @@ const Quiz = () => {
                 </div>
             </Modal> 
             }
-
-            <div className="students-trust">
-                <p className="students-trust-headline"> In students, we trust!</p>
-                <p className="students-trust-text">
-                    In our self-moderated learning community, we trust each of you as quiz takers. Your integrity and honesty while quizzing not only uphold our community standards but also contribute to your personal growth. Remember, the ultimate goal is learning, not just scoring. Thank you for honoring this trust.
-                </p>
-            </div>
-
-
-
 
             {showQuizStarted && quizQuestion ? 
                 <div className="quiz-question-area">
