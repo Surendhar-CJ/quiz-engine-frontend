@@ -4,7 +4,9 @@ import { FaStar } from 'react-icons/fa';
 import { baseURL } from '../config.js';
 import UserFeedback from './UserFeedback';
 import { ToastContainer, toast } from 'react-toastify';
+import { useErrorHandler } from '../hooks/useErrorHandler';
 import 'react-toastify/dist/ReactToastify.css';
+
 
 const Star = ({ selected = false, onSelect = f => f }) => (
     <FaStar color={selected ? 'gold' : 'grey'} onClick={onSelect} />
@@ -15,6 +17,8 @@ const Star = ({ selected = false, onSelect = f => f }) => (
 const StarRating = ({ totalStars = 5, onRatingSubmit }) => {
     const [selectedStars, setSelectedStars] = useState(0);
     const [comment, setComment] = useState('');
+   
+    const handleError = useErrorHandler();
 
     const quizResult = JSON.parse(localStorage.getItem('quizResult'));
 
@@ -62,13 +66,12 @@ const StarRating = ({ totalStars = 5, onRatingSubmit }) => {
                     throw new Error('Failed to submit rating');
                 }
         
-                // Do something on successful submission, like resetting the form or displaying a success message
-            } catch (error) {
-                // Log the error in development environment
-                console.error("Error", error);
-        
-                // Inform the user about the error
-                alert('An error occurred while submitting your rating. Please try again.');
+            } catch(error) {
+                if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
+                    handleError('An error occurred while trying to reach the server. Please try again');
+                } else {
+                    handleError(error);
+                }
             }
         }
         
