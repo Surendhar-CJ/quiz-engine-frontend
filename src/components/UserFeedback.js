@@ -15,7 +15,7 @@ const UserFeedback = ({  comment, onCommentChange }) => {
     return (
         <div className="ask-user-feedback">
             <textarea
-                placeholder="Please provide your feedback here (optional)."
+                placeholder="Please provide your feedback here."
                 value={comment}
                 onChange={handleCommentChange}
             />

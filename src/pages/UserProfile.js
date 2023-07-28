@@ -34,50 +34,7 @@ const UserProfile = () => {
 
    
    
-    const getUserProfileDetails = async (user) => {
-        const userId = user.id;
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`${baseURL}/api/v1/users/${userId}`, {
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            });
-
-            if(response.status === 403) {
-                setSessionExpired(true);
-            }
-
-            if(response.status === 302) {
-                const data = await response.json();
-                setUserProfileDetails(data);
-            }
-
-
-            if(response.status === 400) {
-                const data = await response.json();
-                throw new Error(data.message);
-            }
-
-        } catch (error) {
-            console.log("Error :", error);
-        }
-    };
-
-    React.useEffect(() => {
-        const storedUser = JSON.parse(window.localStorage.getItem('user'));
-        const storedTopics = JSON.parse(window.localStorage.getItem('topics'));
-
-        if (storedUser) {
-            contextValue.setUser(storedUser);
-            getUserProfileDetails(storedUser);
-        }
-        
-       if(contextValue.availableTopics == null && storedTopics !== null) {
-            contextValue.setAvailableTopics(storedTopics);
-        } 
-        
-    }, [])
+    
 
 
 
@@ -98,7 +55,7 @@ const UserProfile = () => {
     }
 
     const handleProfileClick = () => {
-      // navigate('/profile');
+      // Stays in the same page
     }
 
     const handleOptionClick = (option) => {
@@ -526,36 +483,6 @@ const UserProfile = () => {
         return `${day}/${month}/${year}`; 
     }
 
-
-
-    const handleOnClickQuizCard = async(quizId) => {
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`${baseURL}/api/v1/quizzes/quiz-result/${quizId}`, {
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            });
-
-            if(response.status === 403) {
-                setSessionExpired(true);
-            }
-            else if(!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            } else {
-                const data = await response.json();
-                window.localStorage.setItem('quizResult', JSON.stringify(data));
-                window.localStorage.setItem('topic', JSON.stringify(data.topic));
-                navigate('/result');
-            }
-        } catch(error) {
-            console.error('An error occurred while submitting the quiz:', error);
-        }
-
-       
-    }
-
-
     const handleCreateQuizOnUserProfileClick = () => {
         navigate('/home');
     }
@@ -574,42 +501,7 @@ const UserProfile = () => {
         setIsDeleteClicked(true);
         setDeleteTopicId(topicId);
     }
-    
-    const handleConfirmDelete = async () => {
-        const userId = userProfileDetails.userId;
 
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`${baseURL}/api/v1/topics/${deleteTopicId}/${userId}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
-            
-            if(response.status === 200) {
-                setIsDeleteClicked(false);
-                setDeleteTopicId(null);
-                window.location.reload(); 
-                
-            } else  {
-                const error = await response.json();
-                throw new Error(error.message);
-            }
-
-        } catch (error) {
-            handleError(error);
-        }
-    }
-    
-    const handleCancelDelete = () => {
-        setIsDeleteClicked(false);
-        setDeleteTopicId(null);
-    }
-
-  
-    
     const quizTopicsCreated = () => {
         const topics = userProfileDetails.topicsCreated;
     
@@ -640,40 +532,32 @@ const UserProfile = () => {
         event.stopPropagation(); // prevents triggering the question click when delete is clicked
         setIsQuestionDeleteClicked(true);
         setDeleteQuestionId(questionId);
-        console.log(questionId);
     }
     
-    const handleConfirmQuestionDelete = async () => {
-        const userId = userProfileDetails.userId;
-    
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`${baseURL}/api/v1/questions/${deleteQuestionId}/${userId}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
-            
-            if(response.status === 200) {
-                setIsQuestionDeleteClicked(false);
-                setDeleteQuestionId(null);
-                handleSuccess("Question deleted successfully");
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000); // delay of 3 seconds
-            }
-    
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    }
+
     
     const handleCancelQuestionDelete = () => {
         setIsQuestionDeleteClicked(false);
         setDeleteQuestionId(null);
     }
+
+
+    const handleCancelDelete = () => {
+        setIsDeleteClicked(false);
+        setDeleteTopicId(null);
+    }
+
+    
+
+    const hasCommonKeys = (obj1, obj2) => {
+        const keys1 = Object.keys(obj1);
+        const keys2 = Object.keys(obj2);
+    
+        return keys1.some(key => keys2.includes(key));
+    }
+    
+     
+
 
     const quizQuestionsCreated = () => {
         const questions = userProfileDetails.questionsCreated;
@@ -728,20 +612,141 @@ const UserProfile = () => {
     }
 
 
-   
+    const getUserProfileDetails = async (user) => {
+        const userId = user.id;
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${baseURL}/api/v1/users/${userId}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if(response.status === 403) {
+                setSessionExpired(true);
+            }
+
+            if(response.status === 302) {
+                const data = await response.json();
+                setUserProfileDetails(data);
+            }
 
 
+            if(response.status === 400) {
+                const data = await response.json();
+                throw new Error(data.message);
+            }
+
+        } catch (error) {
+            console.log("Error :", error);
+        }
+    };
+
+    React.useEffect(() => {
+        const storedUser = JSON.parse(window.localStorage.getItem('user'));
+        const storedTopics = JSON.parse(window.localStorage.getItem('topics'));
+
+        if (storedUser) {
+            contextValue.setUser(storedUser);
+            getUserProfileDetails(storedUser);
+        }
+        
+       if(contextValue.availableTopics == null && storedTopics !== null) {
+            contextValue.setAvailableTopics(storedTopics);
+        } 
+        
+    }, [])
+
+
+    const handleOnClickQuizCard = async(quizId) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${baseURL}/api/v1/quizzes/quiz-result/${quizId}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if(response.status === 403) {
+                setSessionExpired(true);
+            }
+            else if(!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            } else {
+                const data = await response.json();
+                window.localStorage.setItem('quizResult', JSON.stringify(data));
+                window.localStorage.setItem('topic', JSON.stringify(data.topic));
+                navigate('/result');
+            }
+        } catch(error) {
+            if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
+                handleError('An error occurred while trying to reach the server. Please try again');
+            } else {
+                handleError(error);
+            }
+        }
+
+       
+    }
+
+
+    const handleConfirmQuestionDelete = async () => {
+        const userId = userProfileDetails.userId;
+    
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${baseURL}/api/v1/questions/${deleteQuestionId}/${userId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            
+            if(response.status === 200) {
+                setIsQuestionDeleteClicked(false);
+                setDeleteQuestionId(null);
+                handleSuccess("Question deleted successfully");
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000); // delay of 3 seconds
+            }
+    
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
 
     
+    const handleConfirmDelete = async () => {
+        const userId = userProfileDetails.userId;
 
-    const hasCommonKeys = (obj1, obj2) => {
-        const keys1 = Object.keys(obj1);
-        const keys2 = Object.keys(obj2);
-    
-        return keys1.some(key => keys2.includes(key));
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${baseURL}/api/v1/topics/${deleteTopicId}/${userId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            
+            if(response.status === 200) {
+                setIsDeleteClicked(false);
+                setDeleteTopicId(null);
+                window.location.reload(); 
+                
+            } else  {
+                const error = await response.json();
+                throw new Error(error.message);
+            }
+
+        } catch (error) {
+            handleError(error);
+        }
     }
     
-     
+    
 
     React.useEffect(() => {
         if (sessionExpired) {
@@ -947,14 +952,13 @@ const UserProfile = () => {
                 
                     :
                     <div className= "no-feedback">
-                        <p className="no-feedback-received">No feedbacks received. </p>
+                        <p className="no-feedback-received">No feedbacks received for the topics created by you yet.</p>
                     </div>
                     }
                 </>
                 )}
 
               </div> 
-            
 
             }
              <Footer />
