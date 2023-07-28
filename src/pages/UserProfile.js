@@ -18,8 +18,7 @@ import {useSuccessHandler} from "../hooks/useSuccessHandler";
 import '../styles/UserProfile.css';
 
 const UserProfile = () => {
-    const contextValue = useContext(QuizContext);
-    const navigate = useNavigate();
+    
     const [userProfileDetails, setUserProfileDetails] = useState(null);
     const [sessionExpired, setSessionExpired] = useState(false);
     const quizHistoryRef = useRef(null);
@@ -28,14 +27,12 @@ const UserProfile = () => {
     const [deleteTopicId, setDeleteTopicId] = useState(null);
     const [isQuestionDeleteClicked, setIsQuestionDeleteClicked] = useState(false);
     const [deleteQuestionId, setDeleteQuestionId] = useState(null);
-    const [refresh, setRefresh] = useState(false);
+    
+    
     const handleError = useErrorHandler();
     const handleSuccess = useSuccessHandler();
-
-   
-   
-    
-
+    const contextValue = useContext(QuizContext);
+    const navigate = useNavigate();
 
 
 
@@ -642,21 +639,7 @@ const UserProfile = () => {
         }
     };
 
-    React.useEffect(() => {
-        const storedUser = JSON.parse(window.localStorage.getItem('user'));
-        const storedTopics = JSON.parse(window.localStorage.getItem('topics'));
-
-        if (storedUser) {
-            contextValue.setUser(storedUser);
-            getUserProfileDetails(storedUser);
-        }
-        
-       if(contextValue.availableTopics == null && storedTopics !== null) {
-            contextValue.setAvailableTopics(storedTopics);
-        } 
-        
-    }, [])
-
+   
 
     const handleOnClickQuizCard = async(quizId) => {
         try {
@@ -712,8 +695,12 @@ const UserProfile = () => {
                 }, 2000); // delay of 3 seconds
             }
     
-        } catch (error) {
-            console.error("Error:", error);
+        } catch(error) {
+            if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
+                handleError('An error occurred while trying to reach the server. Please try again');
+            } else {
+                handleError(error);
+            }
         }
     }
 
@@ -741,11 +728,29 @@ const UserProfile = () => {
                 throw new Error(error.message);
             }
 
-        } catch (error) {
-            handleError(error);
+        } catch(error) {
+            if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
+                handleError('An error occurred while trying to reach the server. Please try again');
+            } else {
+                handleError(error);
+            }
         }
     }
     
+    React.useEffect(() => {
+        const storedUser = JSON.parse(window.localStorage.getItem('user'));
+        const storedTopics = JSON.parse(window.localStorage.getItem('topics'));
+
+        if (storedUser) {
+            contextValue.setUser(storedUser);
+            getUserProfileDetails(storedUser);
+        }
+        
+       if(contextValue.availableTopics == null && storedTopics !== null) {
+            contextValue.setAvailableTopics(storedTopics);
+        } 
+        
+    }, [])
     
 
     React.useEffect(() => {
