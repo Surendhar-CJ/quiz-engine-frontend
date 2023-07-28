@@ -25,8 +25,8 @@
     margin-top: -100%;
     padding: 20px;
     border-radius: 10pt;
-    width: 75%;
-    max-width: 480px;
+    width: 50%;
+    max-width: 400px;
     height: auto;
     max-height: 80vh;
     overflow: auto;
@@ -39,12 +39,4 @@
 
 .modal.visible .modal-content {
   margin-top: 0;
-}
-
-.modal .modal-content .error-message {
-  color: red;
-  font-size: 12px;
-  font-weight: 600;
-  margin-top: 10px;
-  text-align: center;
 }
