@@ -27,6 +27,7 @@
     margin: 0;
     color: white;
     font-size: 32pt;
+    text-shadow: 2px 4px 4px rgba(0, 0, 0, 0.4);
 }
 
 .options {

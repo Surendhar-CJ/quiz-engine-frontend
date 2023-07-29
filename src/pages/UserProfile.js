@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 import { baseURL } from '../config.js';
+import {Puff} from 'react-loader-spinner';
 import BarChart from '../components/visual/BarChart';
 import LineChart from '../components/visual/LineChart';
 import Header from '../components/Header.js';
@@ -27,6 +28,7 @@ const UserProfile = () => {
     const [deleteTopicId, setDeleteTopicId] = useState(null);
     const [isQuestionDeleteClicked, setIsQuestionDeleteClicked] = useState(false);
     const [deleteQuestionId, setDeleteQuestionId] = useState(null);
+    const [loadingUserDetails, setLoadingUserDetails] = useState(true);
     
     
     const handleError = useErrorHandler();
@@ -576,7 +578,7 @@ const UserProfile = () => {
                     <p className="user-question-explanation">{question.explanation}</p>
                 </div>
                 <button className="delete-question-button" onClick={(event) => handleQuestionDeleteClick(question.id, event)}>
-                    <FaTrash />
+                    <FaTrash className="delete-icon"/>
                 </button>
                 {
                     isQuestionDeleteClicked && deleteQuestionId === question.id &&
@@ -610,6 +612,7 @@ const UserProfile = () => {
 
 
     const getUserProfileDetails = async (user) => {
+        setLoadingUserDetails(true);
         const userId = user.id;
         try {
             const token = localStorage.getItem('token');
@@ -634,10 +637,16 @@ const UserProfile = () => {
                 throw new Error(data.message);
             }
 
-        } catch (error) {
-            console.log("Error :", error);
-        }
-    };
+        } catch(error) {
+            if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
+                handleError('An error occurred while trying to reach the server. Please try again');
+            } else {
+                handleError(error);
+            }
+        } finally {
+            setLoadingUserDetails(false); 
+    }
+}
 
    
 
@@ -781,6 +790,18 @@ const UserProfile = () => {
         {<div className="user-profile-page">
             <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  /> 
               
+              {loadingUserDetails  ? (
+                        <div className="user-loading">
+                            <Puff className
+                            color="#00BFFF"
+                            height={100}
+                            width={100}
+                            timeout={3000} //3 secs
+                            />
+                        </div>
+                    ) : (
+                        
+               <>    
               {userProfileDetails && <div className="user-profile-details">
 
 
@@ -807,13 +828,13 @@ const UserProfile = () => {
                         className={`option ${selectedOption === 'Quizzes created' ? 'options-active' : ''}`} 
                         onClick={() => handleOptionClick('Quizzes created')}
                     >
-                        Quizzes created
+                        Topics Created
                     </p>
                     <p 
                         className={`option ${selectedOption === 'Questions added' ? 'options-active' : ''}`} 
                         onClick={() => handleOptionClick('Questions added')}
                     >
-                        Questions added
+                        Questions Added
                     </p>
 
                     { userProfileDetails.topicsCreated.length > 0 &&
@@ -821,7 +842,7 @@ const UserProfile = () => {
                         className={`option ${selectedOption === 'Feedbacks received' ? 'options-active' : ''}`} 
                         onClick={() => handleOptionClick('Feedbacks received')}
                     >
-                        Feedbacks recieved
+                        Feedbacks Recieved
                     </p>}
                 </div>
                 
@@ -869,7 +890,7 @@ const UserProfile = () => {
 
                 {userProfileDetails.quizList.length > 0 &&
                 <div className="performance-analysis-by-topic">
-                            <p className="performance-analysis-by-topic-title">My Performance Over Time</p>
+                            <p className="performance-analysis-by-topic-title">Performance Over Time</p>
                             <div className="progress-by-topic">
                                 {progressByTopic()}
                             </div> 
@@ -912,7 +933,7 @@ const UserProfile = () => {
                 <>
                 {userProfileDetails.topicsCreated.length > 0  ?
                 <div className="topics-created">
-                    <p className="topics-created-title">Quizzes created</p>
+                    <p className="topics-created-title">Topics Created</p>
                     <div className="topics-created-cards">
                         {quizTopicsCreated()}
                     </div>
@@ -930,7 +951,7 @@ const UserProfile = () => {
                 <>
                 {userProfileDetails.questionsCreated.length > 0  ?
                 <div className="questions-added">
-                    <p className="questions-added-title">Questions added</p>
+                    <p className="questions-added-title">Questions Added</p>
                     <div className="questions-added-cards">
                         {quizQuestionsCreated()}
                     </div>
@@ -966,7 +987,10 @@ const UserProfile = () => {
               </div> 
 
             }
+            
+
              <Footer />
+             </> )}
         </div>}
         </>
     )

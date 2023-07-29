@@ -9,8 +9,13 @@ export const useErrorHandler = () => {
         } else if (error && typeof error === "object" && error.message) {
             errorMessage = error.message;
         }
-    
-        toast.error(errorMessage);
+        if (errorMessage !== "Topic not found") {
+            toast.error(errorMessage);
+        }
+
+        if(errorMessage == "Failed to fetch") {
+            toast.error("An error occured while communication with the server");
+        }
     };
     
 

@@ -3,7 +3,9 @@ import React, { useState } from 'react';
 import { useContext } from 'react';
 import { QuizContext } from '../context/QuizContext.js';
 import { useNavigate } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 import { baseURL } from '../config.js';
+import {Puff} from 'react-loader-spinner';
 import Header from '../components/Header.js';
 import Topic from '../components/Topic.js';
 import Footer from '../components/Footer.js';
@@ -12,18 +14,27 @@ import QuizConfiguration from '../components/QuizConfiguration.js';
 import CreateQuiz from '../components/CreateQuiz.js';
 import { useErrorHandler } from '../hooks/useErrorHandler';
 import Modal from '../components/Modal';
+import { useRef } from 'react';
+
 
 const Home = () => {
     const [showQuizConfig, setShowQuizConfig] = useState(false);
     const [selectedTopicId, setSelectedTopicId] = useState(null);
+    const [isTopicSearched, setIsTopicSearched] = useState(null);
+    const [isTopicFound, setIsTopicFound] = useState(false);
     const [sessionExpired, setSessionExpired] = useState(false);
     const [showCreateQuiz, setShowCreateQuiz] = useState(false);
     const [topics, setTopics] = useState([]);
+    const [loadingTopics, setLoadingTopics] = useState(true);
+
     
 
     const navigate = useNavigate();
     const contextValue = useContext(QuizContext);
     const handleError = useErrorHandler();
+    const createTopicButtonRef = useRef(null);
+    const location = useLocation();
+
 
     const quizTopics = JSON.parse(localStorage.getItem('topics'));
 
@@ -74,6 +85,8 @@ const Home = () => {
     const handleAddQuestionClick = () => {
         navigate('/add-question');
     }
+
+    
     
     const topicElements = topics.map(topic => <Topic 
         key={topic.id} 
@@ -87,28 +100,70 @@ const Home = () => {
       />
     )
 
+    const getTopic = () => {
+        const topic = contextValue.searchedTopic;
+        if (topic === null) {
+            return null; // or return some default value
+        }
+        return (
+            <Topic 
+                id={topic.id} 
+                name={topic.name}
+                rating={topic.rating}
+                numberOfRaters={topic.numberOfRaters}
+                createdBy={topic.userName}
+                numberOfQuestions={topic.numberOfQuestions}
+                onTopicClick={handleOnTopicClick}
+            />
+        )
+    }
+    
 
-    const getTopics = async() =>  {
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {  // Check if the pressed key is 'Enter'
+            const searchValue = event.target.value;
+            if (searchValue.trim() !== '') { // Check if the search value is not empty
+                searchTopic(searchValue);
+            } else {
+                setIsTopicSearched(false);
+            }
+        }
+    };
+
+    const handleWhyNotLink = () => {
+        createTopicButtonRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    const handleCheckProgressClick = () => {
+        navigate('/profile');
+    }
+    
+
+    const searchTopic = async(name) =>  {
+        contextValue.setSearchedTopic(null);
         try {
            const token = localStorage.getItem('token');
-           const response =  await fetch(`${baseURL}/api/v1/topics`, {
+           const response =  await fetch(`${baseURL}/api/v1/topics/${name}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`, // include token in headers
                 },
             });
 
+            setIsTopicSearched(true);
 
             if(response.status === 403) {
                 setSessionExpired(true);
             }
             
             
-           if(response.status === 200) {
+           if(response.status === 302) {
                 const data = await response.json();
-                setTopics(data);
-                contextValue.setAvailableTopics(data);
-                localStorage.setItem('topics', JSON.stringify(data));
-           } 
+                contextValue.setSearchedTopic(data);
+                setIsTopicFound(true);
+
+           } else if (response.status === 404 && response.message === "Topic not found") {
+                setIsTopicFound(false);
+           }
            else {
             const error = await response.json();
             throw new Error(error.message);
@@ -122,7 +177,49 @@ const Home = () => {
             }
         }
     };
+
+
+
     
+
+        const getTopics = async() =>  {
+            try {
+                setLoadingTopics(true); // Set loading state to true before the request
+                const token = localStorage.getItem('token');
+                const response =  await fetch(`${baseURL}/api/v1/topics`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`, // include token in headers
+                    },
+                });
+
+                if(response.status === 403) {
+                    setSessionExpired(true);
+                }
+                
+                if(response.status === 200) {
+                    const data = await response.json();
+                    setTopics(data);
+                    contextValue.setAvailableTopics(data);
+                    localStorage.setItem('topics', JSON.stringify(data));
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.message);
+                }
+            } catch(error) {
+                if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
+                    handleError('An error occurred while trying to reach the server. Please try again');
+                } else {
+                    handleError(error);
+                }
+            } finally {
+                setLoadingTopics(false); // Set loading state to false after the request
+            }
+        };
+
+    React.useEffect(() => {
+        window.scrollTo(0, 0);
+        }, [location.pathname]);
+            
 
     React.useEffect(() => {
         const storedUser = JSON.parse(window.localStorage.getItem('user'));
@@ -167,26 +264,65 @@ const Home = () => {
             <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
            
             <div className="home-content">
-                <h1 className="welcome">Welcome, <span className="welcome-user-name">{contextValue.user.firstName}</span>!</h1>
-              
-               { quizTopics.length !== 0 && <p className="ready">Ready for a quiz?</p>}
+                <h1 className="welcome">Welcome, <span className="welcome-user-name">{contextValue.user.firstName}</span> !</h1>
+               
+                <div className="search-intro">
+                    <p>Pick a topic, configure it and quiz</p>
+                </div>
+               
+                <div className="search-div">
+                <input
+                    type="search"
+                    className="search-bar"
+                    placeholder="Search for a topic"
+                    onKeyPress={handleKeyPress} 
+                    required
+                />
+                </div>
+
                 
-                {quizTopics.length !== 0 ? 
-                    <p className="pick-topic-intro">Pick a topic and challenge yourself!</p>
+                { isTopicSearched &&
+                    <div className="searched-topic"> 
+                        {isTopicFound && contextValue.searchedTopic?
+                            getTopic()
                                 :
-                    <p className="add-quiz-intro">Create a quiz, challenge yourself and your peers!</p> 
+                            <div className="not-found-div">
+                                <p className="not-found">Sorry, topic not found. <br></br><br></br><span className="not-found-create-link" onClick={handleWhyNotLink}>Why not create one?</span></p>
+                            </div>
+                        }
+                    </div>
+                 }
+                {quizTopics.length !== 0 ? 
+                    <p className="pick-topic-intro"></p>
+                                :
+                    null
                 }
 
                 <div className="topics-list">
-                    {topicElements}
-                    <Modal 
-                        show={showQuizConfig} 
-                        onClose={toggleQuizConfig}
-                        className={showQuizConfig ? 'visible' : ''}
-                    >
-                        {showQuizConfig && <QuizConfiguration topicId={selectedTopicId}  />}
-                    </Modal>
+                    {loadingTopics ? (
+                        <div className="home-loading">
+                        <Puff className
+                        color="#00BFFF"
+                        height={100}
+                        width={100}
+                        timeout={3000} //3 secs
+                        />
+                        </div>
+                    ) : (
+                        <>
+                            {topicElements}
+                            <Modal 
+                                show={showQuizConfig} 
+                                onClose={toggleQuizConfig}
+                                className={showQuizConfig ? 'visible' : ''}
+                            >
+                                {showQuizConfig && <QuizConfiguration topicId={selectedTopicId}  />}
+                            </Modal>
+                        </>
+                    )}
                 </div>
+
+
 
                  {showCreateQuiz &&
                     <Modal
@@ -199,10 +335,25 @@ const Home = () => {
                 }
                   
                 <div className="create-add">
-                    <p className="add-topic-intro" onClick={handleCreateQuizClick}>Create a quiz and help your peers!</p>
-                    <p className="add-question-intro" onClick={handleAddQuestionClick}>Got a question to add?</p>
+                    <div className="contribute-box">
+                        <p className="contribute">Contribute to a topic</p>
+                        <button type="submit" className="add-question-intro" onClick={handleAddQuestionClick}>Add question</button>
+                    </div>
+                    <div className="add-topic-box">
+                        <p className="add-a-topic">Create a topic yourself</p>
+                        <button ref={createTopicButtonRef} type="submit" className="add-topic-intro" onClick={handleCreateQuizClick}>Add topic</button> 
+                    </div>
                 </div>
+
+                <div className="to-profile">
+                    <p className="to-profile-performance">Check your progress and activity</p>
+                    <button className="go-to-profile" type="button" onClick={handleCheckProgressClick}>Show</button>
+                </div>
+
             </div>
+
+            
+
             <Footer />
         </div> }
         </>
