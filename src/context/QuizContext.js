@@ -8,6 +8,7 @@ const QuizContextProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [topic, setTopic] = useState(null);
     const [availableTopics, setAvailableTopics] = useState(null);
+    const [searchedTopic, setSearchedTopic] = useState(null);
     const [quizDetails, setQuizDetails] = useState(null);
     const [quizResult, setQuizResult] = useState(null);
 
@@ -15,8 +16,10 @@ const QuizContextProvider = ({children}) => {
         setUser(null);
         setTopic(null);
         setAvailableTopics(null);
+        setSearchedTopic(null);
         setQuizDetails(null);
         setQuizResult(null);
+       
     }
 
     return (
@@ -24,6 +27,7 @@ const QuizContextProvider = ({children}) => {
                 user, setUser, 
                 topic, setTopic, 
                 availableTopics, setAvailableTopics, 
+                searchedTopic, setSearchedTopic,
                 quizDetails, setQuizDetails, 
                 quizResult, setQuizResult,
                 resetContext

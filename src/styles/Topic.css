@@ -8,6 +8,7 @@
     justify-content: flex-start;
     width: 88%;   
     margin-left: 65px; 
+    margin-top: 60px;
 } 
 
 .topic {
@@ -36,6 +37,7 @@
     height: 60px; 
 }
 
+
 .rating {
     box-sizing: border-box;
     margin:0;
@@ -44,8 +46,9 @@
     justify-content: center;
     align-items: center;
     height: 50px;
-    font-size: 12pt;
     color: black;
+    font-size: 11pt;
+    font-weight: 600;
 }
 
 .golden-star {
@@ -56,7 +59,7 @@
 .raters-count {
     color: silver;
     padding-left: 2px;
-    font-size: 10.5pt;
+    font-size: 9.5pt;
 }
 
 
@@ -66,16 +69,18 @@
     color: black;
 }
 
+.bottom-section {
+    font-size: 10pt;
+    font-weight: 500;
+}
+
 .topic:hover {
     transform: scale(1.05);
     cursor: pointer;
 }
 
 
-.topic p {
-    font-size: 10pt;
-    font-weight: 500;
-}
+
 
 .topic-questions-available {
     font-weight: 400;

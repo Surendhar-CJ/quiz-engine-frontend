@@ -27,6 +27,7 @@
 }
 .create-quiz-form input {
     cursor: text;
+    border: 1px solid black;
 }
 
 

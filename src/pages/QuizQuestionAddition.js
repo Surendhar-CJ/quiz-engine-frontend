@@ -132,7 +132,8 @@ const QuizQuestionAddition = () => {
             // retrieve subtopics when topicId changes
             const newSubtopics = getSubtopics(event.target.value);
             setSubtopics(newSubtopics);
-            setFormData({ ...formData, subtopic: "" }); // also reset subtopic selection
+            setFormData({ ...formData, subtopic: "" }); 
+            setShowSubtopicInput(false);
         }
     
         if (event.target.name === "subtopic") {
@@ -153,8 +154,7 @@ const QuizQuestionAddition = () => {
     };
     
     
-   
-    
+  
     
     const handleChoiceTextChange = (event, index) => {
         const newChoices = choices.map((choice, i) => {
@@ -265,6 +265,8 @@ const QuizQuestionAddition = () => {
         });
         setChoices([{ text: '', isCorrect: false }]);
         setCorrectAnswerIndex(-1);
+        setShowSubtopicInput(false);
+        window.scrollTo(0, 0);
     };
     
     
@@ -369,6 +371,16 @@ const QuizQuestionAddition = () => {
 
 
     React.useEffect(() => {
+        if (formData.questionType) {
+            setChoices(choices.map(choice => ({...choice, isCorrect: false})));
+            setCorrectAnswerIndex(-1);
+        }
+    }, [formData.questionType]);
+    
+
+
+
+    React.useEffect(() => {
         if (formSubmitted) {
             postSubmitClick();
             setFormSubmitted(false);  // Reset formSubmitted to false
@@ -388,6 +400,7 @@ const QuizQuestionAddition = () => {
         if(storedUser !== null) {
             contextValue.setUser(storedUser);
         }
+        window.scrollTo(0, 0);
     }, []);
 
 
@@ -450,7 +463,7 @@ const QuizQuestionAddition = () => {
                     </div>
 
                     <div className="question-addition-subtopic">
-                        <label htmlFor="subtopic">Mention the subtopic for the question (optional). </label>
+                        <label htmlFor="subtopic">Select the subtopic for the question or add a new sub topic. </label>
                         {showSubtopicInput ? (
                             <>
                                 <input 
@@ -510,6 +523,7 @@ const QuizQuestionAddition = () => {
                                 <div key={index} className="true-false">
                                     <label>{choice}</label>
                                     <select 
+                                        value={choice.isCorrect}
                                         onChange={event => handleCorrectAnswerChangeForTF(event, index)}
                                     >
                                         <option className="tf-first" value={false}>Incorrect</option>
@@ -527,6 +541,7 @@ const QuizQuestionAddition = () => {
                                         placeholder="Choice" 
                                     />
                                     <select 
+                                        value={choice.isCorrect}
                                         onChange={event => handleCorrectAnswerChange(event, index)}
                                     >
                                         <option value={false}>Incorrect</option>
