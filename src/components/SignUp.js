@@ -76,7 +76,8 @@ const SignUp = ({ toggleLogin, toggleSignUp }) => {
             if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
                 handleError('An error occurred while trying to reach the server. Please try again');
             } else {
-                setServerErrors(error.message);
+                 //setServerErrors(error.message);
+                 handleError(error);
             }
         }
     }
