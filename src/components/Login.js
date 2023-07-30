@@ -71,7 +71,8 @@ const Login = ({ toggleLogin, toggleSignUp }) => {
                 handleError('An error occurred while trying to reach the server. Please try again');
             } else {
                 // This error is from the backend
-                setServerErrors(error.message);
+                //setServerErrors(error.message);
+                handleError(error);
             }
         }
     }

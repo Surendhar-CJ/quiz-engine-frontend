@@ -35,6 +35,7 @@ const UserProfile = () => {
     const handleSuccess = useSuccessHandler();
     const contextValue = useContext(QuizContext);
     const navigate = useNavigate();
+    const location = useLocation();
 
 
 
@@ -745,6 +746,11 @@ const UserProfile = () => {
             }
         }
     }
+
+    React.useEffect(() => {
+        window.scrollTo(0, 0);
+        }, [location.pathname]);
+            
     
     React.useEffect(() => {
         const storedUser = JSON.parse(window.localStorage.getItem('user'));
