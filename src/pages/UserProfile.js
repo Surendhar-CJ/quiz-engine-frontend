@@ -597,7 +597,6 @@ const UserProfile = () => {
 
     const feedbacksReceived = () => {
         const feedbacks = userProfileDetails.feedbacksReceived;
-        console.log(userProfileDetails.feedbacksReceived);
     
         return feedbacks.map((feedback, index) => (
             <div className="feedback-received-card" key={index}>
