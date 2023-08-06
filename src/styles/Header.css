@@ -38,11 +38,26 @@
 }
 
 
-.home, .profile, .logout {
+.create-plus, .home, .profile, .logout {
     margin: 0 10px; 
     font-size: 12pt;
     font-weight: 800;
 }
+
+.create-plus {
+    font-size: 12pt;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10pt;
+}
+
+.create-plus:hover {
+    background-color: rgba(159, 212, 250, 0.5);
+    cursor: pointer;
+}
+
 
 
 .home{
@@ -90,6 +105,8 @@
 
 .active {
     border: 1px solid white;
+    box-shadow: 2px 2px 8px rgba(255, 255, 255, 0.5);
+    transform: scale(1.02); /* optional: gives a slight zoom effect */
 }
 
 
@@ -118,7 +135,7 @@
         
     }
 
-    .home,.profile,.logout {
+    .create-plus,.home,.profile,.logout {
         width: 100%;
     }
 

@@ -3,12 +3,14 @@ import { baseURL } from '../config.js';
 import { useNavigate } from "react-router-dom";
 import { useContext } from 'react';
 import { QuizContext } from '../context/QuizContext.js';
+import { useErrorHandler } from '../hooks/useErrorHandler';
 import '../styles/CreateQuiz.css';
 
 const CreateQuiz = (props) => {
 
     const navigate = useNavigate();
     const contextValue = useContext(QuizContext);
+    const handleError = useErrorHandler();
 
     const [formData, setFormData] = useState({
         topicName: '',
@@ -41,9 +43,17 @@ const CreateQuiz = (props) => {
                 localStorage.setItem('topics', JSON.stringify(data));
                 navigate('/add-question');
             }
+            else {
+                const error = await response.json();
+                throw new Error(error.message); 
+            }
 
-        } catch (error) {
-            console.error("Error:", error);
+        } catch(error) {
+            if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
+                handleError('An error occurred while trying to reach the server. Please try again');
+            } else {
+                handleError(error);
+            }
         }
     }
 

@@ -38,6 +38,8 @@
 .submit-quiz p {
     font-size: 14pt;
     padding-bottom: 15px;
+    font-size: 12pt;
+    font-weight: 600;
 }
 
 .submit-quiz button {

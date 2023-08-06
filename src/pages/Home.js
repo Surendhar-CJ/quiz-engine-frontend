@@ -103,7 +103,7 @@ const Home = () => {
     const getTopic = () => {
         const topic = contextValue.searchedTopic;
         if (topic === null) {
-            return null; // or return some default value
+            return null; 
         }
         return (
             <Topic 
@@ -131,7 +131,7 @@ const Home = () => {
     };
 
     const handleWhyNotLink = () => {
-        createTopicButtonRef.current.scrollIntoView({ behavior: 'smooth' });
+       setShowCreateQuiz(true);
     }
 
     const handleCheckProgressClick = () => {
@@ -259,13 +259,28 @@ const Home = () => {
                 <p className="session-expired-message-content">Your session has expired. You will be redirected to the home page, please log in again to continue.</p>
             </Modal>
         }
-        {contextValue.user &&   contextValue.availableTopics &&
+        {contextValue.user &&  contextValue.availableTopics &&
         <div className="home-page">
-            <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
+            <Header options={[{ label: 'Create+', action: handleCreateQuizClick }, { label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
            
             <div className="home-content">
                 <h1 className="welcome">Welcome, <span className="welcome-user-name">{contextValue.user.firstName}</span> !</h1>
                
+                
+                <div className="create-add">
+                    <div className="add-topic-box">
+                        <button ref={createTopicButtonRef} type="submit" className="add-topic-intro" onClick={handleCreateQuizClick}>Create Quiz</button> 
+                    </div>
+                    { contextValue.availableTopics.length > 0 &&
+
+                        <div className="contribute-box">
+                            <button type="submit" className="add-question-intro" onClick={handleAddQuestionClick}>Add Question</button>
+                        </div>
+                    }
+                    
+                </div>
+                
+                
                 <div className="search-intro">
                     <p>Pick a topic, configure it and quiz</p>
                 </div>
@@ -280,7 +295,7 @@ const Home = () => {
                 />
                 </div>
 
-                
+               
                 { isTopicSearched &&
                     <div className="searched-topic"> 
                         {isTopicFound && contextValue.searchedTopic?
@@ -334,17 +349,7 @@ const Home = () => {
                     </Modal> 
                 }
                   
-                <div className="create-add">
-                    <div className="contribute-box">
-                        <p className="contribute">Contribute to a topic</p>
-                        <button type="submit" className="add-question-intro" onClick={handleAddQuestionClick}>Add question</button>
-                    </div>
-                    <div className="add-topic-box">
-                        <p className="add-a-topic">Create a topic yourself</p>
-                        <button ref={createTopicButtonRef} type="submit" className="add-topic-intro" onClick={handleCreateQuizClick}>Add topic</button> 
-                    </div>
-                </div>
-
+                
                 <div className="to-profile">
                     <p className="to-profile-performance">Check your progress and activity</p>
                     <button className="go-to-profile" type="button" onClick={handleCheckProgressClick}>Show</button>

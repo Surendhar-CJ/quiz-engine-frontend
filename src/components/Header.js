@@ -16,8 +16,9 @@ const Header = ({ options }) => {
                 <div className="options">
                     {options.map(({ label, action, Icon }) => (
                         <h3 key={label} 
-                            className={`${label.toLowerCase().replace(/\s+/g, '-')} 
-                                        ${location.pathname.includes(label.toLowerCase()) ? 'active' : ''}`} 
+                            className={`${label.toLowerCase().replace(/\s+/g, '-').replace('+', '-plus')} 
+                                        ${location.pathname.includes(label.toLowerCase()) ? 'active' : ''}`}
+             
                             onClick={action}>
                             {Icon ? <Icon size={label === 'Profile' ? 20 : 24} color={'black'}/> : label.toUpperCase()}
                         </h3>

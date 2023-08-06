@@ -7,6 +7,7 @@ import { baseURL } from '../config.js';
 import Header from '../components/Header.js';
 import Footer from '../components/Footer.js';
 import IncorrectFeedbackCard from '../components/IncorrectFeedbackCard';
+import CreateQuiz from '../components/CreateQuiz.js';
 import Modal from '../components/Modal';
 import '../styles/QuizResult.css';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
@@ -22,6 +23,7 @@ import 'react-circular-progressbar/dist/styles.css';
     const contextValue = useContext(QuizContext);
     const [sessionExpired, setSessionExpired] = useState(false);
     const [isRatingSubmitted, setIsRatingSubmitted] = useState(false);
+    const [showCreateQuiz, setShowCreateQuiz] = useState(false);
     
     const location = useLocation();
     const fromQuiz = location.state?.fromQuiz;
@@ -31,7 +33,15 @@ import 'react-circular-progressbar/dist/styles.css';
     const quizResult = JSON.parse(localStorage.getItem('quizResult'));
     const quizDetails = JSON.parse(localStorage.getItem('quizDetails'));
       
-       
+    
+    const handleCreateQuizClick = () => {
+      setShowCreateQuiz(true);
+   }
+
+   const toggleShowCreateQuiz = () => {
+      setShowCreateQuiz(!showCreateQuiz);
+   }
+
     const handleHomeClick = () => {
         navigate('/home');
     }
@@ -243,9 +253,19 @@ import 'react-circular-progressbar/dist/styles.css';
               <p className="session-expired-message-content">Your session has expired. You will be redirected to the home page, please log in again to continue.</p>
           </Modal>
       }
+
+      {showCreateQuiz &&
+                    <Modal
+                        show={showCreateQuiz}
+                        onClose={toggleShowCreateQuiz}
+                        className={showCreateQuiz ? 'visible' : ''}
+                    >
+                        <CreateQuiz userId={contextValue.user.id}/>
+                    </Modal> 
+        } 
        
           { quizResult && <div className="quiz-result-page">
-            <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
+            <Header options={[{ label: 'Create+', action: handleCreateQuizClick }, { label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
               
             <div className="quiz-result-content">
                

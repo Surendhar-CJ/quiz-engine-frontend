@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Home from './Home';
 import { baseURL } from '../config.js';
 import Modal from "../components/Modal";
+import CreateQuiz from '../components/CreateQuiz.js';
 import Header from '../components/Header.js';
 import Footer from '../components/Footer.js';
 import "../styles/QuizQuestionAddition.css";
@@ -20,6 +21,7 @@ const QuizQuestionAddition = () => {
     const [sessionExpired, setSessionExpired] = useState(false);
     const [showSubtopicInput, setShowSubtopicInput] = useState(false);
     const [subtopics, setSubtopics] = useState([]);
+    const [showCreateQuiz, setShowCreateQuiz] = useState(false);
     const [formData, setFormData] = useState(
         {
             topicId: '',
@@ -46,6 +48,14 @@ const QuizQuestionAddition = () => {
 
     const availableTopics = JSON.parse(localStorage.getItem("topics"));
 
+    const handleCreateQuizClick = () => {
+        setShowCreateQuiz(true);
+    }
+  
+    const toggleShowCreateQuiz = () => {
+        setShowCreateQuiz(!showCreateQuiz);
+    }
+        
 
     const handleHomeClick = () => {
         navigate('/home');
@@ -432,8 +442,18 @@ const QuizQuestionAddition = () => {
             </Modal>
         }
 
+        {showCreateQuiz &&
+                    <Modal
+                        show={showCreateQuiz}
+                        onClose={toggleShowCreateQuiz}
+                        className={showCreateQuiz ? 'visible' : ''}
+                    >
+                        <CreateQuiz userId={contextValue.user.id}/>
+                    </Modal> 
+        }
+
         {<div className="question-addition-page">
-            <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
+            <Header options={[{ label: 'Create+', action: handleCreateQuizClick }, { label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
            
             <div className="question-addition-main">
                 <h2 className="add-question-title">Add Question</h2>
