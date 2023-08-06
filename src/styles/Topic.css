@@ -35,6 +35,7 @@
     justify-content: space-between;
     align-items: center;
     height: 60px; 
+    font-size: 14px;
 }
 
 
@@ -80,17 +81,11 @@
 }
 
 
-
-
 .topic-questions-available {
     font-weight: 400;
     font-size: 10pt;
     color: black;
 }
-
-
-
-
 
 
 /**RESPONSIVENESS**/

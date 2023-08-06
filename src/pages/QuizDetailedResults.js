@@ -6,6 +6,8 @@ import { useLocation } from 'react-router-dom';
 import Header from '../components/Header.js';
 import Footer from '../components/Footer.js';
 import QuizSummary from '../components/QuizSummary';
+import CreateQuiz from '../components/CreateQuiz.js';
+import Modal from '../components/Modal';
 import '../styles/QuizDetailedResults.css';
 
 const QuizDetailedResults = () => {
@@ -13,7 +15,15 @@ const QuizDetailedResults = () => {
     const quizResult = JSON.parse(localStorage.getItem('quizResult'));
     const navigate = useNavigate();
     const location = useLocation();
+    const [showCreateQuiz, setShowCreateQuiz] = useState(false);
 
+    const handleCreateQuizClick = () => {
+        setShowCreateQuiz(true);
+     }
+  
+     const toggleShowCreateQuiz = () => {
+        setShowCreateQuiz(!showCreateQuiz);
+     }
         
     const handleHomeClick = () => {
         navigate('/home');
@@ -92,9 +102,19 @@ const QuizDetailedResults = () => {
     
 
     return (
+        <>
+        {showCreateQuiz &&
+                    <Modal
+                        show={showCreateQuiz}
+                        onClose={toggleShowCreateQuiz}
+                        className={showCreateQuiz ? 'visible' : ''}
+                    >
+                        <CreateQuiz userId={contextValue.user.id}/>
+                    </Modal> 
+        } 
              
         <div className="quiz-detailed-results">
-            <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
+            <Header options={[{ label: 'Create+', action: handleCreateQuizClick }, { label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
             <div className="detailed-results">
                 <h1>Detailed Quiz Results</h1>
                 <QuizSummary quizResult = {quizResult} />
@@ -117,6 +137,8 @@ const QuizDetailedResults = () => {
             
             <Footer />    
         </div>
+
+        </>
     );
 }
 

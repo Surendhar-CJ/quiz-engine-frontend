@@ -11,6 +11,7 @@ import Header from '../components/Header.js';
 import Footer from '../components/Footer.js';
 import UserCard from '../components/UserProfileComponents/UserCard.js';
 import QuizCard from '../components/UserProfileComponents/QuizCard';
+import CreateQuiz from '../components/CreateQuiz.js';
 import { useLocation } from 'react-router-dom';
 import { FaTrash } from 'react-icons/fa';
 import Modal from "../components/Modal";
@@ -29,7 +30,9 @@ const UserProfile = () => {
     const [isQuestionDeleteClicked, setIsQuestionDeleteClicked] = useState(false);
     const [deleteQuestionId, setDeleteQuestionId] = useState(null);
     const [loadingUserDetails, setLoadingUserDetails] = useState(true);
-    
+    const [showCreateQuiz, setShowCreateQuiz] = useState(false);
+    const [selectedTopic, setSelectedTopic] = useState(null);
+        
     
     const handleError = useErrorHandler();
     const handleSuccess = useSuccessHandler();
@@ -37,7 +40,14 @@ const UserProfile = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+        
+    const handleCreateQuizClick = () => {
+        setShowCreateQuiz(true);
+    }
 
+    const toggleShowCreateQuiz = () => {
+        setShowCreateQuiz(!showCreateQuiz);
+    }
 
     const handleHomeClick = () => {
         navigate('/home');
@@ -61,6 +71,12 @@ const UserProfile = () => {
     const handleOptionClick = (option) => {
         setSelectedOption(option);
     };
+
+    const handleTopicChange = (event) => {
+        const topicName = event.target.value === "null" ? null : event.target.options[event.target.selectedIndex].text;
+        setSelectedTopic(topicName);
+    };
+    
 
     const topicColorMapping = {
         // color mapping for each topicId
@@ -155,6 +171,14 @@ const UserProfile = () => {
     const options = {
         responsive: true, 
         maintainAspectRatio: false,
+        scales: {
+            y: {    
+                title: {
+                    display: true,
+                    text: 'Average Score (%)' 
+                }
+            }
+        },
         plugins: {
             legend: {
                 display: false,
@@ -306,11 +330,19 @@ const UserProfile = () => {
                     type: 'linear',  
                     ticks: {
                         stepSize: 1,  
+                    },
+                    title: {
+                        display: true,
+                        text: 'Quiz Number' 
                     }
                 },
                 y: {  
                     min: 0,  
                     max: 100,  
+                    title: {
+                        display: true,
+                        text: 'Average Score (%)' 
+                    }
                 }
             },
             plugins: {
@@ -511,9 +543,7 @@ const UserProfile = () => {
                     <p className="user-created-topic-name">{topic.name}</p>
                     <p className="current-rating">{topic.rating}<span className="golden-star">★</span><span className="raters-count">({topic.numberOfRaters})</span></p>
                 </div>
-                <button className="delete-button" onClick={(event) => handleDeleteClick(topic.id, event)}>
-                    <FaTrash />
-                </button>
+                
                 {
                     isDeleteClicked && deleteTopicId === topic.id &&
                     <Modal className= {isDeleteClicked ? 'visible' : ''}>
@@ -562,7 +592,11 @@ const UserProfile = () => {
     const quizQuestionsCreated = () => {
         const questions = userProfileDetails.questionsCreated;
     
-        return questions.map((question, index) => (
+        const displayedQuestions = selectedTopic
+        ? questions.filter(question => question.topicName === selectedTopic)
+        : questions;
+
+        return displayedQuestions.map((question, index) => (
             <div className="user-question-created-card" key={index}>
                 <div className="user-question">
                     <h4>Topic</h4>
@@ -792,8 +826,18 @@ const UserProfile = () => {
             </Modal>
         }
 
+        {showCreateQuiz &&
+                    <Modal
+                        show={showCreateQuiz}
+                        onClose={toggleShowCreateQuiz}
+                        className={showCreateQuiz ? 'visible' : ''}
+                    >
+                        <CreateQuiz userId={contextValue.user.id}/>
+                    </Modal> 
+        } 
+
         {<div className="user-profile-page">
-            <Header options={[{ label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  /> 
+            <Header options={[{ label: 'Create+', action: handleCreateQuizClick },{ label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  /> 
               
               {loadingUserDetails  ? (
                         <div className="user-loading">
@@ -806,7 +850,8 @@ const UserProfile = () => {
                         </div>
                     ) : (
                         
-               <>    
+               <>   
+               
               {userProfileDetails && <div className="user-profile-details">
 
 
@@ -957,6 +1002,16 @@ const UserProfile = () => {
                 {userProfileDetails.questionsCreated.length > 0  ?
                 <div className="questions-added">
                     <p className="questions-added-title">Questions Added</p>
+                    <div className="topic-dropdown">
+                        <label htmlFor="topicDropdown">Topic:</label>
+                        <select id="topicDropdown" name="topic" onChange={handleTopicChange}>
+                            <option value="null">All Topics</option>
+                            {userProfileDetails.topicsCreated.map((topic) => (
+                                <option key={topic.id} value={topic.id}>{topic.name}</option>
+                            ))}
+                        </select>
+                    </div>
+                    
                     <div className="questions-added-cards">
                         {quizQuestionsCreated()}
                     </div>
