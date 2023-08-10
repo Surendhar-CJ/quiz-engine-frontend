@@ -4,7 +4,7 @@ import { IoLogOut } from 'react-icons/io';
 import { useLocation } from 'react-router-dom';
 import '../styles/Header.css';
 
-const title = "Quizflect"
+const title = "QUIZFLECT"
 
 const Header = ({ options }) => {
     const location = useLocation();
