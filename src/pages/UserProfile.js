@@ -112,11 +112,11 @@ const UserProfile = () => {
         ];
     
         const data = {
-            labels: [], // this will contain your x-axis labels (topic names)
+            labels: [], // this will contain x-axis labels (topic names)
             datasets: [
                 {
                     label: 'Average Score',
-                    data: [], // this will contain your y-axis values (percentage)
+                    data: [], // this will contain y-axis values (percentage)
                     backgroundColor: [],
                     hoverBackgroundColor: [],
                     borderColor: [],
@@ -333,7 +333,7 @@ const UserProfile = () => {
                     },
                     title: {
                         display: true,
-                        text: 'Quiz Number' 
+                        text: 'Quiz Attempt Number' 
                     }
                 },
                 y: {  
@@ -341,7 +341,7 @@ const UserProfile = () => {
                     max: 100,  
                     title: {
                         display: true,
-                        text: 'Average Score (%)' 
+                        text: 'Quiz score (%)' 
                     }
                 }
             },
@@ -392,7 +392,7 @@ const UserProfile = () => {
                     barThickness: 30,
                 },
                 {
-                    label: 'Other Users\' Average Score',
+                    label: 'Community Average',
                     data: [], 
                     backgroundColor: [],
                     hoverBackgroundColor: [],
