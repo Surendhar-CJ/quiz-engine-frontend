@@ -47,3 +47,15 @@
     background-color: rgba(11, 138, 231, 1);
     cursor: pointer;
 }
+
+
+.success-message-modal {
+    text-align: center;
+    padding: 10px;
+    margin: 5px 0;
+}
+
+#topic-created-message {
+    font-size: 12pt;
+    font-weight: 600;
+}

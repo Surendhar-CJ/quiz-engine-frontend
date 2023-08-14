@@ -115,7 +115,7 @@ const UserProfile = () => {
             labels: [], // this will contain x-axis labels (topic names)
             datasets: [
                 {
-                    label: 'Average Score',
+                    label: 'Average',
                     data: [], // this will contain y-axis values (percentage)
                     backgroundColor: [],
                     hoverBackgroundColor: [],
@@ -175,7 +175,7 @@ const UserProfile = () => {
             y: {    
                 title: {
                     display: true,
-                    text: 'Average Score (%)' 
+                    text: 'Average (%)' 
                 }
             }
         },
@@ -185,8 +185,20 @@ const UserProfile = () => {
                 labels: {
                     color: "black"
                 }
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const dataset = context.dataset;  // Notice the change here
+                        const currentValue = dataset.data[context.dataIndex];  // And here
+                        return `${dataset.label}: ${currentValue}%`;
+                    }
+                }
             }
+        
+        
         }
+        
     }
     
 
@@ -223,7 +235,7 @@ const UserProfile = () => {
             labels: [], 
             datasets: [
                 {
-                    label: 'Average Score',
+                    label: 'Average',
                     data: [], 
                     backgroundColor: [],
                     hoverBackgroundColor: [],

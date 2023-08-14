@@ -105,7 +105,8 @@
 
 .active {
     border: 1px solid white;
-    box-shadow: 2px 2px 8px rgba(255, 255, 255, 0.5);
+    color: #0D99FF;
+    background-color: white;
     transform: scale(1.02); /* optional: gives a slight zoom effect */
 }
 

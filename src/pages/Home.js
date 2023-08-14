@@ -11,10 +11,12 @@ import Topic from '../components/Topic.js';
 import Footer from '../components/Footer.js';
 import "../styles/Home.css";
 import QuizConfiguration from '../components/QuizConfiguration.js';
+import ViewQuestions from '../components/ViewQuestions.js';
 import CreateQuiz from '../components/CreateQuiz.js';
 import { useErrorHandler } from '../hooks/useErrorHandler';
 import Modal from '../components/Modal';
 import { useRef } from 'react';
+import ShowOptions from '../components/ShowOptions.js';
 
 
 const Home = () => {
@@ -26,6 +28,7 @@ const Home = () => {
     const [showCreateQuiz, setShowCreateQuiz] = useState(false);
     const [topics, setTopics] = useState([]);
     const [loadingTopics, setLoadingTopics] = useState(true);
+    const [showOptions, setShowOptions] = useState(false);
 
     
 
@@ -66,8 +69,18 @@ const Home = () => {
         const selectedTopic = topics.find(topic => topic.id === topicId);
         contextValue.setTopic(selectedTopic);
         localStorage.setItem('topic', JSON.stringify(selectedTopic));
-        
-        setShowQuizConfig(true);
+        setShowOptions(true);
+      //  setShowQuizConfig(true);
+    }
+
+
+    const handleQuizConfigClick = () => {
+        toggleQuizConfig();
+        setShowOptions(false);
+    }
+    
+    const toggleShowOptions = () => {
+        setShowOptions(!showOptions);
     }
 
     const toggleQuizConfig = () => {
@@ -178,33 +191,29 @@ const Home = () => {
         }
     };
 
+    const getTopics = async() =>  {
+        try {
+            setLoadingTopics(true); // Set loading state to true before the request
+            const token = localStorage.getItem('token');
+            const response =  await fetch(`${baseURL}/api/v1/topics`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`, // include token in headers
+                },
+            });
 
-
-    
-
-        const getTopics = async() =>  {
-            try {
-                setLoadingTopics(true); // Set loading state to true before the request
-                const token = localStorage.getItem('token');
-                const response =  await fetch(`${baseURL}/api/v1/topics`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`, // include token in headers
-                    },
-                });
-
-                if(response.status === 403) {
-                    setSessionExpired(true);
-                }
-                
-                if(response.status === 200) {
-                    const data = await response.json();
-                    setTopics(data);
-                    contextValue.setAvailableTopics(data);
-                    localStorage.setItem('topics', JSON.stringify(data));
-                } else {
-                    const error = await response.json();
-                    throw new Error(error.message);
-                }
+            if(response.status === 403) {
+                setSessionExpired(true);
+            }
+            
+            if(response.status === 200) {
+                const data = await response.json();
+                setTopics(data);
+                contextValue.setAvailableTopics(data);
+                localStorage.setItem('topics', JSON.stringify(data));
+            } else {
+                const error = await response.json();
+                throw new Error(error.message);
+            }
             } catch(error) {
                 if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
                     handleError('An error occurred while trying to reach the server. Please try again');
@@ -215,6 +224,38 @@ const Home = () => {
                 setLoadingTopics(false); // Set loading state to false after the request
             }
         };
+
+
+
+        const handleViewQuestionsClick = async () => {
+            const topicId = selectedTopicId;
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${baseURL}/api/v1/questions/${topicId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`, // include token in headers
+                    },
+                });
+    
+                if(response.status === 403) {
+                   setSessionExpired(true);
+                }
+
+                const data = await response.json();
+    
+                if(response.status === 200) {
+                    navigate('/view-question');
+                       
+                } else {
+                    // If HTTP status code is not a success status (2xx), consider it an error
+                    const error = await response.json();
+                    throw new Error(error.message);
+                }
+                
+            } catch(error) {
+                handleError(error); // call the returned function with the error
+            }
+        }
 
     React.useEffect(() => {
         window.scrollTo(0, 0);
@@ -333,6 +374,14 @@ const Home = () => {
                             >
                                 {showQuizConfig && <QuizConfiguration topicId={selectedTopicId}  />}
                             </Modal>
+                            <Modal 
+                                show={showOptions} 
+                                onClose={toggleShowOptions}
+                                className={showOptions ? 'visible' : ''}
+                            >
+                                {showOptions && <ShowOptions topicId={selectedTopicId} onViewQuestionsClick={handleViewQuestionsClick} onQuizConfigClick={handleQuizConfigClick} />}
+                            </Modal>
+
                         </>
                     )}
                 </div>

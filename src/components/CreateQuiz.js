@@ -4,14 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from 'react';
 import { QuizContext } from '../context/QuizContext.js';
 import { useErrorHandler } from '../hooks/useErrorHandler';
+import Modal from '../components/Modal';
 import '../styles/CreateQuiz.css';
 
 const CreateQuiz = (props) => {
 
-    const navigate = useNavigate();
-    const contextValue = useContext(QuizContext);
-    const handleError = useErrorHandler();
-
+    const [showSuccessMessage, setShowSuccessMessage] = useState(false);
     const [formData, setFormData] = useState({
         topicName: '',
         userId: props.userId,
@@ -24,6 +22,13 @@ const CreateQuiz = (props) => {
         }));
     }
 
+    
+    const navigate = useNavigate();
+    const contextValue = useContext(QuizContext);
+    const handleError = useErrorHandler();
+    
+
+   
     const submitClick = async (event) => {
         event.preventDefault();
         try {
@@ -41,7 +46,11 @@ const CreateQuiz = (props) => {
                 const data = await response.json();
                 contextValue.setAvailableTopics(data);
                 localStorage.setItem('topics', JSON.stringify(data));
-                navigate('/add-question');
+                setShowSuccessMessage(true);
+                setTimeout(() => {
+                    setShowSuccessMessage(false);
+                    navigate('/add-question');
+                }, 3000); 
             }
             else {
                 const error = await response.json();
@@ -58,21 +67,35 @@ const CreateQuiz = (props) => {
     }
 
     return (
-        <div className="create-quiz-modal">
-            <h2 className="create-quiz-modal-title">Quiz Topic</h2>
-            <form className="create-quiz-form" onSubmit={submitClick}>
-                <input 
-                    type="text" 
-                    value={formData.topicName} 
-                    onChange={handleChange} 
-                    placeholder="Enter topic" 
-                    name="topicName" 
-                    required
-                />
-                <button className="create-quiz-button" type="submit">Create</button>
-            </form>
-        </div>
-    )
+        <>
+            {showSuccessMessage && (
+                <Modal
+                    show={showSuccessMessage}
+                    onClose={() => setShowSuccessMessage(false)} 
+                    className={showSuccessMessage ? 'visible' : ''}
+                >
+                    <div className="success-message-modal">
+                        <p id="topic-created-message">Quiz topic created successfully, please add question(s)!</p>
+                    </div>
+                </Modal>
+            )}
+    
+            <div className="create-quiz-modal">
+                <h2 className="create-quiz-modal-title">Quiz Topic</h2>
+                <form className="create-quiz-form" onSubmit={submitClick}>
+                    <input 
+                        type="text" 
+                        value={formData.topicName} 
+                        onChange={handleChange} 
+                        placeholder="Enter topic" 
+                        name="topicName" 
+                        required
+                    />
+                    <button className="create-quiz-button" type="submit">Create</button>
+                </form>
+            </div>
+        </>
+    );
 }
 
 export default CreateQuiz;
