@@ -61,11 +61,10 @@ const StarRating = ({ totalStars = 5, onRatingSubmit }) => {
     
                     onRatingSubmit();
                 }
-                else if (!response.ok) {
-                    toast.error('An error occurred while submitting your rating. Please try again.');  // toast error message
-                    throw new Error('Failed to submit rating');
-                }
-        
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message);
+                }        
             } catch(error) {
                 if (error.name === 'TypeError' || error.message === 'Failed to fetch') {
                     handleError('An error occurred while trying to reach the server. Please try again');

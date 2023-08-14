@@ -483,7 +483,7 @@ const QuizQuestionAddition = () => {
                     </div>
 
                     <div className="question-addition-subtopic">
-                        <label htmlFor="subtopic">Select the subtopic for the question or add a new sub topic. </label>
+                        <label htmlFor="subtopic">Select the subtopic for the question or add a new sub topic.<br></br>(optional) </label>
                         {showSubtopicInput ? (
                             <>
                                 <input 
@@ -604,7 +604,7 @@ const QuizQuestionAddition = () => {
                     </div>
                     
                     <div className="question-addition-score">
-                        <label htmlFor="score">Would you like to give a score to the question? 
+                        <label htmlFor="score">Would you like to give a score to the question?<br></br>(optional)
                                               </label>   
                         <input
                             type="number"

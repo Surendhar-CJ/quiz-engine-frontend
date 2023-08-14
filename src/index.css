@@ -18,9 +18,8 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 82px;
     padding: 50px;
-    height:10px;
+    height: 10px;
     color: black;
     font-size: 10pt;
     border-top: 2px solid rgb(237, 237, 237);

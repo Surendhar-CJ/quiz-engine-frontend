@@ -11,6 +11,7 @@ import QuizQuestionAddition from './pages/QuizQuestionAddition.js';
 import PrivateRoute from './components/PrivateRoute.js';
 import { ToastContainer, toast  } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ViewQuestions from './components/ViewQuestions.js';
 
 
 const App = () => {
@@ -26,7 +27,8 @@ const App = () => {
             <Route path="/result" element={<PrivateRoute><QuizResult /></PrivateRoute>} />  
             <Route path="/detailed-results" element={<PrivateRoute><QuizDetailedResults /></PrivateRoute>} /> 
             <Route path="/profile" element={<PrivateRoute><UserProfile /></PrivateRoute>} />
-            <Route path="/add-question" element={<PrivateRoute><QuizQuestionAddition /></PrivateRoute>} />  
+            <Route path="/add-question" element={<PrivateRoute><QuizQuestionAddition /></PrivateRoute>} />
+            <Route path="/view-questions" element={<PrivateRoute><ViewQuestions /></PrivateRoute>} />   
           </Routes>
         </BrowserRouter>
       </QuizContextProvider>
