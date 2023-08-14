@@ -11,7 +11,7 @@ import Topic from '../components/Topic.js';
 import Footer from '../components/Footer.js';
 import "../styles/Home.css";
 import QuizConfiguration from '../components/QuizConfiguration.js';
-import ViewQuestions from '../components/ViewQuestions.js';
+import ViewQuestions from './ViewQuestions.js';
 import CreateQuiz from '../components/CreateQuiz.js';
 import { useErrorHandler } from '../hooks/useErrorHandler';
 import Modal from '../components/Modal';
@@ -244,7 +244,7 @@ const Home = () => {
                 const data = await response.json();
     
                 if(response.status === 200) {
-                    navigate('/view-question');
+                    navigate('/view-questions');
                        
                 } else {
                     // If HTTP status code is not a success status (2xx), consider it an error

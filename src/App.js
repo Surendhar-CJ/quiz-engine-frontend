@@ -11,7 +11,7 @@ import QuizQuestionAddition from './pages/QuizQuestionAddition.js';
 import PrivateRoute from './components/PrivateRoute.js';
 import { ToastContainer, toast  } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ViewQuestions from './components/ViewQuestions.js';
+import ViewQuestions from './pages/ViewQuestions.js';
 
 
 const App = () => {
