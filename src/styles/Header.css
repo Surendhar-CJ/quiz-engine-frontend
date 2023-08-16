@@ -110,6 +110,10 @@
     transform: scale(1.02); /* optional: gives a slight zoom effect */
 }
 
+.active:hover {
+    color: #0D99FF;
+    background-color: white;
+}
 
 
 @media (max-width: 575px) {

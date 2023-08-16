@@ -34,6 +34,10 @@
     font-size: 24pt;
 }
 
+.quiz-exit-message {
+    font-weight:600;
+}
+
 .exit-quiz {
     padding: 10px;
     background-color: rgba(197, 48, 48, 1);

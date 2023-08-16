@@ -10,13 +10,18 @@ import Modal from "../components/Modal";
 
 
 const QuizConfiguration = (props) => {
+    
     const contextValue = useContext(QuizContext);
+    const getUser = () => {
+        return contextValue.user || JSON.parse(window.localStorage.getItem('user'));
+    }
+    const user = getUser();
     const [sessionExpired, setSessionExpired] = useState(false);
     const [quizData, setQuizData] = useState(null);
     const [feedbackTypes, setFeedbackTypes] = useState([]); 
     const [configuration, setConfiguration] = useState(
         {
-            userId: contextValue.user.id,
+            userId: user?.id,
             topicId: props.topicId,
             feedbackId: null,
             questionsLimit: null,
@@ -37,8 +42,6 @@ const QuizConfiguration = (props) => {
     
     const navigate = useNavigate();
     const handleError = useErrorHandler();
-
-  
 
 
     const handleChange = (event) => {
@@ -216,8 +219,6 @@ const QuizConfiguration = (props) => {
     React.useEffect(() => {
         getFeedbackTypes();
     }, []);
-
-
 
     React.useEffect(() => {
         if (configuration.feedbackId) {  // Make sure feedbackId is not null

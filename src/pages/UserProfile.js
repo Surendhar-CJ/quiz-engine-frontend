@@ -536,7 +536,7 @@ const UserProfile = () => {
     }
 
     const handleAddQuestionOnUserProfileQuestionsClick = () => {
-        navigate('/home');
+        navigate('/add-question');
     }
 
 
