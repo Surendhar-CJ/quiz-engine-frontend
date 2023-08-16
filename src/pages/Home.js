@@ -96,7 +96,7 @@ const Home = () => {
     }
 
     const handleAddQuestionClick = () => {
-        navigate('/add-question');
+        navigate('/add-question', { state: { from: '/home' } });
     }
 
     

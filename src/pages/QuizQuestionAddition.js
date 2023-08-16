@@ -289,7 +289,13 @@ const QuizQuestionAddition = () => {
     
     const handleQuizQuestionSubmittedExitClick = () => {
         setShowQuestionSubmitted(!showQuestionSubmitted);
-        navigate('/home');
+        
+        // Check if location.state.from exists and is either "/home" or "/view-questions"
+        if (location.state && (location.state.from === '/home' || location.state.from === '/view-questions')) {
+            navigate(location.state.from);
+        } else {
+            navigate('/home'); // Default navigation
+        }
     };
 
 

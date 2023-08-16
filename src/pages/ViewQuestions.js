@@ -9,13 +9,16 @@ import Footer from '../components/Footer.js';
 import {useErrorHandler} from "../hooks/useErrorHandler";
 import Modal from "../components/Modal";
 import CreateQuiz from '../components/CreateQuiz.js';
+import QuizConfiguration from '../components/QuizConfiguration.js';
 import '../styles/ViewQuestions.css';
 
 const ViewQuestions = () => {
     const [showCreateQuiz, setShowCreateQuiz] = useState(false);
+    const [showQuizConfig, setShowQuizConfig] = useState(false);
     const [sessionExpired, setSessionExpired] = useState(false);
     const [questionsList, setQuestionsList] = useState();
-    const [topic, setTopic] = useState();
+    const [topic, setTopic] = useState(null);
+    const [topicId, setTopicId] = useState(null);
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -50,7 +53,15 @@ const ViewQuestions = () => {
     }
 
     const handleAddQuestionClick = () => {
-        navigate('/add-question');
+        navigate('/add-question', { state: { from: '/view-questions' } });
+    }
+
+    const handleQuizConfigClick = () => {
+        toggleQuizConfig();
+    }
+
+    const toggleQuizConfig = () => {
+        setShowQuizConfig(!showQuizConfig);
     }
 
     const Question = ({ question }) => {
@@ -100,15 +111,15 @@ const ViewQuestions = () => {
             handleError(error); // call the returned function with the error
         }
     }
+
     React.useEffect(() => {
         const storedTopic = JSON.parse(window.localStorage.getItem('topic'));
         if(storedTopic) {
             getQuestions(storedTopic.id);
+            contextValue.setTopic(storedTopic);
             setTopic(storedTopic);
-        }
-        
+        }  
     }, [])
-
 
 
     React.useEffect(() => {
@@ -127,6 +138,17 @@ const ViewQuestions = () => {
                         <CreateQuiz userId={contextValue.user.id}/>
                     </Modal> 
         } 
+
+        {topic && showQuizConfig && 
+              <Modal 
+                    show={showQuizConfig} 
+                    onClose={toggleQuizConfig}
+                    className={showQuizConfig ? 'visible' : ''}
+                >
+                    {showQuizConfig && <QuizConfiguration topicId={topic.id}  />}
+                </Modal>
+        }
+
         <div className="view-questions">
              <Header options={[{ label: 'Create+', action: handleCreateQuizClick }, { label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
              <div className="view-questions-content">
@@ -136,8 +158,14 @@ const ViewQuestions = () => {
                             <p className="topic-details-count">Questions: {topic.numberOfQuestions}</p>
                         </div>
                     }
-                    <div className="add-question-new">
-                            <button type="submit" className="add-question-intro" onClick={handleAddQuestionClick}>Add Question</button>
+
+                    <div className="view-questions-buttons">
+                        <div className="add-question-new">
+                                <button type="submit" className="add-question-intro" onClick={handleAddQuestionClick}>Add Question</button>
+                        </div>
+                        <div className="take-quiz-new">
+                                <button type="submit" className="take-quiz-new-button" onClick={handleQuizConfigClick}>Take Quiz</button>
+                        </div>
                     </div>
                 {
                     questionsList && questionsList.map((question, index) => (

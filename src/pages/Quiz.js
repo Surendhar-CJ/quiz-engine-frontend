@@ -356,7 +356,7 @@ const Quiz = () => {
                 show={showExitConfirmation}
                 onClose={toggleExitConfirmation}>
                 <div>
-                    <p>Are you sure you want to exit the quiz?</p>
+                    <p className="quiz-exit-message">Are you sure you want to exit the quiz?</p>
                     <div className="exit-buttons">
                         <button className="exit-button-confirmation" onClick={confirmExit}>Exit</button>
                         <button className="exit-no-button-confirmation" onClick={toggleExitConfirmation}>No</button>
