@@ -904,7 +904,7 @@ const UserProfile = () => {
                         className={`option ${selectedOption === 'Feedbacks received' ? 'options-active' : ''}`} 
                         onClick={() => handleOptionClick('Feedbacks received')}
                     >
-                        Feedbacks Recieved
+                        Feedbacks Received
                     </p>}
                 </div>
                 
