@@ -269,7 +269,7 @@ import 'react-circular-progressbar/dist/styles.css';
               
             <div className="quiz-result-content">
                
-                <h1>Quiz results</h1>
+                <h1>Quiz Results</h1>
                 <div className="quiz-marks-all">
                   <div className="quiz-marks-section">
                     <div className="percentage-card" style={{ width: 150, height: 150 }}>
