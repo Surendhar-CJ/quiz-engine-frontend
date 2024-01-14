@@ -182,13 +182,13 @@ const QuizQuestionAddition = () => {
     const handleCorrectAnswerChange = (event, index) => {
         const isCorrect = event.target.value === "true";
         if(formData.questionType === "Multiple Answer") {
-            // For multiple answer type question, we don't reset other options
+            // For Multiple Answer question, do not reset other options
             const newChoices = choices.map((choice, idx) => 
                 idx === index ? { ...choice, isCorrect } : choice
             );
             setChoices(newChoices);
         } else {
-            // Existing logic for single correct answer types
+            // Multiple Choice Question
             if (isCorrect) {
                 setCorrectAnswerIndex(index);
                 const newChoices = choices.map((choice, idx) => 
@@ -209,7 +209,7 @@ const QuizQuestionAddition = () => {
     
         if (isCorrect) {
             if (index !== correctAnswerIndex) {
-                // if different option is selected, we swap the correctness
+                // If different option is selected, swap the correctness
                 setCorrectAnswerIndex(index);
                 const newChoices = ['True', 'False'].map((choice, idx) => 
                     idx === index ? { text: choice, isCorrect: true } : { text: choice, isCorrect: false }
@@ -218,7 +218,7 @@ const QuizQuestionAddition = () => {
             }
         } else {
             if (index === correctAnswerIndex) {
-                // if the incorrect answer is the previously correct one, reset the correct answer index
+                // If the incorrect answer is the previously correct one, reset the correct answer index
                 setCorrectAnswerIndex(-1);
                 const newChoices = ['True', 'False'].map((choice, idx) => 
                     idx === index ? { text: choice, isCorrect: false } : { text: choice, isCorrect: true }

@@ -116,7 +116,7 @@ const QuizDetailedResults = () => {
         <div className="quiz-detailed-results">
             <Header options={[{ label: 'Create+', action: handleCreateQuizClick }, { label: 'Home', action: handleHomeClick }, { label: 'Profile', action: handleProfileClick }, {label: 'Logout', action: handleLogoutClick}]}  />
             <div className="detailed-results">
-                <h1>Detailed Quiz Results</h1>
+                <h1>Quiz Detailed Results</h1>
                 <QuizSummary quizResult = {quizResult} />
                 <table className="all-answers-table">
                     <thead>
