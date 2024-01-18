@@ -26,7 +26,7 @@
 .title {
     margin: 0;
     color: white;
-    font-size: 32pt;
+    font-size: 28pt;
     text-shadow: 2px 4px 4px rgba(0, 0, 0, 0.4);
 }
 
@@ -116,35 +116,4 @@
 }
 
 
-@media (max-width: 575px) {
-    .header-container {
-        height: 250px;
-    }
-    .header-content {
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding-top: 50px;
-        padding-bottom: 50px;
 
-    }
-
-    .options {
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        margin-left: 0;
-        margin-top: 20px;
-        margin-bottom: 20px;
-        width: 100%;
-        
-    }
-
-    .create-plus,.home,.profile,.logout {
-        width: 100%;
-    }
-
-    .home-content, .user-profile-details, .quiz-result-content, .detailed-results, .question-addition-main {
-        margin-top: 250px;
-    }
-}
