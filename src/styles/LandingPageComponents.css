@@ -45,11 +45,66 @@
 }
 
 
+/* Media query for responsiveness */
+@media screen and (max-width: 768px) {
+    .card1 p, .card2 p, .card3 p {
+        width: 80%; /* Adjusted width for smaller screens */
+    }
 
+    .card1, .card2, .card3 {
+        align-items: center;
+        text-align: center;
+    }
 
+    .card1 p {
+        margin-left: 0;
+    }
 
+    .card2 {
+        margin-bottom: 20px;
+    }
+}
 
+/* Special case for Card2 in smaller screens */
+@media screen and (max-width: 1000px) {
+    .card2-stack {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
 
+    .card2-stack .card2 p {
+        order: -1; 
+    }
+
+    .card2-stack .card2 .feedback-image {
+        margin-top: 20px; 
+    }
+}
+
+/* Common styles for larger screens */
+@media screen and (min-width: 1000px) {
+    .card1, .card2, .card3 {
+        align-items: center;
+        text-align: center;
+    }
+
+    .content-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+    }
+
+    .content-wrapper p {
+        text-align: center;
+    }
+
+    .configue-image, .feedback-image, .performance-image1 {
+        margin-left: 20px;
+    }
+}
 
 
 
